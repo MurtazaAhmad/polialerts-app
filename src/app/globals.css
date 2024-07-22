@@ -1,13 +1,17 @@
 @tailwind base;
 @tailwind components;
+<<<<<<< HEAD
 @tailwind utilities;
 
+
+@html{
+    font-family:  "Manrope"
+  }  
 
 @font-face {
     font-family: "Manrope";
     src: url('../../public/assets/font/Manrope-VariableFont_wght.ttf') format("truetype");
   }
-
-@html{
-  font-family: "Manrope";
-}  
+=======
+@tailwind utilities;
+>>>>>>> 8f3323f2f3ceeb3c4fbe0825affcd9b53ea070bd
