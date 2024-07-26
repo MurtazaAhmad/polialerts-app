@@ -2,6 +2,8 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
+import { Firestore, getFirestore } from "firebase/firestore"; // Import Firestore
+import firebase from "firebase/app"
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -14,20 +16,16 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+//For server side rendering
+let app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-let app;
-try {
-    // Initialize Firebase
-    // const app = initializeApp(firebaseConfig);
-    //For server side rendering
-    const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    console.log("Firebase initialized successfully");
-} catch (error) {
-    console.error("Firebase initialization failed", error);
-}
 //For Auth
 const auth = getAuth(app);
 
-const db = getDatabase(app);
+//For Firestore
+const db: Firestore = getFirestore(app);
+
 // Exporting...
 export { auth, db };
