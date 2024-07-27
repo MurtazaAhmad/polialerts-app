@@ -13,3 +13,6 @@
 @html{
   font-family: "Manrope";
 }  
+
+
+select::-ms-expand { display: none; }
