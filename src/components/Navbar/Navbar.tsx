@@ -2,12 +2,26 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Logo from "../Icons/Logo";
+import { useSignOut } from 'react-firebase-hooks/auth';
+import { auth } from '@/app/firebase/config'
 
 export default function Navbar() {
+  const [signOut] = useSignOut(auth)
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const handleLogout = async () => {
+    const success = await signOut();
+    if (success) {
+      alert('Logged Out');
+    }
+
+    sessionStorage.removeItem('user')
+  }
+
   const menuItems = [
     { id: 1, title: "Dashboard", href: "#" },
     { id: 2, title: "Profile", href: "#" },
@@ -49,9 +63,8 @@ export default function Navbar() {
             />
           </svg>
           <div
-            className={` ${
-              isMenuOpen === true ? "block" : "hidden"
-            } w-full md:flex md:items-center md:w-auto`}
+            className={` ${isMenuOpen === true ? "block" : "hidden"
+              } w-full md:flex md:items-center md:w-auto`}
             id="menu"
           >
             <ul
