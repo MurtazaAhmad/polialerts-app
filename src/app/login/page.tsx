@@ -1,11 +1,38 @@
+"use client";
 import Footer from "@/components/Footer/Footer";
 import Eye from "@/components/Icons/Eye";
 import Navbar from "@/components/Navbar/Navbar";
 import Link from "next/link";
+import { useRouter } from "next/navigation"
 import React from "react";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from '@/app/firebase/config'
 
 export default function Login() {
-  
+
+  const router = useRouter()
+
+  const [email, setEmail] = React.useState<string>('')
+  const [password, setPassword] = React.useState<string>('')
+  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log(email, password);
+
+    try {
+      const res = await signInWithEmailAndPassword(email, password)
+      console.log("res: ", res);
+      sessionStorage.setItem('user', true)
+      setEmail('')
+      setPassword('')
+
+      router.push('/dashboard')
+
+    } catch (error: any) {
+      console.log("ERROR!" + error.message)
+    }
+  }
 
   return (
     <div>
@@ -16,50 +43,62 @@ export default function Login() {
             <h1 className="text-headingColor font-bold md:text-[3rem] text-[2.3rem]">
               Log in
             </h1>
-            <div className="flex flex-col gap-3">
-              <div>
-                <label
-                  className="block text-[1.1rem] mt-4 mb-2 text-bodyColor"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <input
-                  className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
-                  name="email"
-                  id="email"
-                  type="email"
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-[1.1rem] mt-4 mb-2 text-bodyColor"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <div className="rounded-full relative w-full border-blueColor border mb-3">
-                  <Eye/>
+            <form onSubmit={handleFormSubmit}>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label
+                    className="block text-[1.1rem] mt-4 mb-2 text-bodyColor"
+                    htmlFor="email"
+                  >
+                    Email
+                  </label>
+                  <input
+                    className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
+                    name="email"
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                  />
                 </div>
-                <Link
-                  className="text-blueColor underline font-semibold w-fit text-base hover:no-underline hover:text-blueHover"
-                  href="/"
-                >
-                  Forgot Password?
-                </Link>
+                <div>
+                  <label
+                    className="block text-[1.1rem] mt-4 mb-2 text-bodyColor"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
+                  <input
+                    className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
+                    name="password"
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                  {/* <div className="rounded-full relative w-full border-blueColor border mb-3">
+                  <Eye />
+                </div> */}
+                  <Link
+                    className="text-blueColor underline font-semibold w-fit text-base hover:no-underline hover:text-blueHover"
+                    href="/"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+                <button className="flex my-2 justify-start rounded-full w-fit py-2 px-10 bg-blueColor text-white hover:bg-blueHover">
+                  Login
+                </button>
               </div>
-              <button className="flex my-2 justify-start rounded-full w-fit py-2 px-10 bg-blueColor text-white hover:bg-blueHover">
-                Login
-              </button>
-            </div>
+            </form>
           </div>
         </div>
         <div className="text-sm font-semibold mx-auto text-center my-5">
-        <span className="text-bodyColor">Don't have an account?</span>
-        <span className="text-blueColor ml-1"><Link className="underline hover:no-underline hover:text-blueHover" href="/">Contact us</Link></span>
-      </div>
+          <span className="text-bodyColor">Don't have an account?</span>
+          <span className="text-blueColor ml-1"><Link className="underline hover:no-underline hover:text-blueHover" href="/">Contact us</Link></span>
+        </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
