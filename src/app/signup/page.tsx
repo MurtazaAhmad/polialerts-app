@@ -19,8 +19,7 @@ const Signup = (props: Props) => {
   };
 
   // Calling Hook - Returns array
-  {
-    /*} const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
+    const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -38,7 +37,7 @@ const Signup = (props: Props) => {
             console.log(error.message)
         }
 
-    }*/
+
   }
 
   return (
@@ -50,7 +49,7 @@ const Signup = (props: Props) => {
             <h1 className="text-headingColor font-bold md:text-[3rem] text-[2.3rem]">
              Sign up
             </h1>
-            <form>
+            <form onSubmit={handleFormSubmit}>
               <div className="flex flex-col gap-3">
                 <div>
                   <label

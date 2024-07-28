@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -18,9 +19,8 @@ export default function Login() {
 
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
-  {
-    /*
-  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
+  
+  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -38,7 +38,6 @@ export default function Login() {
     } catch (error: any) {
       console.log("ERROR!" + error.message)
     }
-  }*/
   }
 
   return (
@@ -50,7 +49,7 @@ export default function Login() {
             <h1 className="text-headingColor font-bold md:text-[3rem] text-[2.3rem]">
               Log in
             </h1>
-            <form>
+            <form onSubmit={handleFormSubmit}>
               <div className="flex flex-col gap-3">
                 <div>
                   <label
