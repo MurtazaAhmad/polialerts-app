@@ -1,7 +1,7 @@
 import React from "react";
 import Logo from "../Icons/Logo";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <div className="bg-bodyColor font-Manrope py-5 text-white px-6 md:px-10 lg:px-24 mt-5">
       <footer className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 justify-center items-start py-5">
@@ -26,5 +26,3 @@ const Footer = () => {
     </div>
   );
 };
-
-export default Footer;

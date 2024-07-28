@@ -4,13 +4,8 @@ import Modal from "react-modal";
 import Close from "../Icons/Close";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Institution from "../Icons/Institution";
-import "./Select.css"
 
-
-
-export default function CancelPlanModal() {
-
-   
+export default function CoverageAreaModel() {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -49,13 +44,12 @@ export default function CancelPlanModal() {
 
           <div className="font-semibold text-xl">
             <div className="flex gap-3 items-center">
-              <Institution/>
+              <Institution />
               <h1 className="text-headingColor font-bold md:text-[1.6rem] text-base">
                 New coverage area
               </h1>
             </div>
           </div>
-         
 
           <div className="flex gap-5 flex-col lg:flex-row lg:items-center mt-5">
             <div className="select-wrapper relative w-full lg:w-auto">
@@ -83,9 +77,8 @@ export default function CancelPlanModal() {
             </div>
           </div>
           <button className="mt-5 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
-              Add area
-        </button>
-        
+            Add area
+          </button>
         </Modal>
       </div>
     </>

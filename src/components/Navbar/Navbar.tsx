@@ -6,7 +6,7 @@ import { useSignOut } from 'react-firebase-hooks/auth';
 import { auth } from '@/app/firebase/config'
 
 export default function Navbar() {
-  const [signOut] = useSignOut(auth)
+  const [signOut] = useSignOut(auth);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
@@ -17,29 +17,22 @@ export default function Navbar() {
     const success = await signOut();
     if (success) {
       alert('Logged Out');
+      sessionStorage.removeItem('user');
     }
+  };
 
-    sessionStorage.removeItem('user')
-  }
-
-  const menuItems = [
-    { id: 1, title: "Dashboard", href: "#" },
-    { id: 2, title: "Profile", href: "#" },
-    { id: 3, title: "Support", href: "#" },
-    { id: 4, title: "Log out", href: "#" },
-  ];
   return (
     <>
       <header className="font-Manrope">
         <nav
           className="
-    lg:px-24  md:px-10 px-5 py-5
-    flex flex-wrap
-    items-center
-    justify-between
-    w-full
-    bg-bodyColor
-  "
+            lg:px-24  md:px-10 px-5 py-5
+            flex flex-wrap
+            items-center
+            justify-between
+            w-full
+            bg-bodyColor
+          "
         >
           <div>
             <a href="#">
@@ -63,27 +56,47 @@ export default function Navbar() {
             />
           </svg>
           <div
-            className={` ${isMenuOpen === true ? "block" : "hidden"
-              } w-full md:flex md:items-center md:w-auto`}
+            className={`${isMenuOpen ? "block" : "hidden"} w-full md:flex md:items-center md:w-auto`}
             id="menu"
           >
             <ul
               className="
-        pt-4
-        text-white text-base font-semibold
-        md:flex
-        md:justify-between 
-        md:pt-0"
+                pt-4
+                text-white text-base font-semibold
+                md:flex
+                md:justify-between 
+                md:pt-0
+              "
             >
-              {menuItems.map((item, index) => (
-                <li key={item.id}>
-                  <Link href={item.href}>
-                    <p className="md:p-4 py-2 block hover:underline active:underline">
-                      {item.title}
-                    </p>
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href="/dashboard">
+                  <p className="md:p-4 py-2 block hover:underline active:underline">
+                    Dashboard
+                  </p>
+                </Link>
+              </li>
+              <li>
+                <Link href="/profile">
+                  <p className="md:p-4 py-2 block hover:underline active:underline">
+                    Profile
+                  </p>
+                </Link>
+              </li>
+              <li>
+                <Link href="/support">
+                  <p className="md:p-4 py-2 block hover:underline active:underline">
+                    Support
+                  </p>
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="md:p-4 py-2 block hover:underline active:underline text-left"
+                >
+                  Log out
+                </button>
+              </li>
             </ul>
           </div>
         </nav>
