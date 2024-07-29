@@ -3,18 +3,24 @@ import Footer from "@/components/Footer/Footer";
 import Eye from "@/components/Icons/Eye";
 import Navbar from "@/components/Navbar/Navbar";
 import Link from "next/link";
-import { useRouter } from "next/navigation"
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from '@/app/firebase/config'
+import { auth } from "@/app/firebase/config";
 
 export default function Login() {
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const router = useRouter()
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
-  const [email, setEmail] = React.useState<string>('')
-  const [password, setPassword] = React.useState<string>('')
-  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
+  const router = useRouter();
+
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  
+  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -58,7 +64,7 @@ export default function Login() {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div>
@@ -68,17 +74,21 @@ export default function Login() {
                   >
                     Password
                   </label>
-                  <input
-                    className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
-                    name="password"
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
-                  {/* <div className="rounded-full relative w-full border-blueColor border mb-3">
-                  <Eye />
-                </div> */}
+                  <div className="rounded-full relative w-full border mb-3">
+                    <input
+                      className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
+                      name="password"
+                      id="password"
+                      type={passwordVisible ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                    <div onClick={togglePasswordVisibility}>
+                      <Eye passwordVisible={passwordVisible} />
+                    </div>
+                  </div>
+
                   <Link
                     className="text-blueColor underline font-semibold w-fit text-base hover:no-underline hover:text-blueHover"
                     href="/"
@@ -95,7 +105,14 @@ export default function Login() {
         </div>
         <div className="text-sm font-semibold mx-auto text-center my-5">
           <span className="text-bodyColor">Don't have an account?</span>
-          <span className="text-blueColor ml-1"><Link className="underline hover:no-underline hover:text-blueHover" href="/">Contact us</Link></span>
+          <span className="text-blueColor ml-1">
+            <Link
+              className="underline hover:no-underline hover:text-blueHover"
+              href="/"
+            >
+              Contact us
+            </Link>
+          </span>
         </div>
       </section>
       <Footer />

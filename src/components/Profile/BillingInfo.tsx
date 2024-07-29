@@ -1,6 +1,5 @@
 import React from "react";
-
-const BillingInfo = () => {
+export default function BillingInfo() {
   return (
     <section className="font-Manrope lg:mx-28 md:mx-14 mx-5 py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
       <h3 className="text-headingColor font-bold md:text-[2.1rem] text-[1.6rem] md:w-[40%]">
@@ -35,6 +34,4 @@ const BillingInfo = () => {
       </div>
     </section>
   );
-};
-
-export default BillingInfo;
+}

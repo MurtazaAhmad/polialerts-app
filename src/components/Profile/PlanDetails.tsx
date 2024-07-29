@@ -1,7 +1,7 @@
 import React from "react";
 import CancelPlanModal from "./CancelPlanModal";
 
-const PlanDetails = () => {
+export default function PlanDetails() {
   return (
     <div>
       <section className="font-Manrope lg:mx-28 md:mx-14 mx-5 py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
@@ -45,5 +45,3 @@ const PlanDetails = () => {
     </div>
   );
 };
-
-export default PlanDetails;
