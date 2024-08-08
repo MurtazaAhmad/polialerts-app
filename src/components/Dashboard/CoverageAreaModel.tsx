@@ -5,8 +5,11 @@ import Close from "../Icons/Close";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Institution from "../Icons/Institution";
 
-export default function CoverageAreaModel({mainCategories}) {
+interface CoverageAreaModelProps {
+  mainCategories: any;
+}
 
+const CoverageAreaModel: React.FC<CoverageAreaModelProps> = ({ mainCategories }) => {
   console.log(mainCategories);
   const customStyles = {
     overlay: {
@@ -86,3 +89,5 @@ export default function CoverageAreaModel({mainCategories}) {
     </>
   );
 }
+
+export default CoverageAreaModel;
