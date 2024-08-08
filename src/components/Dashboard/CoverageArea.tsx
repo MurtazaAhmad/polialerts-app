@@ -27,8 +27,8 @@ export default function CoverageArea() {
   ];
   return (
     <>
-      <section className="lg:mx-28  md:mx-14 mx-5 py-5 md:py-10  md:gap-5 gap-5  md:flex-row flex-col flex md:justify-between md:items-start">
-        <div className="flex w-full md:flex-row flex-col gap-5 ">
+      <section className="lg:mx-28 md:mx-14 mx-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
+        <div className="flex w-full md:flex-row flex-col gap-5">
           {/* left side */}
           <div className="md:w-[30%] w-full flex justify-between md:items-start items-center">
             <div className="flex flex-col gap-3">
@@ -53,7 +53,7 @@ export default function CoverageArea() {
 
           {/* right-side */}
 
-          <div className="md:w-[70%] w-full ">
+          <div className="md:w-[70%] w-full">
             {/* first */}
             {(showRightSide || !isMobile) && (
               <div>
@@ -70,27 +70,26 @@ export default function CoverageArea() {
                         required
                         name="first-name"
                         type="text"
-                        className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
+                        className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
                         placeholder="Add keywords here"
                       />
                       <button
                         type="submit"
-                        className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full font-semibold border-transparent border-2 text-white"
+                        className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
                       >
                         Add
                       </button>
                     </div>
-                    <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7 ">
-                      <div className="bg-lightGray w-full rounded-xl  customScrollbar  overflow-auto h-[30vh] md:h-[50vh]">
+                    <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">
+                      <div className="bg-lightGray w-full rounded-xl customScrollbar overflow-auto h-[30vh] md:h-[50vh]">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => {
                           return (
                             <div
                               key={index}
-                              className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg "
+                              className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
                             >
                               Charles Brown
                               <button className="mx-2 text-iota text-3xl">
-                                {" "}
                                 <IoCloseSharp />
                               </button>
                             </div>
@@ -102,7 +101,7 @@ export default function CoverageArea() {
                   <div className="md:w-[50%] w-full">
                     <div className="flex items-center gap-2 my-5">
                       <Calendar />
-                      <h2 className="font-bold  text-headingColor md:text-[1.6rem] text-base">
+                      <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
                         End-of-day email alerts
                       </h2>
                     </div>
@@ -111,28 +110,27 @@ export default function CoverageArea() {
                         required
                         name="first-name"
                         type="text"
-                        className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
+                        className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
                         placeholder="Add keywords here"
                       />
                       <button
                         type="submit"
-                        className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full font-semibold border-transparent border-2 text-white hover:blueH"
+                        className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:blueH"
                       >
                         Add
                       </button>
                     </div>
 
-                    <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7 ">
-                      <div className="bg-lightGray w-full rounded-xl  customScrollbar  overflow-auto h-[30vh] md:h-[50vh]">
+                    <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">
+                      <div className="bg-lightGray w-full rounded-xl customScrollbar overflow-auto h-[30vh] md:h-[50vh]">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => {
                           return (
                             <div
                               key={index}
-                              className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg "
+                              className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
                             >
                               Charles Brown
                               <button className="mx-2 text-iota text-3xl">
-                                {" "}
                                 <IoCloseSharp />
                               </button>
                             </div>
@@ -144,17 +142,17 @@ export default function CoverageArea() {
                 </div>
 
                 {/* Quotes */}
-                <div className="flex md:flex-row flex-col  md:items-center gap-5">
+                <div className="flex md:flex-row flex-col md:items-center gap-5">
                   {/* right */}
-                  <div className="md-w-[50%]  w-full">
+                  <div className="md-w-[50%] w-full">
                     <div className="flex items-center gap-2 my-5">
                       <Quote />
-                      <h2 className="font-bold  text-headingColor md:text-[1.6rem] text-base">
+                      <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
                         Quote Context
                       </h2>
                     </div>
 
-                    <p className="block mb-2 text-base text-bodyColor ">
+                    <p className="block mb-2 text-base text-bodyColor">
                       Use the slider to control how many words are quoted before
                       and after each keyword in your alert emails
                     </p>
@@ -177,10 +175,10 @@ export default function CoverageArea() {
                     </div>
                   </div>
                 </div>
-                {/* reciept */}
+                {/* recipients */}
                 <div className="flex items-center gap-2 my-5">
                   <Email />
-                  <h2 className="font-bold  text-headingColor md:text-[1.6rem] text-base">
+                  <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
                     Recipients
                   </h2>
                 </div>
@@ -194,7 +192,7 @@ export default function CoverageArea() {
                   />
                   <button
                     type="submit"
-                    className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full font-semibold border-transparent border-2 text-white"
+                    className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
                   >
                     Add
                   </button>
@@ -209,24 +207,23 @@ export default function CoverageArea() {
                       {email}
                       {/* set close icon */}
                       <button className="mx-2 text-iota text-3xl">
-                        {" "}
                         <IoCloseSharp />
                       </button>
                     </div>
                   ))}
                 </div>
-                <p className="block mb-2 text-base text-bodyColor ">
-                  Changes made above are not saved until you confirm with "save
-                  changes" button
+                <p className="block mb-2 text-base text-bodyColor">
+                  Changes made above are not saved until you confirm with &quot;save
+                  changes&quot; button
                 </p>
                 <div className="flex flex-col md:flex-row gap-5 my-5">
                   <button
                     type="submit"
-                    className="py-2 px-5 w-fit  h-fit  bg-blueColor  rounded-full font-semibold border-transparent border-2 text-white"
+                    className="py-2 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
                   >
                     Save changes
                   </button>
-                  <button className="py-2 px-5 w-fit  h-fit  border-blueColor  font-semibold  border-2 rounded-full text-blueColor">
+                  <button className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
                     Revert
                   </button>
                 </div>

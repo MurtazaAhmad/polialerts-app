@@ -18,7 +18,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import CoverageAreaModel from "@/components/Dashboard/CoverageAreaModel";
 import CoverageArea from "@/components/Dashboard/CoverageArea";
 import { useUser } from "@/hooks/useUser";
-import useDatabase from '@/hooks/useDatabase';
 
 import { useRouter } from "next/navigation";
 import { useCategory } from "@/hooks/useCategory";

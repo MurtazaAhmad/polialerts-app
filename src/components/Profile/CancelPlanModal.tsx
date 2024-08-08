@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import Close from "../Icons/Close";
 import Warning from "../Icons/Warning";
 import { IoMdArrowDropdown } from "react-icons/io";
+
 export default function CancelPlanModal() {
   const customStyles = {
     overlay: {
@@ -11,7 +12,6 @@ export default function CancelPlanModal() {
     },
   };
 
-  var subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
   function openModal() {
     setIsOpen(true);
@@ -20,16 +20,17 @@ export default function CancelPlanModal() {
   function closeModal() {
     setIsOpen(false);
   }
+
   return (
     <>
       <div>
-        <div onClick={openModal} className="curor-pointer font-Manrope">
-          <button className="py-2 px-5 w-fit  h-fit  bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white">
+        <div onClick={openModal} className="cursor-pointer font-Manrope">
+          <button className="py-2 px-5 w-fit h-fit bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white">
             Cancel plan
           </button>
         </div>
         <Modal
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%]  md:w-[50%] py-16 px-10 bg-white shadow-sm outline-none border rounded-3xl"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[50%] py-16 px-10 bg-white shadow-sm outline-none border rounded-3xl"
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}
           onRequestClose={closeModal}
@@ -38,13 +39,13 @@ export default function CancelPlanModal() {
         >
           <div
             onClick={closeModal}
-            className="absolute top-3  cursor-pointer right-5"
+            className="absolute top-3 cursor-pointer right-5"
           >
             <Close />
           </div>
 
           <div className="font-semibold text-xl">
-            <div className="flex  gap-3 items-center">
+            <div className="flex gap-3 items-center">
               <Warning />
               <h1 className="text-headingColor font-bold md:text-[1.6rem] text-base">
                 Cancel Plan
@@ -52,7 +53,7 @@ export default function CancelPlanModal() {
             </div>
           </div>
           <p className="text-base text-bodyColor my-5">
-            Plans can be canceled with a minimum of 2 months' notice.
+            Plans can be canceled with a minimum of 2 months&apos; notice.
           </p>
 
           <div className="flex gap-5 flex-col md:flex-row md:items-center">
