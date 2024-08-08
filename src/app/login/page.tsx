@@ -7,41 +7,54 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const router = useRouter();
+  const [signInWithEmailAndPassword, user, loadingFirebase, error] = useSignInWithEmailAndPassword(auth);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const router = useRouter();
-
-  const [email, setEmail] = React.useState<string>("");
-  const [password, setPassword] = React.useState<string>("");
-  
-  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
-
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log(email, password);
+    e.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+
+    if (!email || !password) {
+      setErrorMessage("Email and Password are required.");
+      setLoading(false);
+      return;
+    }
 
     try {
-      const res = await signInWithEmailAndPassword(email, password)
-      console.log("res: ", res);
-      sessionStorage.setItem('user', true)
-      setEmail('')
-      setPassword('')
-
-      router.push('/dashboard')
-
+      const res = await signInWithEmailAndPassword(email, password);
+      if (res) {
+        sessionStorage.setItem('user', JSON.stringify(res.user)); // Use JSON.stringify if you are storing an object
+        setEmail('');
+        setPassword('');
+        toast.success("Logged in successfully!");
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 2000); // Short delay for success message
+      }
     } catch (error: any) {
-      console.log("ERROR!" + error.message)
+      setErrorMessage(error.message || "An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>
+      <Toaster position="top-center" reverseOrder={false} />
       <Navbar />
       <section className="font-Manrope flex flex-col justify-center items-center my-16">
         <div className="xl:w-[35%] lg:w-[40%] md:w-[50%] w-[90%] rounded-xl mx-auto bg-lightGray">
@@ -65,6 +78,8 @@ export default function Login() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
+                    aria-label="Email"
                   />
                 </div>
                 <div>
@@ -82,13 +97,16 @@ export default function Login() {
                       type={passwordVisible ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      disabled={loading}
+                      aria-label="Password"
                     />
-
-                    <div onClick={togglePasswordVisibility}>
+                    <div
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-2 top-2 cursor-pointer"
+                    >
                       <Eye passwordVisible={passwordVisible} />
                     </div>
                   </div>
-
                   <Link
                     className="text-blueColor underline font-semibold w-fit text-base hover:no-underline hover:text-blueHover"
                     href="/"
@@ -96,9 +114,16 @@ export default function Login() {
                     Forgot Password?
                   </Link>
                 </div>
-                <button className="flex my-2 justify-start rounded-full w-fit py-2 px-10 bg-blueColor text-white hover:bg-blueHover">
-                  Login
+                <button
+                  type="submit"
+                  className="flex my-2 justify-start rounded-full w-fit py-2 px-10 bg-blueColor text-white hover:bg-blueHover"
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Login"}
                 </button>
+                {errorMessage && (
+                  <p className="text-red-600 text-sm">{errorMessage}</p>
+                )}
               </div>
             </form>
           </div>
@@ -108,9 +133,9 @@ export default function Login() {
           <span className="text-blueColor ml-1">
             <Link
               className="underline hover:no-underline hover:text-blueHover"
-              href="/"
+              href="/signup" // Assuming this is the correct link for sign-up
             >
-              Contact us
+              Sign up
             </Link>
           </span>
         </div>
