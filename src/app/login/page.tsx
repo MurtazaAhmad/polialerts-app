@@ -129,11 +129,11 @@ export default function Login() {
           </div>
         </div>
         <div className="text-sm font-semibold mx-auto text-center my-5">
-          <span className="text-bodyColor">Don't have an account?</span>
+          <span className="text-bodyColor">Don&apos;t have an account?</span>
           <span className="text-blueColor ml-1">
             <Link
               className="underline hover:no-underline hover:text-blueHover"
-              href="/signup" // Assuming this is the correct link for sign-up
+              href="/signup"
             >
               Sign up
             </Link>
