@@ -4,9 +4,11 @@ import Link from "next/link";
 import Logo from "../Icons/Logo";
 import { useSignOut } from 'react-firebase-hooks/auth';
 import { auth } from '@/app/firebase/config'
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [signOut] = useSignOut(auth);
+  const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
@@ -18,6 +20,7 @@ export default function Navbar() {
     if (success) {
       alert('Logged Out');
       sessionStorage.removeItem('user');
+      router.push('/login');
     }
   };
 
