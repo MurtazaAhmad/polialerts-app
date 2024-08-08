@@ -5,7 +5,9 @@ import Close from "../Icons/Close";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Institution from "../Icons/Institution";
 
-export default function CoverageAreaModel() {
+export default function CoverageAreaModel({mainCategories}) {
+
+  console.log(mainCategories);
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
