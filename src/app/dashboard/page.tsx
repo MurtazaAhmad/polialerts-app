@@ -26,8 +26,9 @@ import { useCategory } from "@/hooks/useCategory";
 export default function Dashboard() {
 
   // Auth User
-  const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth); //user variable
 
+  const plan = "pro"
   //Auth User Session
   const userSession = sessionStorage.getItem('user');
 
@@ -43,7 +44,7 @@ export default function Dashboard() {
   //  const { data, loading: isLoading, addItem, updateItem, deleteItem } = useDatabase(mockDatabaseService, 'Users');
   //  console.log("data using 571st approach", data);
 
-  const { mainCategories, loading: categoriesLoading, error: categoriesError, fetchMainCategories, fetchSubCategories } = useCategory();
+  const { mainCategories, subCategories, loading: categoriesLoading, error: categoriesError, fetchMainCategories, fetchSubCategories } = useCategory();
   //Approach 1.
   const { userDetails, fetchUser, loading, error } = useUser();
   console.log("users - Approach 1", userDetails);
@@ -53,7 +54,7 @@ export default function Dashboard() {
 
     if (user) {
       console.log("We have a User", user);
-      fetchUser("ssSeZ9GE9cdr4LckPFIZ");
+      fetchUser(user.uid);
     }
 
     // fetchCategories (root)
@@ -111,7 +112,7 @@ export default function Dashboard() {
   }, [userService]);
   */
 
-  if (loading) {
+  if (loading || !userDetails) {
     return <div>Loading...</div>
   }
 
@@ -140,7 +141,7 @@ export default function Dashboard() {
             <span className="font-semibold mr-3 text-3xl">+</span>
             <span>
               {" "}
-              <CoverageAreaModel mainCategories={mainCategories} />
+              <CoverageAreaModel mainCategories={mainCategories} subCategories={subCategories} fetchSubCategories={fetchSubCategories} />
             </span>
           </button>
         </div>
