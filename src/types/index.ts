@@ -30,3 +30,19 @@ export interface Category {
     streaming_sources: string[];
     tags: string[];
 }
+
+
+//Repositories
+export interface IUserRepository {
+    createUser(user: ICreateUserRequestData): Promise<void>;
+    getUsers(): Promise<User[]>;
+    getUserById(userId: string): Promise<any | undefined>;
+}
+
+
+// Request Data
+export interface ICreateUserRequestData {
+    id: string;
+    name: string;
+    email: string;
+}
