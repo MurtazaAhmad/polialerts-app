@@ -1,12 +1,26 @@
 // /hooks/useUsers.ts
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { User } from "@/types";
 import { UserRepository } from "@/repositories/UserRepository";
-
+import { ICreateUserRequestData } from "@/types";
 export const useUser = () => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const createUser = async (userData: ICreateUserRequestData) => {
+    console.log("createUser():", userData);
+
+    setLoading(true);
+    const userRepository = new UserRepository();
+    try {
+      await userRepository.createUser(userData);
+    } catch (error) {
+      setError("Failed to create user.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchUser = async (userId: string | null | undefined) => {
     setLoading(true);
@@ -27,5 +41,9 @@ export const useUser = () => {
   };
 
 
-  return { userDetails, loading, error, fetchUser };
+
+
+
+
+  return { userDetails, loading, error, createUser, fetchUser };
 };
