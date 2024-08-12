@@ -166,13 +166,20 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
-      {userDetails?.channels?.map((channel) => (
-        <CoverageArea
-          channel={channel}
-          addRealTimeAlertKeyword={addRealTimeAlertKeyword}
-          addReportAlertKeyword={addReportAlertKeyword}
-        />
-      ))}
+
+      {userDetails?.channels && userDetails.channels.length > 0 ? (
+        userDetails.channels.map((channel) => (
+          <CoverageArea
+            channel={channel}
+            addRealTimeAlertKeyword={addRealTimeAlertKeyword}
+            addReportAlertKeyword={addReportAlertKeyword}
+          />
+        ))
+      ) : (
+        <div className="text-base text-bodyColor my-5 leading-[1.625rem]">
+         You do not have any alerts set up. Get started by adding a new coverage area.
+        </div>
+      )}
     </div>
   );
 }
