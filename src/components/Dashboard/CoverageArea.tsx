@@ -88,14 +88,16 @@ export default function CoverageArea({
                 {channel.sub_category}
               </h2>
 
-              {!isEditMode ? (
+              {(!isMobile || showRightSide) && !isEditMode && (
                 <button
                   onClick={toggleEditMode}
                   className="my-3 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                 >
                   Edit or remove
                 </button>
-              ) : (
+              )}
+
+              {(!isMobile || showRightSide) && isEditMode && (
                 <div className="my-3">
                   <RemoveCoverageAreaModel />
                 </div>
@@ -105,7 +107,7 @@ export default function CoverageArea({
             {isMobile && (
               <button
                 onClick={toggleRightSide}
-                className="text-blueColor text-5xl"
+                className={`text-blueColor ${showRightSide ? 'text-7xl' : 'text-5xl'} ${showRightSide ? '-mt-14' : '-mt-0'}`}
               >
                 {showRightSide ? "-" : "+"}
               </button>
@@ -319,29 +321,27 @@ export default function CoverageArea({
                   ))}
                 </div>
 
-                {isEditMode && (<>
-                  <p className="block mb-2 text-base text-bodyColor">
-                  Changes made above are not saved until you confirm with
-                  &quot;save changes&quot; button
-                </p>
+                {isEditMode && (
+                  <>
+                    <p className="block mb-2 text-base text-bodyColor">
+                      Changes made above are not saved until you confirm with
+                      &quot;save changes&quot; button
+                    </p>
 
-                <div className="flex flex-col md:flex-row gap-5 my-5">
-                  <button
-                    type="submit"
-                    onClick={() => setIsEditMode(false)}
-                    className="py-2 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-                  >
-                    Save changes
-                  </button>
-                  <button className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
-                    Revert
-                  </button>
-                </div>
-
-                </>)}
-                
-               
-
+                    <div className="flex flex-col md:flex-row gap-5 my-5">
+                      <button
+                        type="submit"
+                        onClick={() => setIsEditMode(false)}
+                        className="py-2 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
+                      >
+                        Save changes
+                      </button>
+                      <button className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
+                        Revert
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
