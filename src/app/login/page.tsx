@@ -102,7 +102,7 @@ export default function Login() {
                     />
                     <div
                       onClick={togglePasswordVisibility}
-                      className="absolute right-2 top-2 cursor-pointer"
+                      className="absolute right-1 top-0 cursor-pointer"
                     >
                       <Eye passwordVisible={passwordVisible} />
                     </div>
