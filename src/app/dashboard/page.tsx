@@ -18,7 +18,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import CoverageAreaModel from "@/components/Dashboard/CoverageAreaModel";
 import CoverageArea from "@/components/Dashboard/CoverageArea";
 import { useUser } from "@/hooks/useUser";
-import useDatabase from '@/hooks/useDatabase';
 
 import { useRouter } from "next/navigation";
 import { useCategory } from "@/hooks/useCategory";
@@ -28,9 +27,11 @@ export default function Dashboard() {
   // Auth User
   const [user] = useAuthState(auth); //user variable
 
-  const plan = "pro"
   //Auth User Session
-  const userSession = sessionStorage.getItem('user');
+  let userSession = null;
+  if (typeof window !== "undefined") {
+    userSession = sessionStorage.getItem('user');
+  }
 
   //Router
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function Dashboard() {
 
   const { mainCategories, subCategories, loading: categoriesLoading, error: categoriesError, fetchMainCategories, fetchSubCategories } = useCategory();
   //Approach 1.
-  const { userDetails, fetchUser, loading, error } = useUser();
+  const { addChannel, userDetails, fetchUser, loading, error, addRealTimeAlertKeyword, addReportAlertKeyword } = useUser();
   console.log("users - Approach 1", userDetails);
 
   useEffect(() => {
@@ -141,12 +142,14 @@ export default function Dashboard() {
             <span className="font-semibold mr-3 text-3xl">+</span>
             <span>
               {" "}
-              <CoverageAreaModel mainCategories={mainCategories} subCategories={subCategories} fetchSubCategories={fetchSubCategories} />
+              <CoverageAreaModel addChannel={addChannel} userDetails={userDetails} mainCategories={mainCategories} subCategories={subCategories} fetchSubCategories={fetchSubCategories} />
             </span>
           </button>
         </div>
       </div>
-      <CoverageArea />
+      {
+        userDetails?.channels?.map((channel) => (<CoverageArea channel={channel} addRealTimeAlertKeyword={addRealTimeAlertKeyword} addReportAlertKeyword={addReportAlertKeyword} />))
+      }
     </div>
   );
 }
