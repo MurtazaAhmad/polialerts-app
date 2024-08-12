@@ -1,5 +1,5 @@
 import React from "react";
-import CancelPlanModal from "./CancelPlanModal";
+import CancelPlanModal from "@/components/Profile/CancelPlanModal";
 
 export default function PlanDetails() {
   return (

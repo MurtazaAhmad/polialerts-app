@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import Modal from "react-modal";
-import Close from "../Icons/Close";
-import Warning from "../Icons/Warning";
+import Close from "@/components/Icons/Close";
+import Warning from "@/components/Icons/Warning";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 export default function CancelPlanModal() {

@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import Speed from "../Icons/Speed";
-import Calendar from "../Icons/Calendar";
-import Quote from "../Icons/Quote";
-import Email from "../Icons/Email";
+import Speed from "@/components/Icons/Speed";
+import Calendar from "@/components/Icons/Calendar";
+import Quote from "@/components/Icons/Quote";
+import Email from "@/components/Icons/Email";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import { Channel } from "@/types";
@@ -14,7 +14,11 @@ interface ICoverageAreaProps {
   addReportAlertKeyword: (keyword: string, channelId: string) => void;
 }
 
-export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKeyword, channel }: ICoverageAreaProps) {
+export default function CoverageArea({
+  addRealTimeAlertKeyword,
+  addReportAlertKeyword,
+  channel,
+}: ICoverageAreaProps) {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   // State to manage real-time alert keyword input
   const [realTimeAlertKeyword, setRealTimeAlertKeyword] = useState<string>("");
@@ -28,22 +32,21 @@ export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKe
   };
 
   // Function to handle adding real-time alert keyword
-  const handleAddRealTimeAlertKeyword = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddRealTimeAlertKeyword = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     try {
       console.log("Realtime Alert Keyword: ", realTimeAlertKeyword);
       addRealTimeAlertKeyword(channel.channelId, realTimeAlertKeyword);
-
-    }
-    catch (err) {
+    } catch (err) {
       console.log("Error adding real-time alert keyword: ", err);
-
     }
 
     console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
     setRealTimeAlertKeyword("");
-  }
+  };
 
   // Function to handle adding report alert keyword
   const handleAddReportAlertKeyword = (e: React.FormEvent<HTMLFormElement>) => {
@@ -52,14 +55,10 @@ export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKe
     try {
       console.log("Report Alert Keyword: ", reportAlertKeyword);
       addReportAlertKeyword(channel.channelId, reportAlertKeyword);
-
-    }
-    catch (err) {
+    } catch (err) {
       console.log("Error adding report alert keyword: ", err);
-
     }
-
-  }
+  };
 
   const [value, setValue] = useState(20);
   const handleChange = (event: any) => {
@@ -78,7 +77,9 @@ export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKe
           {/* left side */}
           <div className="md:w-[30%] w-full flex justify-between md:items-start items-center">
             <div className="flex flex-col gap-3">
-              <p className="uppercase text-base text-bodyColor">{channel.main_category}</p>
+              <p className="uppercase text-base text-bodyColor">
+                {channel.main_category}
+              </p>
               <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
                 {channel.sub_category}
               </h2>
@@ -115,7 +116,9 @@ export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKe
                       <form onSubmit={handleAddRealTimeAlertKeyword}>
                         <input
                           value={realTimeAlertKeyword}
-                          onChange={(e) => setRealTimeAlertKeyword(e.target.value)}
+                          onChange={(e) =>
+                            setRealTimeAlertKeyword(e.target.value)
+                          }
                           required
                           type="text"
                           className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
@@ -158,7 +161,9 @@ export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKe
                       <form onSubmit={handleAddReportAlertKeyword}>
                         <input
                           value={reportAlertKeyword}
-                          onChange={(e) => setReportAlertKeyword(e.target.value)}
+                          onChange={(e) =>
+                            setReportAlertKeyword(e.target.value)
+                          }
                           required
                           type="text"
                           className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
@@ -265,8 +270,8 @@ export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKe
                   ))}
                 </div>
                 <p className="block mb-2 text-base text-bodyColor">
-                  Changes made above are not saved until you confirm with &quot;save
-                  changes&quot; button
+                  Changes made above are not saved until you confirm with
+                  &quot;save changes&quot; button
                 </p>
                 <div className="flex flex-col md:flex-row gap-5 my-5">
                   <button

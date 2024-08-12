@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Logo from "../Icons/Logo";
+import Logo from "@/components/Icons/Logo";
 import { useSignOut } from 'react-firebase-hooks/auth';
 import { auth } from '@/app/firebase/config'
 import { useRouter } from "next/navigation";
