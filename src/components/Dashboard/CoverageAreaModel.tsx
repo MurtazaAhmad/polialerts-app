@@ -4,20 +4,25 @@ import Modal from "react-modal";
 import Close from "../Icons/Close";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Institution from "../Icons/Institution";
-import { Category } from "@/types";
+import { Category, User } from "@/types";
 
 interface CoverageAreaModelProps {
-  mainCategories: Category[];
-  subCategories: Category[];
+  addChannel: (main_category: string, sub_category: string) => void;
   fetchSubCategories: (parent: string) => void;
+  mainCategories: Category[];
+  userDetails: User;
+  subCategories: Category[];
 }
 
-export default function CoverageAreaModel({ mainCategories, subCategories, fetchSubCategories }: CoverageAreaModelProps) {
+export default function CoverageAreaModel({ addChannel, fetchSubCategories, mainCategories, userDetails, subCategories, }: CoverageAreaModelProps) {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
     },
   };
+
+  const [mainCategory, setMainCategory] = React.useState<string>("");
+  const [subCategory, setSubCategory] = React.useState<string>("");
 
   var subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -29,12 +34,32 @@ export default function CoverageAreaModel({ mainCategories, subCategories, fetch
     setIsOpen(false);
   }
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleMainCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
     fetchSubCategories(e.target.value); //Fetching Sub-Categories
+
+    let mainCat = mainCategories.find((category) => category.id === e.target.value)
+    if (mainCat) {
+      setMainCategory(mainCat.name);
+    }
   }
 
-  const handleAddArea = () => {
-    // Add
+  const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    let subCat = subCategories.find((category) => category.id === e.target.value)
+    if (subCat) {
+      setSubCategory(subCat.name);
+    }
+  }
+
+  // Add
+  const handleAddArea = async () => {
+    try {
+      await addChannel(mainCategory, subCategory);
+      console.log("Channel Added Successfully!");
+      closeModal();
+    } catch (error) {
+      console.log("Error in adding area", error)
+    }
   }
 
   return (
@@ -69,7 +94,7 @@ export default function CoverageAreaModel({ mainCategories, subCategories, fetch
 
           <div className="flex gap-5 flex-col lg:flex-row lg:items-center mt-5">
             <div className="select-wrapper relative w-full lg:w-auto">
-              <select onChange={handleCategoryChange} className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-16 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
+              <select onChange={handleMainCategoryChange} className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-16 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
                 <option value="">Select level of government</option>
                 {
                   mainCategories.map((category) => (
@@ -84,7 +109,7 @@ export default function CoverageAreaModel({ mainCategories, subCategories, fetch
             {
               subCategories.length > 0 && (
                 <div className="select-wrapper relative  w-full lg:w-auto">
-                  <select className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
+                  <select onChange={handleSubCategoryChange} className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
                     <option value="">Select jurisdiction</option>
                     {
                       subCategories.map((category) => (
