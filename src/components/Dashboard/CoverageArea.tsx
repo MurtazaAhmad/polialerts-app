@@ -7,6 +7,7 @@ import Email from "@/components/Icons/Email";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import { Channel } from "@/types";
+import RemoveCoverageAreaModel from "@/components/Dashboard/RemoveCoverageAreaModel";
 
 interface ICoverageAreaProps {
   channel: Channel;
@@ -83,9 +84,8 @@ export default function CoverageArea({
               <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
                 {channel.sub_category}
               </h2>
-              <button className="py-1 px-4 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
-                Remove area
-              </button>
+             
+              <div><RemoveCoverageAreaModel/></div>
             </div>
 
             {isMobile && (
@@ -112,8 +112,8 @@ export default function CoverageArea({
                         Real-time email alerts
                       </h2>
                     </div>
-                    <div className="flex gap-5 md:gap-2 my-5">
-                      <form onSubmit={handleAddRealTimeAlertKeyword}>
+                    <div >
+                      <form onSubmit={handleAddRealTimeAlertKeyword} className="flex flex-row gap-5 md:gap-2 my-5">
                         <input
                           value={realTimeAlertKeyword}
                           onChange={(e) =>
@@ -126,7 +126,7 @@ export default function CoverageArea({
                         />
                         <button
                           type="submit"
-                          className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
+                          className="inline py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
                         >
                           Add
                         </button>
@@ -157,8 +157,8 @@ export default function CoverageArea({
                         End-of-day email alerts
                       </h2>
                     </div>
-                    <div className="flex gap-5 md:gap-2 my-5">
-                      <form onSubmit={handleAddReportAlertKeyword}>
+                    <div >
+                      <form onSubmit={handleAddReportAlertKeyword} className="flex gap-5 md:gap-2 my-5">
                         <input
                           value={reportAlertKeyword}
                           onChange={(e) =>
