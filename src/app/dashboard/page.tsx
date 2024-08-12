@@ -1,18 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useCollection } from "react-firebase-hooks/firestore";
+import React, { useEffect} from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "@/app/firebase/config";
-import { UserService } from "@/services/UserService";
-import { UserRepository } from "@/repositories/UserRepository";
-import {
-  collection,
-  addDoc,
-  Timestamp,
-  query,
-  orderBy,
-  onSnapshot,
-} from "firebase/firestore";
+import { auth} from "@/app/firebase/config";
 import Navbar from "@/components/Navbar/Navbar";
 import CoverageAreaModel from "@/components/Dashboard/CoverageAreaModel";
 import CoverageArea from "@/components/Dashboard/CoverageArea";

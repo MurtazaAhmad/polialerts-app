@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Category } from '@/types';
 import { CategoryRepository } from '@/repositories/CategoryRepository';
 export const useCategory = () => {

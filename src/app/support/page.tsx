@@ -1,7 +1,7 @@
 import FAQ from "@/components/FAQ/FAQ";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
-import React, { useState } from "react";
+import React from "react";
 
 export default function Support() {
   return (
