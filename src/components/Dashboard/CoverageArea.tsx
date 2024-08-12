@@ -6,14 +6,60 @@ import Quote from "../Icons/Quote";
 import Email from "../Icons/Email";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
+import { Channel } from "@/types";
 
-export default function CoverageArea() {
+interface ICoverageAreaProps {
+  channel: Channel;
+  addRealTimeAlertKeyword: (keyword: string, channelId: string) => void;
+  addReportAlertKeyword: (keyword: string, channelId: string) => void;
+}
+
+export default function CoverageArea({ addRealTimeAlertKeyword, addReportAlertKeyword, channel }: ICoverageAreaProps) {
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  // State to manage real-time alert keyword input
+  const [realTimeAlertKeyword, setRealTimeAlertKeyword] = useState<string>("");
+  // State to manage report alert keyword input
+  const [reportAlertKeyword, setReportAlertKeyword] = useState<string>("");
   const [showRightSide, setShowRightSide] = useState(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   const toggleRightSide = () => {
     setShowRightSide(!showRightSide);
   };
+
+  // Function to handle adding real-time alert keyword
+  const handleAddRealTimeAlertKeyword = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      console.log("Realtime Alert Keyword: ", realTimeAlertKeyword);
+      addRealTimeAlertKeyword(channel.channelId, realTimeAlertKeyword);
+
+    }
+    catch (err) {
+      console.log("Error adding real-time alert keyword: ", err);
+
+    }
+
+    console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
+    setRealTimeAlertKeyword("");
+  }
+
+  // Function to handle adding report alert keyword
+  const handleAddReportAlertKeyword = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      console.log("Report Alert Keyword: ", reportAlertKeyword);
+      addReportAlertKeyword(channel.channelId, reportAlertKeyword);
+
+    }
+    catch (err) {
+      console.log("Error adding report alert keyword: ", err);
+
+    }
+
+  }
 
   const [value, setValue] = useState(20);
   const handleChange = (event: any) => {
@@ -32,9 +78,9 @@ export default function CoverageArea() {
           {/* left side */}
           <div className="md:w-[30%] w-full flex justify-between md:items-start items-center">
             <div className="flex flex-col gap-3">
-              <p className="uppercase text-base text-bodyColor">Federal</p>
+              <p className="uppercase text-base text-bodyColor">{channel.main_category}</p>
               <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
-                Canadian State
+                {channel.sub_category}
               </h2>
               <button className="py-1 px-4 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
                 Remove area
@@ -66,19 +112,22 @@ export default function CoverageArea() {
                       </h2>
                     </div>
                     <div className="flex gap-5 md:gap-2 my-5">
-                      <input
-                        required
-                        name="first-name"
-                        type="text"
-                        className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
-                        placeholder="Add keywords here"
-                      />
-                      <button
-                        type="submit"
-                        className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
-                      >
-                        Add
-                      </button>
+                      <form onSubmit={handleAddRealTimeAlertKeyword}>
+                        <input
+                          value={realTimeAlertKeyword}
+                          onChange={(e) => setRealTimeAlertKeyword(e.target.value)}
+                          required
+                          type="text"
+                          className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
+                          placeholder="Add keywords here"
+                        />
+                        <button
+                          type="submit"
+                          className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
+                        >
+                          Add
+                        </button>
+                      </form>
                     </div>
                     <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">
                       <div className="bg-lightGray w-full rounded-xl customScrollbar overflow-auto h-[30vh] md:h-[50vh]">
@@ -106,19 +155,22 @@ export default function CoverageArea() {
                       </h2>
                     </div>
                     <div className="flex gap-5 md:gap-2 my-5">
-                      <input
-                        required
-                        name="first-name"
-                        type="text"
-                        className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
-                        placeholder="Add keywords here"
-                      />
-                      <button
-                        type="submit"
-                        className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:blueH"
-                      >
-                        Add
-                      </button>
+                      <form onSubmit={handleAddReportAlertKeyword}>
+                        <input
+                          value={reportAlertKeyword}
+                          onChange={(e) => setReportAlertKeyword(e.target.value)}
+                          required
+                          type="text"
+                          className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
+                          placeholder="Add keywords here"
+                        />
+                        <button
+                          type="submit"
+                          className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full font-semibold border-transparent border-2 text-white hover:blueH"
+                        >
+                          Add
+                        </button>
+                      </form>
                     </div>
 
                     <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">

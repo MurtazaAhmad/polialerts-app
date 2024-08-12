@@ -4,28 +4,64 @@ import Modal from "react-modal";
 import Close from "../Icons/Close";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Institution from "../Icons/Institution";
+import { Category, User } from "@/types";
 
 interface CoverageAreaModelProps {
-  mainCategories: any;
+  addChannel: (main_category: string, sub_category: string) => void;
+  fetchSubCategories: (parent: string) => void;
+  mainCategories: Category[];
+  userDetails: User;
+  subCategories: Category[];
 }
 
-const CoverageAreaModel: React.FC<CoverageAreaModelProps> = ({ mainCategories }) => {
-  console.log(mainCategories);
+export default function CoverageAreaModel({ addChannel, fetchSubCategories, mainCategories, userDetails, subCategories, }: CoverageAreaModelProps) {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
     },
   };
 
+  const [mainCategory, setMainCategory] = React.useState<string>("");
+  const [subCategory, setSubCategory] = React.useState<string>("");
+
   var subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
   function openModal() {
     setIsOpen(true);
   }
-  function afterOpenModal() {}
+  function afterOpenModal() { }
   function closeModal() {
     setIsOpen(false);
   }
+
+  const handleMainCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+    fetchSubCategories(e.target.value); //Fetching Sub-Categories
+
+    let mainCat = mainCategories.find((category) => category.id === e.target.value)
+    if (mainCat) {
+      setMainCategory(mainCat.name);
+    }
+  }
+
+  const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    let subCat = subCategories.find((category) => category.id === e.target.value)
+    if (subCat) {
+      setSubCategory(subCat.name);
+    }
+  }
+
+  // Add
+  const handleAddArea = async () => {
+    try {
+      await addChannel(mainCategory, subCategory);
+      console.log("Channel Added Successfully!");
+      closeModal();
+    } catch (error) {
+      console.log("Error in adding area", error)
+    }
+  }
+
   return (
     <>
       <div>
@@ -58,30 +94,37 @@ const CoverageAreaModel: React.FC<CoverageAreaModelProps> = ({ mainCategories })
 
           <div className="flex gap-5 flex-col lg:flex-row lg:items-center mt-5">
             <div className="select-wrapper relative w-full lg:w-auto">
-              <select className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-16 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
+              <select onChange={handleMainCategoryChange} className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-16 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
                 <option value="">Select level of government</option>
-                <option value="">Federal</option>
-                <option value="">Provincial</option>
-                <option value="">Municipal</option>
+                {
+                  mainCategories.map((category) => (
+                    <option key={category.id} value={category.id}>{category.name}</option>
+                  ))
+                }
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                 <IoMdArrowDropdown className="text-2xl text-blueColor" />
               </div>
             </div>
+            {
+              subCategories.length > 0 && (
+                <div className="select-wrapper relative  w-full lg:w-auto">
+                  <select onChange={handleSubCategoryChange} className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
+                    <option value="">Select jurisdiction</option>
+                    {
+                      subCategories.map((category) => (
+                        <option key={category.id} value={category.id}>{category.name}</option>
+                      ))
+                    }
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                    <IoMdArrowDropdown className="text-2xl text-blueColor" />
+                  </div>
+                </div>)
+            }
 
-            <div className="select-wrapper relative  w-full lg:w-auto">
-              <select className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
-                <option value="">Select jurisdiction</option>
-                <option value="federal">1</option>
-                <option value="provincial">2</option>
-                <option value="municipal">3</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <IoMdArrowDropdown className="text-2xl text-blueColor" />
-              </div>
-            </div>
           </div>
-          <button className="mt-5 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
+          <button onClick={handleAddArea} className="mt-5 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
             Add area
           </button>
         </Modal>
