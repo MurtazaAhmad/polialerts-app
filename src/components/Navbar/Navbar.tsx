@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Logo from "../Icons/Logo";
+import Logo from "@/components/Icons/Logo";
 import { useSignOut } from 'react-firebase-hooks/auth';
 import { auth } from '@/app/firebase/config'
 import { useRouter } from "next/navigation";
@@ -29,7 +29,7 @@ export default function Navbar() {
       <header className="font-Manrope">
         <nav
           className="
-            lg:px-24  md:px-10 px-5 py-5
+            lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5
             flex flex-wrap
             items-center
             justify-between

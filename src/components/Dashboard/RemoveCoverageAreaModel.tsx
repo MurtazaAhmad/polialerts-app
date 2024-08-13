@@ -3,9 +3,8 @@ import React from "react";
 import Modal from "react-modal";
 import Close from "@/components/Icons/Close";
 import Warning from "@/components/Icons/Warning";
-import { IoMdArrowDropdown } from "react-icons/io";
 
-export default function CancelPlanModal() {
+export default function RemoveCoverageAreaModel() {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -25,8 +24,8 @@ export default function CancelPlanModal() {
     <>
       <div>
         <div onClick={openModal} className="cursor-pointer font-Manrope">
-          <button className="py-2 px-5 w-fit h-fit bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white">
-            Cancel plan
+          <button className="py-1 px-4 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
+           Remove area
           </button>
         </div>
         <Modal
@@ -48,27 +47,19 @@ export default function CancelPlanModal() {
             <div className="flex gap-3 items-center">
               <Warning />
               <h1 className="text-headingColor font-bold md:text-[1.6rem] text-base">
-                Cancel Plan
+                Remove coverage area
               </h1>
             </div>
           </div>
-          <p className="text-base text-bodyColor my-5">
-            Plans can be canceled with a minimum of 2 months&apos; notice.
+          <p className="text-base text-bodyColor my-5 leading-[1.625rem]">
+                Warning: removing a coverage area will permanently delete all of your keyword selections. <span className="text-warn text-base">This cannot be undone.</span>
           </p>
 
-          <div className="flex gap-5 flex-col md:flex-row md:items-center">
-            <div className="relative w-full md:w-auto">
-              <select className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor">
-                <option value="">Select cancellation date</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                <IoMdArrowDropdown className="text-2xl text-blueColor" />
-              </div>
-            </div>
-            <button className="py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
-              Cancel Plan
+          <p className="text-base text-bodyColor my-5 leading-[1.625rem]">Are you sure you want to continue?</p>
+           <button className="py-2 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
+              Remove area permanently
             </button>
-          </div>
+     
         </Modal>
       </div>
     </>

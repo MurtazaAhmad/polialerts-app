@@ -1,4 +1,4 @@
-import { Channel, User } from "@/types"
+import { Channel } from "@/types"
 import { addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { PRO_SUBSCRIPTION, USERS_COLLECTION } from "@/app/utils/constants";
