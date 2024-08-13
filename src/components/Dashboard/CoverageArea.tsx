@@ -107,7 +107,7 @@ export default function CoverageArea({
             {isMobile && (
               <button
                 onClick={toggleRightSide}
-                className={`text-blueColor ${showRightSide ? 'text-7xl' : 'text-5xl'} ${showRightSide ? '-mt-14' : '-mt-0'}`}
+                className={`text-blueColor ${showRightSide ? "text-7xl" : "text-5xl"} ${showRightSide ? "-mt-14" : "-mt-0"}`}
               >
                 {showRightSide ? "-" : "+"}
               </button>
@@ -157,21 +157,25 @@ export default function CoverageArea({
 
                     <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">
                       <div className="bg-lightGray w-full rounded-xl customScrollbar overflow-auto h-[30vh] md:h-[50vh]">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => {
-                          return (
-                            <div
-                              key={index}
-                              className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
-                            >
-                              Charles Brown
-                              {isEditMode && (
-                                <button className="mx-2 text-iota text-3xl">
-                                  <IoCloseSharp />
-                                </button>
-                              )}
-                            </div>
-                          );
-                        })}
+                      {channel.real_time_alert_keywords.length > 0 ? (
+                          channel.real_time_alert_keywords.map(
+                            (keyword, index) => (
+                              <div
+                                key={index}
+                                className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
+                              >
+                                {keyword}
+                                {isEditMode && (
+                                  <button className="mx-2 text-iota text-3xl">
+                                    <IoCloseSharp />
+                                  </button>
+                                )}
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <p className="text-bodyColor">No keywords found</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -211,21 +215,38 @@ export default function CoverageArea({
 
                     <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">
                       <div className="bg-lightGray w-full rounded-xl customScrollbar overflow-auto h-[30vh] md:h-[50vh]">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => {
-                          return (
-                            <div
-                              key={index}
-                              className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
-                            >
-                              Charles Brown
-                              {isEditMode && (
-                                <button className="mx-2 text-iota text-3xl">
-                                  <IoCloseSharp />
-                                </button>
-                              )}
-                            </div>
-                          );
-                        })}
+                        {/*{channel.report_alert_keywords.map((keyword, index) => (
+                          <div
+                            key={index}
+                            className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
+                          >
+                            {keyword}
+                            {isEditMode && (
+                              <button className="mx-2 text-iota text-3xl">
+                                <IoCloseSharp />
+                              </button>
+                            )}
+                          </div>
+                        ))}*/}
+                        {channel.report_alert_keywords.length > 0 ? (
+                          channel.report_alert_keywords.map(
+                            (keyword, index) => (
+                              <div
+                                key={index}
+                                className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg"
+                              >
+                                {keyword}
+                                {isEditMode && (
+                                  <button className="mx-2 text-iota text-3xl">
+                                    <IoCloseSharp />
+                                  </button>
+                                )}
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <p className="text-bodyColor">No keywords found</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -304,21 +325,23 @@ export default function CoverageArea({
 
                 {/* email container */}
                 <div className="flex flex-wrap gap-2 bg-lightGray md:p-10 p-5 rounded-2xl w-full my-5">
-                  {emails.map((email, index) => (
-                    <div
-                      className="bg-white flex items-center rounded-md py-1 px-2"
-                      key={index}
-                    >
-                      {email}
-                      {/* set close icon */}
-
-                      {isEditMode && (
-                        <button className="mx-2 text-iota text-3xl">
-                          <IoCloseSharp />
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                  {channel.recipient.length > 0 ? (
+                    channel.recipient.map((recipient, index) => (
+                      <div
+                        className="bg-white flex items-center rounded-md py-1 px-2"
+                        key={index}
+                      >
+                        {recipient}
+                        {isEditMode && (
+                          <button className="mx-2 text-iota text-3xl">
+                            <IoCloseSharp />
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-bodyColor">No recipient found</p>
+                  )}
                 </div>
 
                 {isEditMode && (
