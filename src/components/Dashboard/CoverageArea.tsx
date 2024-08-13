@@ -76,7 +76,7 @@ export default function CoverageArea({
   ];
   return (
     <>
-      <section className="lg:mx-28 md:mx-14 mx-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
+      <section className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
         <div className="flex w-full md:flex-row flex-col gap-5">
           {/* left side */}
           <div className="md:w-[30%] w-full flex justify-between md:items-start items-center">

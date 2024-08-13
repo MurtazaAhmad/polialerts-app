@@ -126,7 +126,7 @@ export default function Dashboard() {
       <Navbar />
 
       {/* Header */}
-      <div className="font-Manrope lg:mx-28  md:mx-14 mx-5 py-5 md:py-10 border-b  border-b-iota  md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
+      <div className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10   md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
         <div>
           <h2 className="text-headingColor font-bold md:text-[3rem] text-[2.3rem] ">
             Your alerts{" "}
@@ -154,6 +154,10 @@ export default function Dashboard() {
             </span>
           </button>
         </div>
+      </div>
+
+      <div className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
+        <hr className="w-[100%] lg:border-iota" />
       </div>
 
       {userDetails?.channels && userDetails.channels.length > 0 ? (

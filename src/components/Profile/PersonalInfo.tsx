@@ -15,7 +15,7 @@ export default function PersonalInfo() {
   };
   return (
     <>
-      <section className="font-Manrope lg:mx-28  md:mx-14 mx-5 py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
+      <section className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5  py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
         <h3 className="text-headingColor font-bold md:text-[2.1rem] text-[1.6rem] md:w-[40%]">
           Personal Information
         </h3>

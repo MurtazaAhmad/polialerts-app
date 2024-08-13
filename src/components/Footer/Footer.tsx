@@ -3,7 +3,7 @@ import Logo from "@/components/Icons/Logo";
 
 export default function Footer() {
   return (
-    <div className="bg-bodyColor font-Manrope py-5 text-white px-6 md:px-10 lg:px-24 mt-5">
+    <div className="bg-bodyColor font-Manrope py-5 text-white lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5  mt-5">
       <footer className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 justify-center items-start py-5">
         <div className="flex flex-col gap-4">
          <Logo/>
