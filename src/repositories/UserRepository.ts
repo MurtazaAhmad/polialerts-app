@@ -56,40 +56,90 @@ export class UserRepository implements IUserRepository {
   async addChannel(userId: string, channelData: IAddChannelRequestData) {
     try {
 
-      // Step 1: Create a new channel document
+      // Create a new channel document
       const channelsCollectionRef = collection(doc(db, USERS_COLLECTION, userId), 'channels');
       const newChannelDocRef = await addDoc(channelsCollectionRef, {});
 
-      // Step 3: Retrieve the generated ID
+      // Retrieve the generated ID
       const channelId = newChannelDocRef.id;
 
-      // Step 4: Add the generated ID to the channelData object
-      const channelDataWithId = { ...channelData, channelId: channelId };
-
-      // Step 5: Update the user's document with the modified channelData
+      // Update the user's document with the modified channelData
       const userDocRef = doc(db, USERS_COLLECTION, userId);
       await updateDoc(userDocRef, {
-        channels: arrayUnion(channelDataWithId)
+        [`channels.${channelId}`]: channelData
       });
-
-      // Add Channel to channel Array in Users Collection
-      // const userDocRef = doc(db, USERS_COLLECTION, userId);
-      // await updateDoc(userDocRef, {
-      //   channels: arrayUnion(channelData)
-      // });
 
     } catch (error) {
       console.error("Error adding channel: ", error);
     }
   }
 
+  // Get Channels
+  async getChannels(userId: string) {
+    try {
+      // Get a reference to the user's document
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
+
+      // Fetch the user's document
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist");
+      }
+
+      // Get the user's data
+      const userData = userDoc.data();
+      const channels = userData?.channels;
+
+      return channels;
+    } catch (error) {
+      console.error("Error getting channels: ", error);
+    }
+  }
+
+  // Update Channel
+  async updateChannel(userId: string, channelId: string, updatedChannel: Channel) {
+    try {
+      // Get a reference to the user's document
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
+
+      // Fetch the user's document
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist");
+      }
+
+      // Get the current channels array
+      const userData = userDoc.data();
+      const channels = userData?.channels;
+
+      if (!channels || !channels[channelId]) {
+        throw new Error("Channel not found");
+      }
+
+      const existingChannel = channels[channelId];
+      existingChannel.real_time_alert_keywords = updatedChannel.real_time_alert_keywords;
+      existingChannel.report_alert_keywords = updatedChannel.report_alert_keywords;
+      existingChannel.recipients = updatedChannel.recipients;
+      existingChannel.quote_context = updatedChannel.quote_context;
+      existingChannel.tags = updatedChannel.tags;
+
+      // Save the updated channel object back to the user's document
+      await updateDoc(userDocRef, { [`channels.${channelId}`]: updatedChannel });
+
+    } catch (error) {
+      console.error("Error updating channel: ", error);
+    }
+  }
 
   //Add Real-time Alert Keyword
   async addRealTimeAlertKeyword(userId: string, channelId: string, realTimeAlertKeyword: string) {
     try {
 
+      console.log("Level 1", userId, channelId, realTimeAlertKeyword);
+
+
       // Get a reference to the user's document
-      const userDocRef = doc(db, USERS_COLLECTION, userId); // Replace "userId" with the actual user ID
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
 
       // Fetch the user's document
       const userDoc = await getDoc(userDocRef);
@@ -103,15 +153,11 @@ export class UserRepository implements IUserRepository {
 
       const channels = userData?.channels;
 
-      // Find the channel with the matching channelId
-      const channelIndex = channels.findIndex((channel: Channel) => channel.channelId === channelId);
-      console.log("level 5", channelIndex);
-
-      if (channelIndex === -1) {
+      if (!channels || !channels[channelId]) {
         throw new Error("Channel not found");
       }
 
-      const updatedChannel = channels[channelIndex];
+      const updatedChannel = channels[channelId];
 
       // Checking if the real_time_alert_keywords array exists
       if (!updatedChannel.real_time_alert_keywords) {
@@ -122,11 +168,8 @@ export class UserRepository implements IUserRepository {
         updatedChannel.real_time_alert_keywords.push(realTimeAlertKeyword);
       }
 
-      // Save the updated channels array back to the user's document
-      channels[channelIndex] = updatedChannel;
-
-      // Save the updated channels array back to the user's document
-      await updateDoc(userDocRef, { channels });
+      // Save the updated channels object back to the user's document
+      await updateDoc(userDocRef, { [`channels.${channelId}`]: updatedChannel });
 
       console.log("Done...");
 
@@ -152,14 +195,11 @@ export class UserRepository implements IUserRepository {
       const userData = userDoc.data();
       const channels = userData?.channels;
 
-      // Find the channel with the matching channelId
-      const channelIndex = channels.findIndex((channel: Channel) => channel.channelId === channelId);
-
-      if (channelIndex === -1) {
+      if (!channels || !channels[channelId]) {
         throw new Error("Channel not found");
       }
 
-      const updatedChannel = channels[channelIndex];
+      const updatedChannel = channels[channelId];
 
       // Checking if the real_time_alert_keywords array exists
       if (!updatedChannel.report_alert_keywords) {
@@ -170,11 +210,8 @@ export class UserRepository implements IUserRepository {
         updatedChannel.report_alert_keywords.push(reportAlertKeyword);
       }
 
-      // Save the updated channels array back to the user's document
-      channels[channelIndex] = updatedChannel;
-
-      // Save the updated channels array back to the user's document
-      await updateDoc(userDocRef, { channels });
+      // Save the updated channels object back to the user's document
+      await updateDoc(userDocRef, { [`channels.${channelId}`]: updatedChannel });
 
       console.log("Done...");
 
@@ -200,14 +237,11 @@ export class UserRepository implements IUserRepository {
       const userData = userDoc.data();
       const channels = userData?.channels;
 
-      // Find the channel with the matching channelId
-      const channelIndex = channels.findIndex((channel: Channel) => channel.channelId === channelId);
-
-      if (channelIndex === -1) {
+      if (!channels || !channels[channelId]) {
         throw new Error("Channel not found");
       }
 
-      const updatedChannel = channels[channelIndex];
+      const updatedChannel = channels[channelId];
 
       // Checking if the real_time_alert_keywords array exists
       if (!updatedChannel.recipients) {
@@ -218,11 +252,8 @@ export class UserRepository implements IUserRepository {
         updatedChannel.recipients.push(recipient);
       }
 
-      // Save the updated channels array back to the user's document
-      channels[channelIndex] = updatedChannel;
-
-      // Save the updated channels array back to the user's document
-      await updateDoc(userDocRef, { channels });
+      // Save the updated channels object back to the user's document
+      await updateDoc(userDocRef, { [`channels.${channelId}`]: updatedChannel });
 
       console.log("Done...");
 
