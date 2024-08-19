@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Speed from "@/components/Icons/Speed";
 import Calendar from "@/components/Icons/Calendar";
 import Quote from "@/components/Icons/Quote";
@@ -10,23 +10,56 @@ import { Channel } from "@/types";
 import RemoveCoverageAreaModel from "@/components/Dashboard/RemoveCoverageAreaModel";
 
 interface ICoverageAreaProps {
+  channelId: string;
   channel: Channel;
   addRealTimeAlertKeyword: (keyword: string, channelId: string) => void;
   addReportAlertKeyword: (keyword: string, channelId: string) => void;
+  updateChannel: (channelId: string, updatedChannel: Channel) => void;
 }
 
 export default function CoverageArea({
   addRealTimeAlertKeyword,
   addReportAlertKeyword,
   channel,
+  channelId,
+  updateChannel,
 }: ICoverageAreaProps) {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
   // State to manage real-time alert keyword input
   const [realTimeAlertKeyword, setRealTimeAlertKeyword] = useState<string>("");
+
+  // State to manage real-time alert keywords
+  const [realTimeAlertKeywords, setRealTimeAlertKeywords] = useState<string[]>([]);
+
   // State to manage report alert keyword input
   const [reportAlertKeyword, setReportAlertKeyword] = useState<string>("");
-  const [showRightSide, setShowRightSide] = useState(false);
+
+  // State to manage report alert keywords
+  const [reportAlertKeywords, setReportAlertKeywords] = useState<string[]>([]);
+
+  // State to manage quote context
+  const [quoteContext, setQuoteContext] = useState<number>(0);
+
+  // State to manage recipients input
+  const [recipient, setRecipient] = useState<string>("");
+
+  // State to manage recipients
+  const [recipients, setRecipients] = useState<string[]>([]);
+
+  const [showRightSide, setShowRightSide] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
+
+  console.log("Channel: ", channel);
+
+
+  useEffect(() => {
+    setRealTimeAlertKeywords(channel.real_time_alert_keywords);
+    setReportAlertKeywords(channel.report_alert_keywords);
+    setRecipients(channel.recipients);
+    setQuoteContext(channel.quote_context);
+  }
+    , [channel]);
 
   const toggleRightSide = () => {
     setShowRightSide(!showRightSide);
@@ -35,18 +68,16 @@ export default function CoverageArea({
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
   };
+
   // Function to handle adding real-time alert keyword
   const handleAddRealTimeAlertKeyword = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
-    try {
-      console.log("Realtime Alert Keyword: ", realTimeAlertKeyword);
-      addRealTimeAlertKeyword(channel.channelId, realTimeAlertKeyword);
-    } catch (err) {
-      console.log("Error adding real-time alert keyword: ", err);
-    }
+    setRealTimeAlertKeyword("");
+    setRealTimeAlertKeywords([...realTimeAlertKeywords, realTimeAlertKeyword]);
+    // addRealTimeAlertKeyword(channelId, realTimeAlertKeyword);
 
     console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
     setRealTimeAlertKeyword("");
@@ -57,23 +88,49 @@ export default function CoverageArea({
     e.preventDefault();
 
     try {
-      console.log("Report Alert Keyword: ", reportAlertKeyword);
-      addReportAlertKeyword(channel.channelId, reportAlertKeyword);
+      setReportAlertKeyword("");
+      setReportAlertKeywords([...reportAlertKeywords, reportAlertKeyword]);
+      // addReportAlertKeyword(channelId, reportAlertKeyword);
     } catch (err) {
       console.log("Error adding report alert keyword: ", err);
     }
   };
 
-  const [value, setValue] = useState(20);
-  const handleChange = (event: any) => {
-    setValue(event.target.value);
-  };
-  const emails = [
-    "john.doe@example.com",
-    "jane.smith@example.com",
-    "alice@example.com",
-    "bob.brown@example.com",
-  ];
+  // Function to handle adding recipient
+  const handleAddRecipient = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setRecipients([...recipients, recipient]);
+    setRecipient("");
+  }
+
+  // Method to Update Channel
+  const handleUpdate = () => {
+    console.log("Updating channel...");
+    setIsEditMode(false)
+
+    updateChannel(channelId, {
+      ...channel,
+      real_time_alert_keywords: realTimeAlertKeywords,
+      report_alert_keywords: reportAlertKeywords,
+      recipients: recipients,
+      quote_context: quoteContext,
+    });
+
+    console.log("Channel Updated Successfully!");
+
+
+  }
+
+  // Method to Revert Changes
+  const handleRevert = () => {
+    console.log("Reverting changes...");
+    setRealTimeAlertKeywords(channel.real_time_alert_keywords);
+    setReportAlertKeywords(channel.report_alert_keywords);
+    setRecipients(channel.recipients);
+    setQuoteContext(channel.quote_context);
+
+  }
+
   return (
     <>
       <section className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
@@ -157,8 +214,8 @@ export default function CoverageArea({
 
                     <div className="bg-lightGray pr-6 rounded-xl h-fit py-5 pl-5 md:pr-7">
                       <div className="bg-lightGray w-full rounded-xl customScrollbar overflow-auto h-[30vh] md:h-[50vh]">
-                      {channel.real_time_alert_keywords.length > 0 ? (
-                          channel.real_time_alert_keywords.map(
+                        {realTimeAlertKeywords.length > 0 ? (
+                          realTimeAlertKeywords.map(
                             (keyword, index) => (
                               <div
                                 key={index}
@@ -228,8 +285,8 @@ export default function CoverageArea({
                             )}
                           </div>
                         ))}*/}
-                        {channel.report_alert_keywords.length > 0 ? (
-                          channel.report_alert_keywords.map(
+                        {reportAlertKeywords.length > 0 ? (
+                          reportAlertKeywords.map(
                             (keyword, index) => (
                               <div
                                 key={index}
@@ -282,16 +339,16 @@ export default function CoverageArea({
                   {isEditMode && (
                     <div className="md-w-[50%] w-full">
                       <div className="flex items-center bg-lightGray rounded-full space-x-4 px-4 py-2">
-                        <span className="text-lg font-semibold">{value} </span>
+                        <span className="text-lg font-semibold">{quoteContext} </span>
                         <input
                           type="range"
                           min="0"
                           max="100"
-                          value={value}
-                          onChange={handleChange}
+                          value={quoteContext}
+                          onChange={(e) => setQuoteContext(parseInt(e.target.value))}
                           className="appearance-none w-full h-2 rounded-full bg-gray-200"
                           style={{
-                            background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${value}%, #e5e7eb ${value}%, #e5e7eb 100%)`,
+                            background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${quoteContext}%, #e5e7eb ${quoteContext}%, #e5e7eb 100%)`,
                           }}
                         />
                       </div>
@@ -307,26 +364,30 @@ export default function CoverageArea({
                 </div>
                 {isEditMode && (
                   <div className="flex gap-5 md:gap-2">
-                    <input
-                      required
-                      name="first-name"
-                      type="text"
-                      className="rounded-full border h-fit border-blueColor outline-none w-full md:w-[40%] py-1 px-3"
-                      placeholder="Enter new email address"
-                    />
-                    <button
-                      type="submit"
-                      className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
-                    >
-                      Add
-                    </button>
+                    <form onSubmit={handleAddRecipient}>
+                      <input
+                        value={recipient}
+                        onChange={(e) => setRecipient(e.target.value)}
+                        required
+                        name="first-name"
+                        type="text"
+                        className="rounded-full border h-fit border-blueColor outline-none w-full md:w-[40%] py-1 px-3"
+                        placeholder="Enter new email address"
+                      />
+                      <button
+                        type="submit"
+                        className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white"
+                      >
+                        Add
+                      </button>
+                    </form>
                   </div>
                 )}
 
                 {/* email container */}
                 <div className="flex flex-wrap gap-2 bg-lightGray md:p-10 p-5 rounded-2xl w-full my-5">
-                  {channel.recipient.length > 0 ? (
-                    channel.recipient.map((recipient, index) => (
+                  {recipients.length > 0 ? (
+                    recipients.map((recipient, index) => (
                       <div
                         className="bg-white flex items-center rounded-md py-1 px-2"
                         key={index}
@@ -353,13 +414,13 @@ export default function CoverageArea({
 
                     <div className="flex flex-col md:flex-row gap-5 my-5">
                       <button
-                        type="submit"
-                        onClick={() => setIsEditMode(false)}
+                        type="button"
+                        onClick={() => handleUpdate()}
                         className="py-2 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                       >
                         Save changes
                       </button>
-                      <button className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
+                      <button onClick={() => handleRevert()} className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
                         Revert
                       </button>
                     </div>
