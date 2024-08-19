@@ -35,7 +35,7 @@ export default function CoverageAreaModel({
   function openModal() {
     setIsOpen(true);
   }
-  function afterOpenModal() {}
+  function afterOpenModal() { }
   function closeModal() {
     setIsOpen(false);
   }
