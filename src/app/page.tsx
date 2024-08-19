@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth} from "@/app/firebase/config";
+import { auth } from "@/app/firebase/config";
 import Navbar from "@/components/Navbar/Navbar";
 import CoverageAreaModel from "@/components/Dashboard/CoverageAreaModel";
 import CoverageArea from "@/components/Dashboard/CoverageArea";
@@ -42,6 +42,7 @@ export default function Dashboard() {
   //Approach 1.
   const {
     addChannel,
+    updateChannel,
     userDetails,
     fetchUser,
     loading,
@@ -49,10 +50,8 @@ export default function Dashboard() {
     addRealTimeAlertKeyword,
     addReportAlertKeyword,
   } = useUser();
-  console.log("users - Approach 1", userDetails);
 
   useEffect(() => {
-    console.log("useEffect Called");
 
     if (user) {
       console.log("We have a User", user);
@@ -156,17 +155,20 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {userDetails?.channels && userDetails.channels.length > 0 ? (
-        userDetails.channels.map((channel) => (
+      {userDetails?.channels && Object.entries(userDetails.channels).length > 0 ? (
+        Object.entries(userDetails.channels).map(([channelId, channel]) => (
           <CoverageArea
             channel={channel}
+            key={channelId}
+            channelId={channelId}
             addRealTimeAlertKeyword={addRealTimeAlertKeyword}
             addReportAlertKeyword={addReportAlertKeyword}
+            updateChannel={updateChannel}
           />
         ))
       ) : (
         <div className="text-base text-bodyColor my-5 leading-[1.625rem]">
-         You do not have any alerts set up. Get started by adding a new coverage area.
+          You do not have any alerts set up. Get started by adding a new coverage area.
         </div>
       )}
     </div>
