@@ -1,6 +1,6 @@
 // /hooks/useUsers.ts
 import { useState } from "react";
-import { User } from "@/types";
+import { Channel, User } from "@/types";
 import { UserRepository } from "@/repositories/UserRepository";
 import { ICreateUserRequestData } from "@/types";
 
@@ -9,8 +9,6 @@ export const useUser = () => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  console.log("useUser(): ", userDetails);
 
   const createUser = async (userData: ICreateUserRequestData) => {
     console.log("createUser():", userData);
@@ -55,7 +53,7 @@ export const useUser = () => {
         sub_category: sub_category,
         real_time_alert_keywords: [],
         report_alert_keywords: [],
-        recipient: [],
+        recipients: [],
         quote_context: 20,
         tags: [],
       };
@@ -69,6 +67,37 @@ export const useUser = () => {
     }
   }
 
+  // Get Channels
+  const getChannels = async () => {
+    setLoading(true);
+    const userRepository = new UserRepository();
+    try {
+      if (!userDetails?.id) throw new Error("User not found.");
+      const channels = await userRepository.getChannels(userDetails?.id);
+      console.log("Channels: ", channels);
+    } catch (error) {
+      setError("Failed to fetch channels.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Update Channel
+  const updateChannel = async (channelId: string, updatedChannel: Channel) => {
+    console.log("updateChannel():", channelId, updatedChannel);
+
+    setLoading(true);
+    const userRepository = new UserRepository();
+    try {
+      if (!userDetails?.id) throw new Error("User not found.");
+      await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
+    } catch (error) {
+      setError("Failed to update channel.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Add Real-time Alert Keywords
   const addRealTimeAlertKeyword = async (channelId: string, realTimeAlertKeyword: string) => {
     setLoading(true);
@@ -76,7 +105,6 @@ export const useUser = () => {
     try {
       if (!userDetails?.id) throw new Error("User not found.");
       console.log("Level 1:", userDetails?.id, channelId, realTimeAlertKeyword);
-
       await userRepository.addRealTimeAlertKeyword(userDetails?.id, channelId, realTimeAlertKeyword);
     } catch (error) {
       setError("Failed to add real-time alert keyword.");
@@ -101,5 +129,5 @@ export const useUser = () => {
     }
   }
 
-  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword };
+  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, getChannels, updateChannel };
 };
