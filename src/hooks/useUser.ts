@@ -98,6 +98,20 @@ export const useUser = () => {
     }
   }
 
+  // Delete Channel
+  const deleteChannel = async (channelId: string) => {
+    setLoading(true);
+    const userRepository = new UserRepository();
+    try {
+      if (!userDetails?.id) throw new Error("User not found.");
+      await userRepository.deleteChannel(userDetails?.id, channelId);
+    } catch (error) {
+      setError("Failed to delete channel.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Add Real-time Alert Keywords
   const addRealTimeAlertKeyword = async (channelId: string, realTimeAlertKeyword: string) => {
     setLoading(true);
@@ -129,5 +143,5 @@ export const useUser = () => {
     }
   }
 
-  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, getChannels, updateChannel };
+  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, deleteChannel, getChannels, updateChannel };
 };

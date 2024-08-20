@@ -131,6 +131,39 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  // Delete Channel
+  async deleteChannel(userId: string, channelId: string) {
+    try {
+      // Get a reference to the user's document
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
+
+      // Fetch the user's document
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist");
+      }
+
+      // Get the current channels array
+      const userData = userDoc.data();
+      const channels = userData?.channels;
+
+      if (!channels || !channels[channelId]) {
+        throw new Error("Channel not found");
+      }
+
+      // Remove both key and value from the channels object
+      delete channels[channelId];
+
+      // Save the updated channels object back to the user's document
+      await updateDoc(userDocRef, {
+        channels: channels
+      });
+
+    } catch (error) {
+      console.error("Error deleting channel: ", error);
+    }
+  }
+
   //Add Real-time Alert Keyword
   async addRealTimeAlertKeyword(userId: string, channelId: string, realTimeAlertKeyword: string) {
     try {
