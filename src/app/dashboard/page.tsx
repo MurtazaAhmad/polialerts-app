@@ -49,7 +49,7 @@ export default function Dashboard() {
     addRealTimeAlertKeyword,
     addReportAlertKeyword,
     getChannels,
-    updateChannel
+    updateChannel,
   } = useUser();
   console.log("userDetails: ", userDetails);
   if (userDetails)
@@ -141,11 +141,7 @@ export default function Dashboard() {
           </p>
         </div>
         <div>
-          <button
-            type="submit"
-            className="mt-5 px-7 py-1 w-fit h-fit bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white flex items-center"
-          >
-            <span className="font-semibold mr-3 text-3xl">+</span>
+          <button type="submit">
             <span>
               {" "}
               <CoverageAreaModel
@@ -164,7 +160,8 @@ export default function Dashboard() {
         <hr className="w-[100%] lg:border-iota" />
       </div>
 
-      {userDetails?.channels && Object.entries(userDetails.channels).length > 0 ? (
+      {userDetails?.channels &&
+      Object.entries(userDetails.channels).length > 0 ? (
         Object.entries(userDetails.channels).map(([channelId, channel]) => (
           <CoverageArea
             channel={channel}
@@ -176,10 +173,13 @@ export default function Dashboard() {
           />
         ))
       ) : (
-        <div className="text-base text-bodyColor my-5 leading-[1.625rem]">
-          You do not have any alerts set up. Get started by adding a new coverage area.
+        <div className="text-base text-bodyColor my-5 leading-[1.625rem] lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
+          You do not have any alerts set up. Get started by adding a new
+          coverage area.
         </div>
       )}
+       
     </div>
+    
   );
 }

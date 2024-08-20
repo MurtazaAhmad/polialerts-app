@@ -35,7 +35,7 @@ export default function CoverageAreaModel({
   function openModal() {
     setIsOpen(true);
   }
-  function afterOpenModal() { }
+  function afterOpenModal() {}
   function closeModal() {
     setIsOpen(false);
   }
@@ -75,8 +75,12 @@ export default function CoverageAreaModel({
 
   return (
     <>
-      <div>
-        <div onClick={openModal} className="curor-pointer font-Manrope">
+      <div className="font-Manrope">
+        <div
+          onClick={openModal}
+          className="cursor-pointer mt-5 px-7 py-1 w-fit h-fit bg-blueColor hover:bg-blueHover rounded-full  border-transparent border-2 text-white flex items-center text-base font-semibold"
+        >
+          <span className="font-semibold mr-3 text-3xl">+</span>
           New coverage area
         </div>
         <Modal

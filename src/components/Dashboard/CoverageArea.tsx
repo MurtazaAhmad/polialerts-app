@@ -363,8 +363,8 @@ export default function CoverageArea({
                   </h2>
                 </div>
                 {isEditMode && (
-                  <div className="flex gap-5 md:gap-2">
-                    <form onSubmit={handleAddRecipient}>
+                  <div >
+                    <form onSubmit={handleAddRecipient} className="flex gap-5 md:gap-2">
                       <input
                         value={recipient}
                         onChange={(e) => setRecipient(e.target.value)}
