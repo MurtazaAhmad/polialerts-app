@@ -49,7 +49,8 @@ export default function Dashboard() {
     addRealTimeAlertKeyword,
     addReportAlertKeyword,
     getChannels,
-    updateChannel
+    updateChannel,
+    deleteChannel
   } = useUser();
   console.log("userDetails: ", userDetails);
   if (userDetails)
@@ -66,56 +67,6 @@ export default function Dashboard() {
     // fetchCategories (root)
     fetchMainCategories("root");
   }, [user]);
-
-  //Approach 2.
-  /*
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const userRepository = new UserRepository();
-      const userService = new UserService(userRepository);
-      try {
-        const users = await userService.getUsers();
-        // setUsers(users);
-        console.log("users - Approach 2", users);
-      } catch (error) {
-        // setError("Failed to fetch users.");
-        console.log("Failed to fetch");
-      } finally {
-        // setLoading(false);
-        console.log("Is loading - false");
-      }
-    };
-
-    fetchUsers();
-  }, []);
-  */
-
-  // const [value, loading, error] = useCollection(collection(db, 'government_levels'))
-  // const governmentLevels = value?.docs.map(doc => ({
-  //   id: doc.id,
-  //   data: doc.data()
-  // }))
-
-  // const [value2, loading2, error2] = useCollection(collection(db, 'Users'))
-  // const users = value2?.docs.map(doc => ({
-  //   id: doc.id,
-  //   data: doc.data()
-  // }))
-
-  // console.log("users", users);
-  //const userService = new UserService(new UserRepository());
-
-  /*
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const users = await userService.getUsers();
-      console.log("users", users);
-
-    };
-
-    fetchUsers();
-  }, [userService]);
-  */
 
   if (loading || !userDetails) {
     return <div>Loading...</div>;
@@ -147,9 +98,9 @@ export default function Dashboard() {
           >
             <span className="font-semibold mr-3 text-3xl">+</span>
             <span>
-              {" "}
               <CoverageAreaModel
                 addChannel={addChannel}
+                fetchUser={fetchUser}
                 userDetails={userDetails}
                 mainCategories={mainCategories}
                 subCategories={subCategories}
@@ -170,9 +121,10 @@ export default function Dashboard() {
             channel={channel}
             key={channelId}
             channelId={channelId}
-            addRealTimeAlertKeyword={addRealTimeAlertKeyword}
-            addReportAlertKeyword={addReportAlertKeyword}
             updateChannel={updateChannel}
+            deleteChannel={deleteChannel}
+            userDetails={userDetails}
+            fetchUser={fetchUser}
           />
         ))
       ) : (
