@@ -11,12 +11,14 @@ interface CoverageAreaModelProps {
   fetchSubCategories: (parent: string) => void;
   mainCategories: Category[];
   userDetails: User;
+  fetchUser: (userId: string) => void;
   subCategories: Category[];
 }
 
 export default function CoverageAreaModel({
   addChannel,
   fetchSubCategories,
+  fetchUser,
   mainCategories,
   userDetails,
   subCategories,
@@ -30,7 +32,7 @@ export default function CoverageAreaModel({
   const [mainCategory, setMainCategory] = React.useState<string>("");
   const [subCategory, setSubCategory] = React.useState<string>("");
 
-  var subtitle;
+  let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
   function openModal() {
     setIsOpen(true);
@@ -68,6 +70,15 @@ export default function CoverageAreaModel({
       await addChannel(mainCategory, subCategory);
       console.log("Channel Added Successfully!");
       closeModal();
+
+      // Resetting the values
+      setMainCategory("");
+      setSubCategory("");
+
+      if (!userDetails.id) throw new Error("User not found.");
+      // Updating the user details
+      fetchUser(userDetails.id);
+
     } catch (error) {
       console.log("Error in adding area", error);
     }
