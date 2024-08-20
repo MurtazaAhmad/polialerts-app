@@ -43,6 +43,7 @@ export default function Dashboard() {
   const {
     addChannel,
     updateChannel,
+    deleteChannel,
     userDetails,
     fetchUser,
     loading,
@@ -145,6 +146,7 @@ export default function Dashboard() {
               {" "}
               <CoverageAreaModel
                 addChannel={addChannel}
+                fetchUser={fetchUser}
                 userDetails={userDetails}
                 mainCategories={mainCategories}
                 subCategories={subCategories}
@@ -161,9 +163,10 @@ export default function Dashboard() {
             channel={channel}
             key={channelId}
             channelId={channelId}
-            addRealTimeAlertKeyword={addRealTimeAlertKeyword}
-            addReportAlertKeyword={addReportAlertKeyword}
             updateChannel={updateChannel}
+            deleteChannel={deleteChannel}
+            userDetails={userDetails}
+            fetchUser={fetchUser}
           />
         ))
       ) : (
