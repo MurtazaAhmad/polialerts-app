@@ -86,6 +86,7 @@ export default function CoverageArea({
 
     console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
     setRealTimeAlertKeyword("");
+
   };
 
   // Function to handle removing real-time alert keyword
@@ -158,6 +159,9 @@ export default function CoverageArea({
   const handleRemoveChannel = () => {
     console.log("Remove Coverage Area");
     deleteChannel(channelId);
+    console.log("Channel Removed Successfully!");
+    if (!userDetails.id) throw new Error("User not found.");
+    fetchUser(userDetails.id);
   }
 
   return (
