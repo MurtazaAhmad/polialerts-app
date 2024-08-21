@@ -6,24 +6,30 @@ import Quote from "@/components/Icons/Quote";
 import Email from "@/components/Icons/Email";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
-import { Channel } from "@/types";
+import { Channel, User } from "@/types";
 import RemoveCoverageAreaModel from "@/components/Dashboard/RemoveCoverageAreaModel";
 
 interface ICoverageAreaProps {
-  channelId: string;
   channel: Channel;
-  addRealTimeAlertKeyword: (keyword: string, channelId: string) => void;
-  addReportAlertKeyword: (keyword: string, channelId: string) => void;
+  channelId: string;
   updateChannel: (channelId: string, updatedChannel: Channel) => void;
+  deleteChannel: (channelId: string) => void;
+  userDetails: User;
+  fetchUser: (userId: string) => void;
 }
 
 export default function CoverageArea({
-  addRealTimeAlertKeyword,
-  addReportAlertKeyword,
   channel,
   channelId,
   updateChannel,
+  deleteChannel,
+  userDetails,
+  fetchUser,
 }: ICoverageAreaProps) {
+
+  console.log("Coverage Area Rendered: ", channel);
+
+
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // State to manage real-time alert keyword input
@@ -50,10 +56,9 @@ export default function CoverageArea({
   const [showRightSide, setShowRightSide] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
-  console.log("Channel: ", channel);
-
-
   useEffect(() => {
+    console.log("Channel Updated: ");
+
     setRealTimeAlertKeywords(channel.real_time_alert_keywords);
     setReportAlertKeywords(channel.report_alert_keywords);
     setRecipients(channel.recipients);
@@ -83,6 +88,14 @@ export default function CoverageArea({
     setRealTimeAlertKeyword("");
   };
 
+  // Function to handle removing real-time alert keyword
+  const handleRemoveRealTimeAlertKeyword = (keyword: string) => {
+    const updatedKeywords = realTimeAlertKeywords.filter(
+      (k) => k !== keyword
+    );
+    setRealTimeAlertKeywords(updatedKeywords);
+  };
+
   // Function to handle adding report alert keyword
   const handleAddReportAlertKeyword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -96,6 +109,14 @@ export default function CoverageArea({
     }
   };
 
+  // Function to handle removing report alert keyword
+  const handleRemoveReportAlertKeyword = (keyword: string) => {
+    const updatedKeywords = reportAlertKeywords.filter(
+      (k) => k !== keyword
+    );
+    setReportAlertKeywords(updatedKeywords);
+  };
+
   // Function to handle adding recipient
   const handleAddRecipient = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -104,7 +125,7 @@ export default function CoverageArea({
   }
 
   // Method to Update Channel
-  const handleUpdate = () => {
+  const handleUpdateChannel = () => {
     console.log("Updating channel...");
     setIsEditMode(false)
 
@@ -117,18 +138,26 @@ export default function CoverageArea({
     });
 
     console.log("Channel Updated Successfully!");
-
+    if (!userDetails.id) throw new Error("User not found.");
+    fetchUser(userDetails.id);
 
   }
 
   // Method to Revert Changes
-  const handleRevert = () => {
+  const handleRevertChannel = () => {
     console.log("Reverting changes...");
     setRealTimeAlertKeywords(channel.real_time_alert_keywords);
     setReportAlertKeywords(channel.report_alert_keywords);
     setRecipients(channel.recipients);
     setQuoteContext(channel.quote_context);
+    setIsEditMode(false);
 
+  }
+
+  // Method to handle removing coverage area
+  const handleRemoveChannel = () => {
+    console.log("Remove Coverage Area");
+    deleteChannel(channelId);
   }
 
   return (
@@ -156,7 +185,7 @@ export default function CoverageArea({
 
               {(!isMobile || showRightSide) && isEditMode && (
                 <div className="my-3">
-                  <RemoveCoverageAreaModel />
+                  <RemoveCoverageAreaModel handleRemoveChannel={handleRemoveChannel} />
                 </div>
               )}
             </div>
@@ -223,7 +252,7 @@ export default function CoverageArea({
                               >
                                 {keyword}
                                 {isEditMode && (
-                                  <button className="mx-2 text-iota text-3xl">
+                                  <button className="mx-2 text-iota text-3xl" onClick={() => handleRemoveRealTimeAlertKeyword(keyword)}>
                                     <IoCloseSharp />
                                   </button>
                                 )}
@@ -294,7 +323,7 @@ export default function CoverageArea({
                               >
                                 {keyword}
                                 {isEditMode && (
-                                  <button className="mx-2 text-iota text-3xl">
+                                  <button onClick={() => handleRemoveReportAlertKeyword(keyword)} className="mx-2 text-iota text-3xl">
                                     <IoCloseSharp />
                                   </button>
                                 )}
@@ -321,7 +350,7 @@ export default function CoverageArea({
                         </h2>
                       ) : (
                         <h2 className="font-bold text-headingColor md:text-[1.6rem] text-base">
-                          Quote Context : 20 words
+                          Quote Context : {quoteContext} words
                         </h2>
                       )}
                     </div>
@@ -415,12 +444,12 @@ export default function CoverageArea({
                     <div className="flex flex-col md:flex-row gap-5 my-5">
                       <button
                         type="button"
-                        onClick={() => handleUpdate()}
+                        onClick={() => handleUpdateChannel()}
                         className="py-2 px-5 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                       >
                         Save changes
                       </button>
-                      <button onClick={() => handleRevert()} className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
+                      <button onClick={() => handleRevertChannel()} className="py-2 px-5 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
                         Revert
                       </button>
                     </div>

@@ -4,7 +4,11 @@ import Modal from "react-modal";
 import Close from "@/components/Icons/Close";
 import Warning from "@/components/Icons/Warning";
 
-export default function RemoveCoverageAreaModel() {
+interface IRemoveCoverageAreaModelProps {
+  handleRemoveChannel: () => void;
+}
+
+export default function RemoveCoverageAreaModel({ handleRemoveChannel }: IRemoveCoverageAreaModelProps) {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
@@ -22,6 +26,7 @@ export default function RemoveCoverageAreaModel() {
 
   const handleRemoveCoverageArea = () => {
     console.log("Remove Coverage Area");
+    handleRemoveChannel();
     closeModal();
   }
 
