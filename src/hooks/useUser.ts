@@ -60,10 +60,12 @@ export const useUser = () => {
       if (!userDetails?.id) throw new Error("User not found.");
 
       await userRepository.addChannel(userDetails?.id, channelData);
-    } catch (error) {
-      setError("Failed to add channel.");
-    } finally {
       setLoading(false);
+
+    } catch (error) {
+      setLoading(false);
+      setError("Failed to add channel.");
+
     }
   }
 
@@ -91,10 +93,11 @@ export const useUser = () => {
     try {
       if (!userDetails?.id) throw new Error("User not found.");
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
-    } catch (error) {
-      setError("Failed to update channel.");
-    } finally {
       setLoading(false);
+
+    } catch (error) {
+      setLoading(false);
+      setError("Failed to update channel.");
     }
   }
 
@@ -105,10 +108,10 @@ export const useUser = () => {
     try {
       if (!userDetails?.id) throw new Error("User not found.");
       await userRepository.deleteChannel(userDetails?.id, channelId);
-    } catch (error) {
-      setError("Failed to delete channel.");
-    } finally {
       setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setError("Failed to delete channel.");
     }
   }
 
