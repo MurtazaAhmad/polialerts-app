@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth} from "@/app/firebase/config";
+import { auth } from "@/app/firebase/config";
 import Navbar from "@/components/Navbar/Navbar";
 import CoverageAreaModel from "@/components/Dashboard/CoverageAreaModel";
 import CoverageArea from "@/components/Dashboard/CoverageArea";
@@ -48,8 +48,13 @@ export default function Dashboard() {
     error,
     addRealTimeAlertKeyword,
     addReportAlertKeyword,
+    getChannels,
+    updateChannel,
+    deleteChannel
   } = useUser();
-  console.log("users - Approach 1", userDetails);
+  console.log("userDetails: ", userDetails);
+  if (userDetails)
+    console.log("channels: ", Object.entries(userDetails.channels));
 
   useEffect(() => {
     console.log("useEffect Called");
@@ -62,56 +67,6 @@ export default function Dashboard() {
     // fetchCategories (root)
     fetchMainCategories("root");
   }, [user]);
-
-  //Approach 2.
-  /*
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const userRepository = new UserRepository();
-      const userService = new UserService(userRepository);
-      try {
-        const users = await userService.getUsers();
-        // setUsers(users);
-        console.log("users - Approach 2", users);
-      } catch (error) {
-        // setError("Failed to fetch users.");
-        console.log("Failed to fetch");
-      } finally {
-        // setLoading(false);
-        console.log("Is loading - false");
-      }
-    };
-
-    fetchUsers();
-  }, []);
-  */
-
-  // const [value, loading, error] = useCollection(collection(db, 'government_levels'))
-  // const governmentLevels = value?.docs.map(doc => ({
-  //   id: doc.id,
-  //   data: doc.data()
-  // }))
-
-  // const [value2, loading2, error2] = useCollection(collection(db, 'Users'))
-  // const users = value2?.docs.map(doc => ({
-  //   id: doc.id,
-  //   data: doc.data()
-  // }))
-
-  // console.log("users", users);
-  //const userService = new UserService(new UserRepository());
-
-  /*
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const users = await userService.getUsers();
-      console.log("users", users);
-
-    };
-
-    fetchUsers();
-  }, [userService]);
-  */
 
   if (loading || !userDetails) {
     return <div>Loading...</div>;
@@ -143,9 +98,9 @@ export default function Dashboard() {
           >
             <span className="font-semibold mr-3 text-3xl">+</span>
             <span>
-              {" "}
               <CoverageAreaModel
                 addChannel={addChannel}
+                fetchUser={fetchUser}
                 userDetails={userDetails}
                 mainCategories={mainCategories}
                 subCategories={subCategories}
@@ -160,17 +115,21 @@ export default function Dashboard() {
         <hr className="w-[100%] lg:border-iota" />
       </div>
 
-      {userDetails?.channels && userDetails.channels.length > 0 ? (
-        userDetails.channels.map((channel) => (
+      {userDetails?.channels && Object.entries(userDetails.channels).length > 0 ? (
+        Object.entries(userDetails.channels).map(([channelId, channel]) => (
           <CoverageArea
             channel={channel}
-            addRealTimeAlertKeyword={addRealTimeAlertKeyword}
-            addReportAlertKeyword={addReportAlertKeyword}
+            key={channelId}
+            channelId={channelId}
+            updateChannel={updateChannel}
+            deleteChannel={deleteChannel}
+            userDetails={userDetails}
+            fetchUser={fetchUser}
           />
         ))
       ) : (
         <div className="text-base text-bodyColor my-5 leading-[1.625rem]">
-         You do not have any alerts set up. Get started by adding a new coverage area.
+          You do not have any alerts set up. Get started by adding a new coverage area.
         </div>
       )}
     </div>

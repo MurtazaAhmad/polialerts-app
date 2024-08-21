@@ -1,23 +1,33 @@
 "use client";
-import React from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import Close from "@/components/Icons/Close";
 import Warning from "@/components/Icons/Warning";
 
-export default function RemoveCoverageAreaModel() {
+interface IRemoveCoverageAreaModelProps {
+  handleRemoveChannel: () => void;
+}
+
+export default function RemoveCoverageAreaModel({ handleRemoveChannel }: IRemoveCoverageAreaModelProps) {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
     },
   };
 
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   function openModal() {
     setIsOpen(true);
   }
-  function afterOpenModal() {}
+  function afterOpenModal() { }
   function closeModal() {
     setIsOpen(false);
+  }
+
+  const handleRemoveCoverageArea = () => {
+    console.log("Remove Coverage Area");
+    handleRemoveChannel();
+    closeModal();
   }
 
   return (
@@ -25,7 +35,7 @@ export default function RemoveCoverageAreaModel() {
       <div>
         <div onClick={openModal} className="cursor-pointer font-Manrope">
           <button className="py-1 px-4 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
-           Remove area
+            Remove area
           </button>
         </div>
         <Modal
@@ -52,14 +62,14 @@ export default function RemoveCoverageAreaModel() {
             </div>
           </div>
           <p className="text-base text-bodyColor my-5 leading-[1.625rem]">
-                Warning: removing a coverage area will permanently delete all of your keyword selections. <span className="text-warn text-base">This cannot be undone.</span>
+            Warning: removing a coverage area will permanently delete all of your keyword selections. <span className="text-warn text-base">This cannot be undone.</span>
           </p>
 
           <p className="text-base text-bodyColor my-5 leading-[1.625rem]">Are you sure you want to continue?</p>
-           <button className="py-2 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
-              Remove area permanently
-            </button>
-     
+          <button onClick={handleRemoveCoverageArea} className="py-2 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
+            Remove area permanently
+          </button>
+
         </Modal>
       </div>
     </>

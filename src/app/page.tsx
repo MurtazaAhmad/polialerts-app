@@ -42,6 +42,8 @@ export default function Dashboard() {
   //Approach 1.
   const {
     addChannel,
+    updateChannel,
+    deleteChannel,
     userDetails,
     fetchUser,
     loading,
@@ -49,10 +51,8 @@ export default function Dashboard() {
     addRealTimeAlertKeyword,
     addReportAlertKeyword,
   } = useUser();
-  console.log("users - Approach 1", userDetails);
 
   useEffect(() => {
-    console.log("useEffect Called");
 
     if (user) {
       console.log("We have a User", user);
@@ -146,6 +146,7 @@ export default function Dashboard() {
               {" "}
               <CoverageAreaModel
                 addChannel={addChannel}
+                fetchUser={fetchUser}
                 userDetails={userDetails}
                 mainCategories={mainCategories}
                 subCategories={subCategories}
@@ -156,12 +157,16 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {userDetails?.channels && userDetails.channels.length > 0 ? (
-        userDetails.channels.map((channel) => (
+      {userDetails?.channels && Object.entries(userDetails.channels).length > 0 ? (
+        Object.entries(userDetails.channels).map(([channelId, channel]) => (
           <CoverageArea
             channel={channel}
-            addRealTimeAlertKeyword={addRealTimeAlertKeyword}
-            addReportAlertKeyword={addReportAlertKeyword}
+            key={channelId}
+            channelId={channelId}
+            updateChannel={updateChannel}
+            deleteChannel={deleteChannel}
+            userDetails={userDetails}
+            fetchUser={fetchUser}
           />
         ))
       ) : (

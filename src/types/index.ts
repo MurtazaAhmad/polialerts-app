@@ -1,12 +1,11 @@
 
 // Channel Interface
 export interface Channel {
-    channelId: string;
     main_category: string;
     sub_category: string;
     real_time_alert_keywords: string[];
     report_alert_keywords: string[];
-    recipient: string[];
+    recipients: string[];
     quote_context: number;
     tags: string[];
 }
@@ -42,7 +41,9 @@ export interface IUserRepository {
     getUsers(): Promise<User[]>;
     getUserById(userId: string): Promise<any | undefined>;
     addChannel(userId: string, channel: IAddChannelRequestData): void;
+    getChannels(userId: string): Promise<Channel[]>;
     addRealTimeAlertKeyword(userId: string, channelId: string, keyword: string): void;
+    addReportAlertKeyword(userId: string, channelId: string, keyword: string): void
 }
 
 // Request Data
@@ -57,7 +58,7 @@ export interface IAddChannelRequestData {
     sub_category: string;
     real_time_alert_keywords: string[],
     report_alert_keywords: string[],
-    recipient: string[],
+    recipients: string[],
     quote_context: number,
     tags: string[]
 }
