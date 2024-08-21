@@ -140,7 +140,7 @@ export default function FAQ() {
               className="accordion flex items-center justify-between border-b border-b-iota cursor-pointer"
               onClick={() => toggleAccordion(index)}
             >
-              <p className="font-bold md:text-[1.625rem] text-base py-6 text-headingColor">
+              <p className="font-bold text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem] py-6 text-headingColor">
                 {faq.question}
               </p>
               <p className="px-1 md:text-5xl text-3xl text-blueColor font-bold">
@@ -148,7 +148,7 @@ export default function FAQ() {
               </p>
             </div>
             {activeIndex === index && (
-              <div className="panel py-3 text-bodyColor md:text-base text-sm">
+              <div className="panel py-3 text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
                 {faq.answer}
               </div>
             )}

@@ -16,9 +16,9 @@ export default function PersonalInfo() {
   return (
     <>
       <section className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5  py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
-        <h3 className="text-headingColor font-bold md:text-[2.1rem] text-[1.6rem] md:w-[40%]">
+        <h2 className="text-headingColor font-bold md:text-[2.125rem] text-[1.875rem] md:leading-[3rem] leading-[1.875rem] md:w-[40%]">
           Personal Information
-        </h3>
+        </h2>
         <div className=" md:w-[70%]">
           <form
             onSubmit={handleSubmit}
@@ -27,7 +27,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="first-name"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 First Name
               </label>
@@ -46,7 +46,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="last-name"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 Last Name
               </label>
@@ -65,7 +65,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="email"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 Email address
               </label>
@@ -84,7 +84,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="phone"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 Phone number
               </label>
@@ -103,7 +103,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="street"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 Street number and name{" "}
               </label>
@@ -121,7 +121,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="City"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 City
               </label>
@@ -139,7 +139,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="country"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 Country
               </label>
@@ -157,7 +157,7 @@ export default function PersonalInfo() {
             <section className="">
               <label
                 htmlFor="postal-code"
-                className="block mb-2 text-base text-bodyColor"
+                className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor"
               >
                 Postal code
               </label>
@@ -175,11 +175,11 @@ export default function PersonalInfo() {
             <section className="buttons flex gap-5  md:flex-row flex-col ">
               <button
                 type="submit"
-                className="py-2 px-5 w-fit  h-fit  bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+                className="py-2 px-5 w-fit  h-fit text-base  bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
               >
                 Save changes
               </button>
-              <button className="py-2 px-5 w-fit  h-fit  border-blueColor  font-semibold  border-2  rounded-full text-blueColor">
+              <button className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor">
                 Revert
               </button>
             </section>
