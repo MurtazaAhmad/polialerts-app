@@ -87,6 +87,7 @@ export default function CoverageArea({
 
     console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
     setRealTimeAlertKeyword("");
+
   };
 
   // Function to handle removing real-time alert keyword
@@ -153,7 +154,10 @@ export default function CoverageArea({
   const handleRemoveChannel = () => {
     console.log("Remove Coverage Area");
     deleteChannel(channelId);
-  };
+    console.log("Channel Removed Successfully!");
+    if (!userDetails.id) throw new Error("User not found.");
+    fetchUser(userDetails.id);
+  }
 
   return (
     <>
@@ -489,211 +493,211 @@ export default function CoverageArea({
                 {/* Budget and plus plan */}
                 {(subscriptionType === "BUDGET" ||
                   subscriptionType === "PLUS") && (
-                  <>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Calendar />
-                        <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                          End-of-day email alerts
-                        </h3>
-                      </div>
+                    <>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Calendar />
+                          <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                            End-of-day email alerts
+                          </h3>
+                        </div>
 
-                      <div
-                        className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"}  md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
-                      >
-                        <div className="md:w-[50%] w-full">
-                          {isEditMode && (
-                            <div>
-                              <form
-                                onSubmit={handleAddReportAlertKeyword}
-                                className="flex gap-5 md:gap-2"
-                              >
-                                <input
-                                  value={reportAlertKeyword}
-                                  onChange={(e) =>
-                                    setReportAlertKeyword(e.target.value)
-                                  }
-                                  required
-                                  type="text"
-                                  className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
-                                  placeholder="Add keywords here"
-                                />
-                                <button
-                                  type="submit"
-                                  className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:blueH"
+                        <div
+                          className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"}  md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
+                        >
+                          <div className="md:w-[50%] w-full">
+                            {isEditMode && (
+                              <div>
+                                <form
+                                  onSubmit={handleAddReportAlertKeyword}
+                                  className="flex gap-5 md:gap-2"
                                 >
-                                  Add
-                                </button>
-                              </form>
+                                  <input
+                                    value={reportAlertKeyword}
+                                    onChange={(e) =>
+                                      setReportAlertKeyword(e.target.value)
+                                    }
+                                    required
+                                    type="text"
+                                    className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
+                                    placeholder="Add keywords here"
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:blueH"
+                                  >
+                                    Add
+                                  </button>
+                                </form>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
+                            <div
+                              className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
+                            >
+                              {channel.report_alert_keywords.length > 0 ? (
+                                channel.report_alert_keywords.map(
+                                  (keyword, index) => (
+                                    <div
+                                      key={index}
+                                      className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
+                                    >
+                                      {keyword}
+                                      {isEditMode && (
+                                        <button className="mx-2 text-iota text-3xl">
+                                          <IoCloseSharp />
+                                        </button>
+                                      )}
+                                    </div>
+                                  )
+                                )
+                              ) : (
+                                <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
+                                  No keywords found
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Quotes */}
+                        <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
+                          <div className="md-w-[50%] w-full">
+                            <div className="flex items-center gap-2 my-5">
+                              <Quote />
+                              {isEditMode ? (
+                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                  Quote Context
+                                </h3>
+                              ) : (
+                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                  Quote Context : 20 words
+                                </h3>
+                              )}
+                            </div>
+
+                            {isEditMode && (
+                              <>
+                                <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
+                                  Use the slider to control how many words are
+                                  quoted before and after each keyword in your
+                                  alert emails
+                                </p>
+                              </>
+                            )}
+                          </div>
+                          {/* left */}
+                          {isEditMode && (
+                            <div className="md-w-[50%] w-full">
+                              <div className="flex items-center bg-lightGray rounded-full space-x-4 px-4 py-2">
+                                <span className="text-lg font-semibold">
+                                  {quoteContext}{" "}
+                                </span>
+                                <input
+                                  type="range"
+                                  min="0"
+                                  max="100"
+                                  value={quoteContext}
+                                  onChange={(e) =>
+                                    setQuoteContext(parseInt(e.target.value))
+                                  }
+                                  className="appearance-none w-full h-2 rounded-full bg-gray-200"
+                                  style={{
+                                    background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${quoteContext}%, #e5e7eb ${quoteContext}%, #e5e7eb 100%)`,
+                                  }}
+                                />
+                              </div>
                             </div>
                           )}
                         </div>
 
-                        <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
-                          <div
-                            className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
-                          >
-                            {channel.report_alert_keywords.length > 0 ? (
-                              channel.report_alert_keywords.map(
-                                (keyword, index) => (
+                        {/* recipients */}
+                        <div className="flex items-center gap-2 mt-10">
+                          <Email />
+                          <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                            Recipients
+                          </h3>
+                        </div>
+
+                        <div
+                          className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"} md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
+                        >
+                          <div className="md:w-[50%] w-full">
+                            {isEditMode && (
+                              <div className="flex gap-5 md:gap-2">
+                                <input
+                                  required
+                                  name="first-name"
+                                  type="text"
+                                  className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
+                                  placeholder="Enter new email address"
+                                />
+                                <button
+                                  type="submit"
+                                  className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white"
+                                >
+                                  Add
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
+                            <div
+                              className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[8vh] h-[5vh]" : "md:h-[20vh] h-[10vh]"}`}
+                            >
+                              {channel.recipients.length > 0 ? (
+                                channel.recipients.map((recipient, index) => (
                                   <div
+                                    className="bg-white flex items-center rounded-md py-1 px-2 text-sm leading-[1.375rem] md:text-base md:leading-7"
                                     key={index}
-                                    className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
                                   >
-                                    {keyword}
+                                    {recipient}
                                     {isEditMode && (
                                       <button className="mx-2 text-iota text-3xl">
                                         <IoCloseSharp />
                                       </button>
                                     )}
                                   </div>
-                                )
-                              )
-                            ) : (
-                              <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
-                                No keywords found
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Quotes */}
-                      <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
-                        <div className="md-w-[50%] w-full">
-                          <div className="flex items-center gap-2 my-5">
-                            <Quote />
-                            {isEditMode ? (
-                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                Quote Context
-                              </h3>
-                            ) : (
-                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                Quote Context : 20 words
-                              </h3>
-                            )}
-                          </div>
-
-                          {isEditMode && (
-                            <>
-                              <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                                Use the slider to control how many words are
-                                quoted before and after each keyword in your
-                                alert emails
-                              </p>
-                            </>
-                          )}
-                        </div>
-                        {/* left */}
-                        {isEditMode && (
-                          <div className="md-w-[50%] w-full">
-                            <div className="flex items-center bg-lightGray rounded-full space-x-4 px-4 py-2">
-                              <span className="text-lg font-semibold">
-                                {quoteContext}{" "}
-                              </span>
-                              <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={quoteContext}
-                                onChange={(e) =>
-                                  setQuoteContext(parseInt(e.target.value))
-                                }
-                                className="appearance-none w-full h-2 rounded-full bg-gray-200"
-                                style={{
-                                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${quoteContext}%, #e5e7eb ${quoteContext}%, #e5e7eb 100%)`,
-                                }}
-                              />
+                                ))
+                              ) : (
+                                <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
+                                  No recipient found
+                                </p>
+                              )}
                             </div>
                           </div>
-                        )}
-                      </div>
+                        </div>
 
-                      {/* recipients */}
-                      <div className="flex items-center gap-2 mt-10">
-                        <Email />
-                        <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                          Recipients
-                        </h3>
-                      </div>
+                        {isEditMode && (
+                          <>
+                            <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
+                              Changes made above are not saved until you confirm
+                              with &quot;save changes&quot; button
+                            </p>
 
-                      <div
-                        className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"} md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
-                      >
-                        <div className="md:w-[50%] w-full">
-                          {isEditMode && (
-                            <div className="flex gap-5 md:gap-2">
-                              <input
-                                required
-                                name="first-name"
-                                type="text"
-                                className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
-                                placeholder="Enter new email address"
-                              />
+                            <div className="flex flex-col md:flex-row gap-5 my-5">
                               <button
                                 type="submit"
-                                className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white"
+                                onClick={() => setIsEditMode(false)}
+                                className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                               >
-                                Add
+                                Save changes
+                              </button>
+                              <button
+                                onClick={() => handleRevertChannel()}
+                                className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
+                              >
+                                Revert
                               </button>
                             </div>
-                          )}
-                        </div>
-
-                        <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
-                          <div
-                            className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[8vh] h-[5vh]" : "md:h-[20vh] h-[10vh]"}`}
-                          >
-                            {channel.recipients.length > 0 ? (
-                              channel.recipients.map((recipient, index) => (
-                                <div
-                                  className="bg-white flex items-center rounded-md py-1 px-2 text-sm leading-[1.375rem] md:text-base md:leading-7"
-                                  key={index}
-                                >
-                                  {recipient}
-                                  {isEditMode && (
-                                    <button className="mx-2 text-iota text-3xl">
-                                      <IoCloseSharp />
-                                    </button>
-                                  )}
-                                </div>
-                              ))
-                            ) : (
-                              <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
-                                No recipient found
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                          </>
+                        )}
                       </div>
-
-                      {isEditMode && (
-                        <>
-                          <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                            Changes made above are not saved until you confirm
-                            with &quot;save changes&quot; button
-                          </p>
-
-                          <div className="flex flex-col md:flex-row gap-5 my-5">
-                            <button
-                              type="submit"
-                              onClick={() => setIsEditMode(false)}
-                              className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-                            >
-                              Save changes
-                            </button>
-                            <button
-                              onClick={() => handleRevertChannel()}
-                              className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
-                            >
-                              Revert
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
               </div>
             )}
           </div>
