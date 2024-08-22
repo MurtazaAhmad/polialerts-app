@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Icons/Logo";
-import { useSignOut } from 'react-firebase-hooks/auth';
-import { auth } from '@/app/firebase/config'
+import { useSignOut } from "react-firebase-hooks/auth";
+import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -18,9 +18,9 @@ export default function Navbar() {
   const handleLogout = async () => {
     const success = await signOut();
     if (success) {
-      alert('Logged Out');
-      sessionStorage.removeItem('user');
-      router.push('/login');
+      alert("Logged Out");
+      sessionStorage.removeItem("user");
+      router.push("/login");
     }
   };
 
@@ -47,9 +47,9 @@ export default function Navbar() {
             xmlns="http://www.w3.org/2000/svg"
             id="menu-button"
             className="h-6 w-6 cursor-pointer md:hidden block"
-            fill="none"
+            fill="#ffffff"
             viewBox="0 0 24 24"
-            stroke="currentColor"
+            stroke="#ffffff" // Ensures the stroke color is white
           >
             <path
               strokeLinecap="round"
@@ -62,10 +62,13 @@ export default function Navbar() {
             className={`${isMenuOpen ? "block" : "hidden"} w-full md:flex md:items-center md:w-auto`}
             id="menu"
           >
+            {isMenuOpen && (
+              <hr className="my-2 w-[100%] border-white md:hidden" />
+            )}
             <ul
               className="
                 pt-4
-                text-white text-base font-semibold
+                text-white text-sm leading-[1.375rem] md:text-base md:leading-7 font-semibold
                 md:flex
                 md:justify-between 
                 md:pt-0
