@@ -472,7 +472,7 @@ export default function CoverageArea({
                           <div className="flex flex-col md:flex-row gap-5 my-5">
                             <button
                               type="submit"
-                              onClick={() => setIsEditMode(false)}
+                              onClick={() => handleUpdateChannel()}
                               className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                             >
                               Save changes
