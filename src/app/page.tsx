@@ -167,6 +167,7 @@ export default function Dashboard() {
             deleteChannel={deleteChannel}
             userDetails={userDetails}
             fetchUser={fetchUser}
+            subscriptionType="PRO"
           />
         ))
       ) : (

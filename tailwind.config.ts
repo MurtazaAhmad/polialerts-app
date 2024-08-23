@@ -22,7 +22,8 @@ const config: Config = {
         darkGray: "#3b4352",
         white: "#ffffff",
         iota:'#6f6f6f',
-        warn: '#d70404'
+        warn: '#d70404',
+        yellowish :"#fffbe1"
 
       },
       fontFamily: {

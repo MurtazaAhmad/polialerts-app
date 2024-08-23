@@ -34,7 +34,7 @@ export default function RemoveCoverageAreaModel({ handleRemoveChannel }: IRemove
     <>
       <div>
         <div onClick={openModal} className="cursor-pointer font-Manrope">
-          <button className="py-1 px-4 w-fit h-fit border-blueColor font-semibold border-2 rounded-full text-blueColor">
+          <button className="py-1 px-4 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor">
             Remove area
           </button>
         </div>
@@ -56,17 +56,17 @@ export default function RemoveCoverageAreaModel({ handleRemoveChannel }: IRemove
           <div className="font-semibold text-xl">
             <div className="flex gap-3 items-center">
               <Warning />
-              <h1 className="text-headingColor font-bold md:text-[1.6rem] text-base">
+              <h3 className="text-headingColor font-bold text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
                 Remove coverage area
-              </h1>
+              </h3>
             </div>
           </div>
-          <p className="text-base text-bodyColor my-5 leading-[1.625rem]">
+          <p className="my-5 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
             Warning: removing a coverage area will permanently delete all of your keyword selections. <span className="text-warn text-base">This cannot be undone.</span>
           </p>
 
-          <p className="text-base text-bodyColor my-5 leading-[1.625rem]">Are you sure you want to continue?</p>
-          <button onClick={handleRemoveCoverageArea} className="py-2 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
+          <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor my-5">Are you sure you want to continue?</p>
+          <button onClick={handleRemoveCoverageArea} className="py-2 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-base text-white hover:bg-blueHover">
             Remove area permanently
           </button>
 
