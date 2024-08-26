@@ -4,13 +4,13 @@ import Eye from "@/components/Icons/Eye";
 import Navbar from "@/components/Navbar/Navbar";
 import React, { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { useSendEmailVerification } from 'react-firebase-hooks/auth';
+import { useSendEmailVerification } from "react-firebase-hooks/auth";
 import { toast, Toaster } from "react-hot-toast";
-
 
 import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -26,34 +26,39 @@ const Signup = () => {
   };
 
   // Calling Hook - Returns array
-  const [createUserWithEmailAndPassword, user, loading, createUserError] = useCreateUserWithEmailAndPassword(auth)
-  const [sendEmailVerification, sending, emailVerificationError] = useSendEmailVerification(
-    auth
-  );
+  const [createUserWithEmailAndPassword, user, loading, createUserError] =
+    useCreateUserWithEmailAndPassword(auth);
+  const [sendEmailVerification, sending, emailVerificationError] =
+    useSendEmailVerification(auth);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     console.log(email, password);
 
     try {
-
-      const res = await createUserWithEmailAndPassword(email, password)
+      const res = await createUserWithEmailAndPassword(email, password);
       console.log("response: ", res);
 
       // Check if response has an error
       if (createUserError) {
-        console.log("Error: ", createUserError.message);
+        if (createUserError.code === "auth/email-already-in-use") {
+          toast.error(
+            "This email is already in use. Please use a different email."
+          );
+        } else {
+          toast.error(createUserError.message);
+        }
         return;
       }
 
       // Using User ID from response, we can store user data in Firestore on Users Collection
-      const user = res?.user
+      const user = res?.user;
       console.log("user", user);
-      const userId: string | undefined = user?.uid
+      const userId: string | undefined = user?.uid;
       console.log("userId", userId);
 
       // Send Email Verification
-      const status = await sendEmailVerification()
+      const status = await sendEmailVerification();
 
       console.log("Email Verification Status: ", status);
 
@@ -61,11 +66,14 @@ const Signup = () => {
       if (!userId) return;
 
       // Add user to localstorage
-      localStorage.setItem('userRegistration', JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-      }));
+      localStorage.setItem(
+        "userRegistration",
+        JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+        })
+      );
 
       /*
       await createUser({
@@ -82,16 +90,13 @@ const Signup = () => {
 
       setTimeout(() => {
         // Navigate to Login
-        router.push('/login');
-      }
-        , 2000);
-
-
+        router.push("/login");
+      }, 2000);
     } catch (error: any) {
       console.log("ERROR!");
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
 
   if (emailVerificationError) {
     console.log("Email Verification Error: ", emailVerificationError.message);
@@ -192,6 +197,17 @@ const Signup = () => {
           </div>
         </div>
 
+        <div className="text-sm font-semibold mx-auto text-center my-5">
+          <span className="text-bodyColor">Already have an account?</span>
+          <span className="text-blueColor ml-1">
+            <Link
+              className="underline hover:no-underline hover:text-blueHover"
+              href="/login"
+            >
+              Log in
+            </Link>
+          </span>
+        </div>
       </section>
     </>
   );

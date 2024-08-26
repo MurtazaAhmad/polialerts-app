@@ -1,7 +1,5 @@
 "use client";
-import Footer from "@/components/Footer/Footer";
 import Eye from "@/components/Icons/Eye";
-import Navbar from "@/components/Navbar/Navbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
