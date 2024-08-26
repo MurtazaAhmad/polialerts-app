@@ -4,14 +4,17 @@ import Eye from "@/components/Icons/Eye";
 import Navbar from "@/components/Navbar/Navbar";
 import React, { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useSendEmailVerification } from 'react-firebase-hooks/auth';
+import { toast, Toaster } from "react-hot-toast";
+
+
 import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 
-interface Props { }
-
-const Signup = (props: Props) => {
-  const [name, setName] = useState<string>("");
+const Signup = () => {
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -23,7 +26,10 @@ const Signup = (props: Props) => {
   };
 
   // Calling Hook - Returns array
-  const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
+  const [createUserWithEmailAndPassword, user, loading, createUserError] = useCreateUserWithEmailAndPassword(auth)
+  const [sendEmailVerification, sending, emailVerificationError] = useSendEmailVerification(
+    auth
+  );
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -34,24 +40,52 @@ const Signup = (props: Props) => {
       const res = await createUserWithEmailAndPassword(email, password)
       console.log("response: ", res);
 
+      // Check if response has an error
+      if (createUserError) {
+        console.log("Error: ", createUserError.message);
+        return;
+      }
+
       // Using User ID from response, we can store user data in Firestore on Users Collection
       const user = res?.user
+      console.log("user", user);
       const userId: string | undefined = user?.uid
       console.log("userId", userId);
+
+      // Send Email Verification
+      const status = await sendEmailVerification()
+
+      console.log("Email Verification Status: ", status);
 
       // Something went wrong
       if (!userId) return;
 
+      // Add user to localstorage
+      localStorage.setItem('userRegistration', JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+      }));
+
+      /*
       await createUser({
         id: userId,
-        name: name,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
       })
+      */
 
       console.log("Account Created Successfully!");
 
-      // Navigate to Login
-      router.push("/login")
+      toast.success("A verification link has been sent to your Email!");
+
+      setTimeout(() => {
+        // Navigate to Login
+        router.push('/login');
+      }
+        , 2000);
+
 
     } catch (error: any) {
       console.log("ERROR!");
@@ -59,8 +93,21 @@ const Signup = (props: Props) => {
     }
   }
 
+  if (emailVerificationError) {
+    console.log("Email Verification Error: ", emailVerificationError.message);
+  }
+
+  if (createUserError) {
+    console.log("Create User Error: ", createUserError.message);
+  }
+
+  if (sending) {
+    console.log("Sending Email Verification...");
+  }
+
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
       <Navbar />
       <section className="font-Manrope flex flex-col justify-center items-center my-16">
         <div className="xl:w-[35%] lg:w-[40%] md:w-[50%] w-[90%] rounded-xl mx-auto bg-lightGray">
@@ -73,17 +120,31 @@ const Signup = (props: Props) => {
                 <div>
                   <label
                     className="block text-[1.1rem] mt-4 mb-2 text-bodyColor"
-                    htmlFor="name"
+                    htmlFor="first-name"
                   >
-                    Name
+                    First Name
                   </label>
                   <input
                     className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
-                    name="name"
+                    id="first-name"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-[1.1rem] mt-4 mb-2 text-bodyColor"
+                    htmlFor="name"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    className="rounded-full w-full py-2 outline-none px-3 border-blueColor border"
                     id="name"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
                 <div>
