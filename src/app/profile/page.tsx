@@ -8,7 +8,7 @@ import React from "react";
 export default function Profile() {
   return (
     <>
-      <Navbar />
+
       <div className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10  md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
         <h1 className="text-headingColor font-bold md:text-5xl md:leading-[4rem] text-[2.375rem] leading-[3.25rem] ">
           Your Profile
@@ -25,7 +25,7 @@ export default function Profile() {
       <PersonalInfo />
       <BillingInfo />
       <PlanDetails />
-      <Footer />
+
     </>
   );
 }

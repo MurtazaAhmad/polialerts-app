@@ -106,7 +106,6 @@ export default function Login() {
   return (
     <div>
       <Toaster position="top-center" reverseOrder={false} />
-      <Navbar />
       <section className="font-Manrope flex flex-col justify-center items-center my-16">
         <div className="xl:w-[35%] lg:w-[40%] md:w-[50%] w-[90%] rounded-xl mx-auto bg-lightGray">
           <div className="md:p-16 p-10">
@@ -191,7 +190,6 @@ export default function Login() {
           </span>
         </div>
       </section>
-      <Footer />
     </div>
   );
 }
