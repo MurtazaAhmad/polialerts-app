@@ -120,6 +120,12 @@ export default function CoverageArea({
     setRecipient("");
   };
 
+  // Function to handle removing recipient
+  const handleRemoveRecipient = (recipient: string) => {
+    const updatedRecipients = recipients.filter((r) => r !== recipient);
+    setRecipients(updatedRecipients);
+  };
+
   // Method to Update Channel
   const handleUpdateChannel = async () => {
     console.log("Updating channel...");
@@ -447,7 +453,7 @@ export default function CoverageArea({
                             >
                               {recipient}
                               {isEditMode && (
-                                <button className="mx-2 text-iota text-3xl">
+                                <button onClick={() => handleRemoveRecipient(recipient)} className="mx-2 text-iota text-3xl">
                                   <IoCloseSharp />
                                 </button>
                               )}
