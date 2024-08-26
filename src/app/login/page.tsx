@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { toast, Toaster } from "react-hot-toast";
+import { useUser } from "@/hooks/useUser";
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -18,6 +19,12 @@ export default function Login() {
 
   const router = useRouter();
   const [signInWithEmailAndPassword, user, loadingFirebase, error] = useSignInWithEmailAndPassword(auth);
+  const { createUser, fetchUser } = useUser()
+
+  if (error) {
+    console.log("Error while logging in: ", error.message);
+
+  }
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -36,15 +43,59 @@ export default function Login() {
 
     try {
       const res = await signInWithEmailAndPassword(email, password);
-      if (res) {
+      console.log();
+
+      console.log("res", res);
+      console.log("user", user);
+      console.log("error", error);
+
+      // If User exists
+      if (res && res.user) {
+        // If Email is not verified
+        if (res.user.emailVerified === false) {
+          toast.error("Email not verified. Please verify your email.");
+          return;
+        }
+
+        const userRegistrationData = localStorage.getItem('userRegistration');
+        console.log("userRegistrationData", JSON.parse(userRegistrationData as string));
+
+        const {
+          firstName = "",
+          lastName = "",
+          email = "",
+        } = userRegistrationData ? JSON.parse(userRegistrationData) : {};
+
+        // Check if User exists
+        const user = await fetchUser(res.user.uid);
+        console.log("Does user exist", user);
+
+        // If user doesn't exist, create user (first time login)
+        if (!user) {
+          console.log("User doesn't exist. Creating user...");
+
+          await createUser({
+            id: res.user.uid,
+            firstName: firstName,
+            lastName: lastName,
+            email: email || res.user.email,
+          });
+
+          setEmail('');
+          setPassword('');
+
+        }
+
         sessionStorage.setItem('user', JSON.stringify(res.user)); // Use JSON.stringify if you are storing an object
-        setEmail('');
-        setPassword('');
+
         toast.success("Logged in successfully!");
+
         setTimeout(() => {
           router.push('/dashboard');
         }, 2000); // Short delay for success message
+
       }
+
     } catch (error: any) {
       setErrorMessage(error.message || "An error occurred. Please try again.");
     } finally {
