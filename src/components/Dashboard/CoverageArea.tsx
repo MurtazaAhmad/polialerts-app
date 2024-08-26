@@ -59,8 +59,6 @@ export default function CoverageArea({
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   useEffect(() => {
-    console.log("Channel Updated: ");
-
     setRealTimeAlertKeywords(channel.real_time_alert_keywords);
     setReportAlertKeywords(channel.report_alert_keywords);
     setRecipients(channel.recipients);
@@ -123,11 +121,11 @@ export default function CoverageArea({
   };
 
   // Method to Update Channel
-  const handleUpdateChannel = () => {
+  const handleUpdateChannel = async () => {
     console.log("Updating channel...");
     setIsEditMode(false);
 
-    updateChannel(channelId, {
+    await updateChannel(channelId, {
       ...channel,
       real_time_alert_keywords: realTimeAlertKeywords,
       report_alert_keywords: reportAlertKeywords,
@@ -135,7 +133,7 @@ export default function CoverageArea({
       quote_context: quoteContext,
     });
 
-    console.log("Channel Updated Successfully!");
+    console.log("Channel Updated Successfully! - 2");
     if (!userDetails.id) throw new Error("User not found.");
     fetchUser(userDetails.id);
   };
@@ -151,9 +149,9 @@ export default function CoverageArea({
   };
 
   // Method to handle removing coverage area
-  const handleRemoveChannel = () => {
+  const handleRemoveChannel = async () => {
     console.log("Remove Coverage Area");
-    deleteChannel(channelId);
+    await deleteChannel(channelId);
     console.log("Channel Removed Successfully!");
     if (!userDetails.id) throw new Error("User not found.");
     fetchUser(userDetails.id);
