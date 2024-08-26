@@ -133,7 +133,7 @@ export default function Dashboard() {
             <span className="text-blueColor text-base uppercase">pro plan</span>
           </h2>
           <p className="text-base text-bodyColor">
-            Welcome, {userDetails?.name}
+            Welcome, {userDetails?.firstName} {userDetails?.lastName}!{" "}
           </p>
         </div>
         <div>

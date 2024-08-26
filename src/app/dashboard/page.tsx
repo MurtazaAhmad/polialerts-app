@@ -92,7 +92,7 @@ export default function Dashboard() {
             </span>
           </h1>
           <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-            Welcome, {userDetails?.name}
+            Welcome, {userDetails?.firstName} {userDetails?.lastName}!{" "}
           </p>
         </div>
         <div>
@@ -154,7 +154,7 @@ export default function Dashboard() {
       </div>
 
       {userDetails?.channels &&
-      Object.entries(userDetails.channels).length > 0 ? (
+        Object.entries(userDetails.channels).length > 0 ? (
         Object.entries(userDetails.channels).map(([channelId, channel]) => (
           <CoverageArea
             subscriptionType={userDetails?.subscription_type}
