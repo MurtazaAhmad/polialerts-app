@@ -1,5 +1,4 @@
-import Footer from "@/components/Footer/Footer";
-import Navbar from "@/components/Navbar/Navbar";
+
 import BillingInfo from "@/components/Profile/BillingInfo";
 import PersonalInfo from "@/components/Profile/PersonalInfo";
 import PlanDetails from "@/components/Profile/PlanDetails";

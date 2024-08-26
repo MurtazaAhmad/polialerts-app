@@ -1,7 +1,5 @@
 "use client";
-import Footer from "@/components/Footer/Footer";
 import Eye from "@/components/Icons/Eye";
-import Navbar from "@/components/Navbar/Navbar";
 import React, { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSendEmailVerification } from "react-firebase-hooks/auth";
