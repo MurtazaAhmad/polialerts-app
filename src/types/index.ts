@@ -13,7 +13,8 @@ export interface Channel {
 // User Interface
 export interface User {
     id?: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     subscription_type: string;
     channels: Channel[];
@@ -49,7 +50,8 @@ export interface IUserRepository {
 // Request Data
 export interface ICreateUserRequestData {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
 }
 
