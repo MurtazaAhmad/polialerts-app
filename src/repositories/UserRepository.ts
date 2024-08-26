@@ -13,7 +13,8 @@ export class UserRepository implements IUserRepository {
 
     // Add a new document with a generated id.
     const res = await setDoc(doc(db, USERS_COLLECTION, userData.id), {
-      name: userData.name,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
       email: userData.email,
       channels: [],
       subscription_type: PRO_SUBSCRIPTION,
@@ -28,7 +29,8 @@ export class UserRepository implements IUserRepository {
     const userSnapshot = await getDocs(usersCollection);
     const userList = userSnapshot.docs.map(doc => ({
       id: doc.id,
-      name: doc.data().name,
+      firstName: doc.data().firstName,
+      lastName: doc.data().lastName,
       email: doc.data().email,
       channels: doc.data().channels,
       subscription_type: doc.data().subscription_type,
@@ -43,9 +45,15 @@ export class UserRepository implements IUserRepository {
     const userCollection = collection(db, USERS_COLLECTION);
     const userSnapshot = await getDocs(userCollection);
     const doc = userSnapshot.docs.find(doc => doc.id === userId);
+
+    if (!doc) {
+      return undefined;
+    }
+
     const user = {
       id: doc?.id,
-      name: doc?.data().name,
+      firstName: doc?.data().firstName,
+      lastName: doc?.data().lastName,
       channels: doc?.data().channels,
       subscription_type: doc?.data().subscription_type,
     }
