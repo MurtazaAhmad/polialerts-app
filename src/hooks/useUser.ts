@@ -26,15 +26,17 @@ export const useUser = () => {
 
   const fetchUser = async (userId: string | null | undefined) => {
     setLoading(true);
-    console.log("fetchUser Called");
+    console.log("fetchUser() Called");
 
     if (!userId) return;
     const userRepository = new UserRepository();
     try {
       const userInfo = await userRepository.getUserById(userId);
       console.log("userInfo", userInfo);
+      if (!userInfo) return undefined;
       let user = userInfo as User;
       setUserDetails(user);
+      return user;
     } catch (error) {
       setError("Failed to fetch users.");
     } finally {
@@ -61,6 +63,7 @@ export const useUser = () => {
 
       await userRepository.addChannel(userDetails?.id, channelData);
       setLoading(false);
+
 
     } catch (error) {
       setLoading(false);
@@ -93,6 +96,8 @@ export const useUser = () => {
     try {
       if (!userDetails?.id) throw new Error("User not found.");
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
+      console.log("Channel Updated Successfully! - 1");
+
       setLoading(false);
 
     } catch (error) {
@@ -108,6 +113,7 @@ export const useUser = () => {
     try {
       if (!userDetails?.id) throw new Error("User not found.");
       await userRepository.deleteChannel(userDetails?.id, channelId);
+      console.log("Channel Deleted Successfully!");
       setLoading(false);
     } catch (error) {
       setLoading(false);
