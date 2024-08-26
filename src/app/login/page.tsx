@@ -3,7 +3,7 @@ import Eye from "@/components/Icons/Eye";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { toast, Toaster } from "react-hot-toast";
 import { useUser } from "@/hooks/useUser";
@@ -15,9 +15,11 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-
   const router = useRouter();
+  const [signInWithEmailAndPassword, user, loadingFirebase, error] =
+    useSignInWithEmailAndPassword(auth);
   const { createUser, fetchUser } = useUser();
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -33,41 +35,62 @@ export default function Login() {
       return;
     }
 
-    try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
+    if (error) {
+      if (error.code === "auth/invalid-credential") {
+       setErrorMessage("Invalid Credentials.");
+      }
+      return;
+    }
 
-      // If user exists
+    try {
+      const res = await signInWithEmailAndPassword(email, password);
+      console.log();
+
+      console.log("res", res);
+      console.log("user", user);
+      console.log("error", error);
+
+      // If User exists
       if (res && res.user) {
-        // Check if the email is verified
-        if (!res.user.emailVerified) {
+        // If Email is not verified
+        if (res.user.emailVerified === false) {
           toast.error("Email not verified. Please verify your email.");
-          setLoading(false);
           return;
         }
 
         const userRegistrationData = localStorage.getItem("userRegistration");
+        console.log(
+          "userRegistrationData",
+          JSON.parse(userRegistrationData as string)
+        );
+
         const {
           firstName = "",
           lastName = "",
           email = "",
         } = userRegistrationData ? JSON.parse(userRegistrationData) : {};
 
-        // Check if the user exists in Firestore
+        // Check if User exists
         const user = await fetchUser(res.user.uid);
+        console.log("Does user exist", user);
 
-        // Create user if they don't exist in Firestore
+        // If user doesn't exist, create user (first time login)
         if (!user) {
+          console.log("User doesn't exist. Creating user...");
+
           await createUser({
             id: res.user.uid,
             firstName: firstName,
             lastName: lastName,
             email: email || res.user.email,
           });
+
           setEmail("");
           setPassword("");
         }
 
-        sessionStorage.setItem("user", JSON.stringify(res.user));
+        sessionStorage.setItem("user", JSON.stringify(res.user)); // Use JSON.stringify if you are storing an object
+
         toast.success("Logged in successfully!");
 
         setTimeout(() => {
@@ -75,13 +98,7 @@ export default function Login() {
         }, 2000); // Short delay for success message
       }
     } catch (error: any) {
-      if (error.code === "auth/invalid-credential") {
-        setErrorMessage("Credentials are invalid.");
-      } else {
-        setErrorMessage(
-          "An unexpected error occurred. Please try again." || error.message
-        );
-      }
+      setErrorMessage(error.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
