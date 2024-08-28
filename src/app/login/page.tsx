@@ -35,13 +35,6 @@ export default function Login() {
       return;
     }
 
-    if (error) {
-      if (error.code === "auth/invalid-credential") {
-       setErrorMessage("Invalid Credentials.");
-      }
-      return;
-    }
-
     try {
       const res = await signInWithEmailAndPassword(email, password);
       console.log();
@@ -50,6 +43,13 @@ export default function Login() {
       console.log("user", user);
       console.log("error", error);
 
+      // Check for login errors within the try block
+      if (!res || !res.user) {
+        setErrorMessage("Invalid Credentials. Please try again.");
+        setLoading(false);
+        return;
+      }
+      
       // If User exists
       if (res && res.user) {
         // If Email is not verified
