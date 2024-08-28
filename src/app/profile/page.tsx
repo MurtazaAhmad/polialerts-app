@@ -9,7 +9,7 @@ import React, { useEffect } from "react";
 
 export default function Profile() {
   const [user] = useAuthState(auth);
-  const { userDetails, fetchUser, loading, error} = useUser();
+  const { userDetails, fetchUser, loading, error, updateProfile} = useUser();
 
   useEffect(() => {
     console.log("useEffect Called");
@@ -43,7 +43,7 @@ export default function Profile() {
         <hr className="w-[100%] border-iota" />
       </div>
 
-      <PersonalInfo userDetails={userDetails}/>
+      <PersonalInfo userDetails={userDetails} updateProfile={updateProfile}/>
       <BillingInfo />
       <PlanDetails />
     </>

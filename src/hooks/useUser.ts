@@ -152,5 +152,29 @@ export const useUser = () => {
     }
   }
 
-  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, deleteChannel, getChannels, updateChannel };
+  //Update Profile
+  const updateProfile = async (updatedData: Partial<User>) => {
+    setLoading(true);
+    const userRepository = new UserRepository();
+    try {
+      if (!userDetails?.id) throw new Error("User not found.");
+      await userRepository.updateProfile(userDetails.id, updatedData);
+      setUserDetails((prevState) => {
+        if (!prevState) return null; // Handle case when prevState is null
+  
+        return {
+          ...prevState,
+          ...updatedData, 
+        };
+      });
+      console.log("Profile updated successfully!");
+    } catch (error) {
+      setError("Failed to update profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+ 
+  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, deleteChannel, getChannels, updateChannel ,updateProfile };
 };

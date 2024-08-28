@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { User } from "@/types";
+import toast, { Toaster } from "react-hot-toast";
 interface UserDetailsProp {
   userDetails: User | null;
+  updateProfile: (updatedUser: Partial<User>) => void;
 }
-export default function PersonalInfo({ userDetails }: UserDetailsProp) {
+export default function PersonalInfo({ userDetails, updateProfile }: UserDetailsProp) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,14 +24,36 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
     }
   }, [userDetails]);
 
-  const handleSubmit = (e: any) => {
-    e.prevent.default();
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
+    //integration of update profile  method for testing purpose
+
+    /*const updatedUser = {
+      firstName,
+      lastName,
+      email,
+      phoneNo,
+      street,
+      city,
+      country,
+      postalCode,
+    };
+
+    try {
+      updateProfile(updatedUser);
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update profile. Please try again.");
+      console.error("Error updating profile:", error);
+    }*/
+   
+  };
  
   
   return (
     <>
+     <Toaster position="top-center" reverseOrder={false} />
       <section className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5  py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
         <h2 className="text-headingColor font-bold md:text-[2.125rem] text-[1.875rem] md:leading-[3rem] leading-[1.875rem] md:w-[40%]">
           Personal Information

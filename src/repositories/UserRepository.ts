@@ -1,4 +1,4 @@
-import { Channel } from "@/types"
+import { Channel, User } from "@/types"
 import { addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { PRO_SUBSCRIPTION, USERS_COLLECTION } from "@/app/utils/constants";
@@ -306,5 +306,21 @@ export class UserRepository implements IUserRepository {
 
   // Add Tags
   async addTags(userId: string, channelId: string, tags: string[]) { }
+
+  // update Profile
+  async updateProfile(userId: string, updatedData: Partial<User>) {
+  try {
+    // Get a reference to the user's document
+    const userDocRef = doc(db, USERS_COLLECTION, userId);
+
+    await updateDoc(userDocRef, updatedData);
+
+    console.log("Profile updated successfully!");
+  } catch (error) {
+    console.error("Error updating profile: ", error);
+    throw error;
+  }
+  }
+
 
 }
