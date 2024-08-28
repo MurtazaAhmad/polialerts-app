@@ -55,6 +55,7 @@ export class UserRepository implements IUserRepository {
       firstName: doc?.data().firstName,
       lastName: doc?.data().lastName,
       channels: doc?.data().channels,
+      email: doc?.data().email,
       subscription_type: doc?.data().subscription_type,
     }
     return user;

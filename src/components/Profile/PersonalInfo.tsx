@@ -1,6 +1,10 @@
 "use client";
-import React, { useState } from "react";
-export default function PersonalInfo() {
+import React, { useEffect, useState } from "react";
+import { User } from "@/types";
+interface UserDetailsProp {
+  userDetails: User | null;
+}
+export default function PersonalInfo({ userDetails }: UserDetailsProp) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -10,9 +14,20 @@ export default function PersonalInfo() {
   const [country, setCountry] = useState("");
   const [postalCode, setPostalCode] = useState("");
 
+  useEffect(() => {
+    if (userDetails) {
+      setFirstName(userDetails.firstName || "");
+      setLastName(userDetails.lastName || "");
+      setEmail(userDetails.email || "");
+    }
+  }, [userDetails]);
+
   const handleSubmit = (e: any) => {
     e.prevent.default();
   };
+
+ 
+  
   return (
     <>
       <section className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5  py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
