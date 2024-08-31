@@ -20,6 +20,10 @@ export default function Login() {
     useSignInWithEmailAndPassword(auth);
   const { createUser, fetchUser } = useUser();
 
+  if(error){
+    console.log("Error while logging in: ", error.message);
+  }
+
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
