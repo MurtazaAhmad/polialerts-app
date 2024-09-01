@@ -16,6 +16,11 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
+    phoneNo?: string;
+    street?: string;
+    city?: string;
+    country?: string;
+    postalCode?: string;
     subscription_type: string;
     channels: Channel[];
 }
@@ -31,7 +36,7 @@ export interface Category {
     id: string;
     name: string;
     parent: string;
-    streaming_sources: string[];
+    streaming_source: string;
     tags: string[];
 }
 
@@ -41,7 +46,7 @@ export interface IUserRepository {
     createUser(user: ICreateUserRequestData): Promise<void>;
     getUsers(): Promise<User[]>;
     getUserById(userId: string): Promise<any | undefined>;
-    addChannel(userId: string, channel: IAddChannelRequestData): void;
+    addChannel(userId: string, channelId: string, channel: IAddChannelRequestData): void;
     getChannels(userId: string): Promise<Channel[]>;
     addRealTimeAlertKeyword(userId: string, channelId: string, keyword: string): void;
     addReportAlertKeyword(userId: string, channelId: string, keyword: string): void

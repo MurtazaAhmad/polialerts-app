@@ -7,20 +7,28 @@ interface UserDetailsProp {
   updateProfile: (updatedUser: Partial<User>) => void;
 }
 export default function PersonalInfo({ userDetails, updateProfile }: UserDetailsProp) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNo, setPhoneNo] = useState<string>("");
+  const [street, setStreet] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+  const [postalCode, setPostalCode] = useState<string>("");
+
+  console.log("userDetails", userDetails);
 
   useEffect(() => {
     if (userDetails) {
       setFirstName(userDetails.firstName || "");
       setLastName(userDetails.lastName || "");
       setEmail(userDetails.email || "");
+      setPhoneNo(userDetails.phoneNo || "");
+      setStreet(userDetails.street || "");
+      setCity(userDetails.city || "");
+      setCountry(userDetails.country || "");
+      setPostalCode(userDetails.postalCode || "");
+
     }
   }, [userDetails]);
 
@@ -29,7 +37,7 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
 
     //integration of update profile  method for testing purpose
 
-    /*const updatedUser = {
+    const updatedUser = {
       firstName,
       lastName,
       email,
@@ -46,14 +54,24 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");
       console.error("Error updating profile:", error);
-    }*/
-   
+    }
+
   };
- 
-  
+
+  const handleRevert = async () => {
+    setFirstName(userDetails?.firstName || "");
+    setLastName(userDetails?.lastName || "");
+    setEmail(userDetails?.email || "");
+    setPhoneNo(userDetails?.phoneNo || "");
+    setStreet(userDetails?.street || "");
+    setCity(userDetails?.city || "");
+    setCountry(userDetails?.country || "");
+    setPostalCode(userDetails?.postalCode || "");
+  }
+
   return (
     <>
-     <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
       <section className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5  py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
         <h2 className="text-headingColor font-bold md:text-[2.125rem] text-[1.875rem] md:leading-[3rem] leading-[1.875rem] md:w-[40%]">
           Personal Information
@@ -218,7 +236,7 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
               >
                 Save changes
               </button>
-              <button className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor">
+              <button onClick={() => handleRevert()} type="button" className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor">
                 Revert
               </button>
             </section>
