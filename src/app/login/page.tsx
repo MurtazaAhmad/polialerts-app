@@ -1,7 +1,5 @@
 "use client";
-import Footer from "@/components/Footer/Footer";
 import Eye from "@/components/Icons/Eye";
-import Navbar from "@/components/Navbar/Navbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -18,12 +16,12 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const router = useRouter();
-  const [signInWithEmailAndPassword, user, loadingFirebase, error] = useSignInWithEmailAndPassword(auth);
-  const { createUser, fetchUser } = useUser()
+  const [signInWithEmailAndPassword, user, loadingFirebase, error] =
+    useSignInWithEmailAndPassword(auth);
+  const { createUser, fetchUser } = useUser();
 
-  if (error) {
+  if(error){
     console.log("Error while logging in: ", error.message);
-
   }
 
   const togglePasswordVisibility = () => {
@@ -49,6 +47,13 @@ export default function Login() {
       console.log("user", user);
       console.log("error", error);
 
+      // Check for login errors within the try block
+      if (!res || !res.user) {
+        setErrorMessage("Invalid Credentials. Please try again.");
+        setLoading(false);
+        return;
+      }
+      
       // If User exists
       if (res && res.user) {
         // If Email is not verified
@@ -57,8 +62,11 @@ export default function Login() {
           return;
         }
 
-        const userRegistrationData = localStorage.getItem('userRegistration');
-        console.log("userRegistrationData", JSON.parse(userRegistrationData as string));
+        const userRegistrationData = localStorage.getItem("userRegistration");
+        console.log(
+          "userRegistrationData",
+          JSON.parse(userRegistrationData as string)
+        );
 
         const {
           firstName = "",
@@ -81,21 +89,18 @@ export default function Login() {
             email: email || res.user.email,
           });
 
-          setEmail('');
-          setPassword('');
-
+          setEmail("");
+          setPassword("");
         }
 
-        sessionStorage.setItem('user', JSON.stringify(res.user)); // Use JSON.stringify if you are storing an object
+        sessionStorage.setItem("user", JSON.stringify(res.user)); // Use JSON.stringify if you are storing an object
 
         toast.success("Logged in successfully!");
 
         setTimeout(() => {
-          router.push('/dashboard');
+          router.push("/dashboard");
         }, 2000); // Short delay for success message
-
       }
-
     } catch (error: any) {
       setErrorMessage(error.message || "An error occurred. Please try again.");
     } finally {
@@ -106,7 +111,6 @@ export default function Login() {
   return (
     <div>
       <Toaster position="top-center" reverseOrder={false} />
-      <Navbar />
       <section className="font-Manrope flex flex-col justify-center items-center my-16">
         <div className="xl:w-[35%] lg:w-[40%] md:w-[50%] w-[90%] rounded-xl mx-auto bg-lightGray">
           <div className="md:p-16 p-10">
@@ -191,7 +195,6 @@ export default function Login() {
           </span>
         </div>
       </section>
-      <Footer />
     </div>
   );
 }

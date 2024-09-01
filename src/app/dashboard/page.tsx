@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
-import Navbar from "@/components/Navbar/Navbar";
 import CoverageAreaModel from "@/components/Dashboard/CoverageAreaModel";
 import CoverageArea from "@/components/Dashboard/CoverageArea";
 import { useUser } from "@/hooks/useUser";
@@ -78,7 +77,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <Navbar />
+    
 
       {/* Header */}
       <div className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10   md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
@@ -168,11 +167,11 @@ export default function Dashboard() {
           />
         ))
       ) : (
-        <div className="text-sm md:text-base md:leading-7 text-bodyColor my-5 leading-[1.625rem] lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
+        <div className="mb-40 text-sm md:text-base md:leading-7 text-bodyColor my-5 leading-[1.625rem] lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
           You do not have any alerts set up. Get started by adding a new
           coverage area.
         </div>
       )}
     </div>
-  );
+  ); 
 }
