@@ -1,5 +1,5 @@
-import { Channel } from "@/types"
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { Channel, User } from "@/types"
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { PRO_SUBSCRIPTION, USERS_COLLECTION } from "@/app/utils/constants";
 import { ICreateUserRequestData, IAddChannelRequestData, IUserRepository } from "@/types";
@@ -55,30 +55,43 @@ export class UserRepository implements IUserRepository {
       firstName: doc?.data().firstName,
       lastName: doc?.data().lastName,
       channels: doc?.data().channels,
+      email: doc?.data().email,
+      phoneNo: doc?.data().phoneNo,
+      street: doc?.data().street,
+      city: doc?.data().city,
+      country: doc?.data().country,
+      postalCode: doc?.data().postalCode,
       subscription_type: doc?.data().subscription_type,
     }
     return user;
   }
 
   //Add Channel
-  async addChannel(userId: string, channelData: IAddChannelRequestData) {
+  async addChannel(userId: string, channelId: string, channelData: IAddChannelRequestData) {
     try {
 
-      // Create a new channel document
-      const channelsCollectionRef = collection(doc(db, USERS_COLLECTION, userId), 'channels');
-      const newChannelDocRef = await addDoc(channelsCollectionRef, {});
+      // First check if channel with the same ID already exists
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist");
+      }
 
-      // Retrieve the generated ID
-      const channelId = newChannelDocRef.id;
+      const userData = userDoc.data();
+      const channels = userData?.channels;
+
+      if (!channels || channels[channelId]) {
+        throw new Error("Channel already exists");
+      }
 
       // Update the user's document with the modified channelData
-      const userDocRef = doc(db, USERS_COLLECTION, userId);
       await updateDoc(userDocRef, {
         [`channels.${channelId}`]: channelData
       });
 
     } catch (error) {
       console.error("Error adding channel: ", error);
+      throw error;
     }
   }
 
@@ -305,5 +318,18 @@ export class UserRepository implements IUserRepository {
 
   // Add Tags
   async addTags(userId: string, channelId: string, tags: string[]) { }
+
+  // update Profile
+  async updateProfile(userId: string, updatedData: Partial<User>) {
+    try {
+      // Get a reference to the user's document
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
+      await updateDoc(userDocRef, updatedData);
+    } catch (error) {
+      console.error("Error updating profile: ", error);
+      throw error;
+    }
+  }
+
 
 }

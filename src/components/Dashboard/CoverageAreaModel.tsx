@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import Close from "@/components/Icons/Close";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -8,7 +8,7 @@ import { Category, User } from "@/types";
 import { IoCloseSharp } from "react-icons/io5";
 
 interface CoverageAreaModelProps {
-  addChannel: (main_category: string, sub_category: string) => void;
+  addChannel: (main_category: string, sub_category: string, channelId: string) => void;
   fetchSubCategories: (parent: string) => void;
   mainCategories: Category[];
   userDetails: User;
@@ -30,15 +30,15 @@ export default function CoverageAreaModel({
     },
   };
 
-  const [mainCategory, setMainCategory] = React.useState<string>("");
-  const [subCategory, setSubCategory] = React.useState<string>("");
+  const [mainCategory, setMainCategory] = useState<string>("");
+  const [subCategory, setSubCategory] = useState<string>("");
 
   let subtitle;
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
   function openModal() {
     setIsOpen(true);
   }
-  function afterOpenModal() {}
+  function afterOpenModal() { }
   function closeModal() {
     setIsOpen(false);
   }
@@ -68,7 +68,27 @@ export default function CoverageAreaModel({
   // Add
   const handleAddArea = async () => {
     try {
-      await addChannel(mainCategory, subCategory);
+      console.log("Adding Area...", subCategories);
+
+      // Count how many channels do we have.
+      const channelsCount = Object.keys(userDetails.channels).length;
+      console.log("channelsCount", channelsCount);
+
+      if (userDetails.subscription_type === "PRO") {
+        console.log("PRO.");
+
+      }
+
+      if (userDetails.subscription_type === "BUDGET" && channelsCount >= 1) {
+        console.log("You have reached the limit of channels for your subscription type.");
+
+      }
+
+      // Getting the channelId
+      const channelId = subCategories.find(cat => cat.name === subCategory)?.streaming_source;
+      if (!channelId) throw new Error("Channel ID not found.");
+
+      await addChannel(mainCategory, subCategory, channelId);
       console.log("Channel Added Successfully!");
       closeModal();
 
@@ -168,7 +188,7 @@ export default function CoverageAreaModel({
             </>
           )}
 
-          {userDetails?.subscription_type == "BUDGET" && (
+          {/* {userDetails?.subscription_type == "BUDGET" && (
             <>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
                 Your plan includes 1 coverage area which is already in use. If
@@ -183,9 +203,9 @@ export default function CoverageAreaModel({
                 Go back
               </button>
             </>
-          )}
+          )} */}
 
-          {userDetails?.subscription_type == "PLUS" && (
+          {/* {userDetails?.subscription_type == "PLUS" && (
             <>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
                 Your plan includes 2 coverage areas which are already in use. If
@@ -200,7 +220,7 @@ export default function CoverageAreaModel({
                 Go back
               </button>
             </>
-          )}
+          )} */}
         </Modal>
       </div>
     </>

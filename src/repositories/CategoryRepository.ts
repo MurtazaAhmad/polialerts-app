@@ -16,7 +16,7 @@ export class CategoryRepository implements ICategoryRepository {
             id: doc.id,
             name: doc.data().name,
             parent: doc.data().parent,
-            streaming_sources: doc.data().streaming_sources,
+            streaming_source: doc.data().streaming_source,
             tags: doc.data().tags
         }));
         return categoryList;

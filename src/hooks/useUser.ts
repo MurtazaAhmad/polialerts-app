@@ -45,23 +45,24 @@ export const useUser = () => {
   };
 
   //Add Channel
-  const addChannel = async (main_category: string, sub_category: string) => {
+  const addChannel = async (mainCategory: string, subCategory: string, channelId: string) => {
     setLoading(true);
 
     const userRepository = new UserRepository();
     try {
       let channelData = {
-        main_category: main_category,
-        sub_category: sub_category,
+        main_category: mainCategory,
+        sub_category: subCategory,
         real_time_alert_keywords: [],
         report_alert_keywords: [],
         recipients: [],
         quote_context: 20,
         tags: [],
       };
+
       if (!userDetails?.id) throw new Error("User not found.");
 
-      await userRepository.addChannel(userDetails?.id, channelData);
+      await userRepository.addChannel(userDetails?.id, channelId, channelData);
       setLoading(false);
 
 
@@ -152,5 +153,29 @@ export const useUser = () => {
     }
   }
 
-  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, deleteChannel, getChannels, updateChannel };
+  //Update Profile
+  const updateProfile = async (updatedData: Partial<User>) => {
+    setLoading(true);
+    const userRepository = new UserRepository();
+    try {
+      if (!userDetails?.id) throw new Error("User not found.");
+      await userRepository.updateProfile(userDetails.id, updatedData);
+      setUserDetails((prevState) => {
+        if (!prevState) return null; // Handle case when prevState is null
+
+        return {
+          ...prevState,
+          ...updatedData,
+        };
+      });
+      console.log("Profile updated successfully!");
+    } catch (error) {
+      setError("Failed to update profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return { userDetails, loading, error, createUser, fetchUser, addChannel, addRealTimeAlertKeyword, addReportAlertKeyword, deleteChannel, getChannels, updateChannel, updateProfile };
 };
