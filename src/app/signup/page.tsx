@@ -8,6 +8,7 @@ import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -15,6 +16,8 @@ const Signup = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { createUser } = useUser();
   const router = useRouter();
 
@@ -23,30 +26,18 @@ const Signup = () => {
   };
 
   // Calling Hook - Returns array
-  const [createUserWithEmailAndPassword, user, loading, createUserError] =
-    useCreateUserWithEmailAndPassword(auth);
   const [sendEmailVerification, sending, emailVerificationError] =
     useSendEmailVerification(auth);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(null);
+    setLoading(true);
     console.log(email, password);
 
     try {
-      const res = await createUserWithEmailAndPassword(email, password);
+      const res = await createUserWithEmailAndPassword(auth,email, password);
       console.log("response: ", res);
-
-      // Check if response has an error
-      if (createUserError) {
-        if (createUserError.code === "auth/email-already-in-use") {
-          toast.error(
-            "This email is already in use. Please use a different email."
-          );
-        } else {
-          toast.error(createUserError.message);
-        }
-        return;
-      }
 
       // Using User ID from response, we can store user data in Firestore on Users Collection
       const user = res?.user;
@@ -90,8 +81,16 @@ const Signup = () => {
         router.push("/login");
       }, 2000);
     } catch (error: any) {
-      console.log("ERROR!");
-      console.log(error.message);
+      if (error.code === "auth/email-already-in-use") {
+        setErrorMessage("This email is already in use. Please try different email.");
+      } else {
+        setErrorMessage(
+          "An unexpected error occurred. Please try again." || error.message
+        );
+      }
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -99,9 +98,6 @@ const Signup = () => {
     console.log("Email Verification Error: ", emailVerificationError.message);
   }
 
-  if (createUserError) {
-    console.log("Create User Error: ", createUserError.message);
-  }
 
   if (sending) {
     console.log("Sending Email Verification...");
@@ -193,6 +189,9 @@ const Signup = () => {
                 >
                   {loading ? "Loading..." : "Sign Up"}
                 </button>
+                {errorMessage && (
+                  <p className="text-red-600 text-sm">{errorMessage}</p>
+                )}
               </div>
             </form>
           </div>
