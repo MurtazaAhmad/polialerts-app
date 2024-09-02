@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useSendEmailVerification } from "react-firebase-hooks/auth";
 import { toast, Toaster } from "react-hot-toast";
-
 import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
@@ -181,14 +180,18 @@ const Signup = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
-
                     <div onClick={togglePasswordVisibility}>
                       <Eye passwordVisible={passwordVisible} />
                     </div>
                   </div>
                 </div>
-                <button className="flex my-2 justify-start rounded-full w-fit py-2 px-10 bg-blueColor text-white hover:bg-blueHover">
-                  Sign Up
+                <button
+                  className={`flex my-2 justify-start rounded-full w-fit py-2 px-10 ${
+                    loading ? "bg-gray-400 cursor-not-allowed" : "bg-blueColor"
+                  } text-white hover:bg-blueHover`}
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Sign Up"}
                 </button>
               </div>
             </form>

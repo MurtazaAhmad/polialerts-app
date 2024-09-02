@@ -7,6 +7,7 @@ import CoverageArea from "@/components/Dashboard/CoverageArea";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { useCategory } from "@/hooks/useCategory";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Dashboard() {
   // Auth User
@@ -68,17 +69,17 @@ export default function Dashboard() {
   }, [user]);
 
   if (loading || !userDetails) {
-    return <div>Loading...</div>;
+    return <div className="mb-64">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    toast.error(`Error: ${error}`);
   }
 
   return (
     <div>
     
-
+    <Toaster position="top-center" reverseOrder={false} />
       {/* Header */}
       <div className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10   md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
         <div>
@@ -167,7 +168,7 @@ export default function Dashboard() {
           />
         ))
       ) : (
-        <div className="mb-40 text-sm md:text-base md:leading-7 text-bodyColor my-5 leading-[1.625rem] lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
+        <div className="mb-64 text-sm md:text-base md:leading-7 text-bodyColor my-5 leading-[1.625rem] lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
           You do not have any alerts set up. Get started by adding a new
           coverage area.
         </div>
