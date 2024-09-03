@@ -1,0 +1,41 @@
+"use client"
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { User } from "@/types";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useUser } from "@/hooks/useUser";
+import { auth } from "@/app/firebase/config";
+
+interface UserContextType {
+  userDetails: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [user] = useAuthState(auth);
+  const { userDetails, loading, error, fetchUser } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      console.log("We have a User", user);
+      fetchUser(user.uid);
+    }
+  }, [user]);
+
+
+  return (
+    <UserContext.Provider value={{ userDetails, loading, error }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUserContext must be used within a UserProvider");
+  }
+  return context;
+};
