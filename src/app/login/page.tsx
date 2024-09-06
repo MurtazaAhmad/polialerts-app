@@ -3,7 +3,7 @@ import Eye from "@/components/Icons/Eye";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/app/firebase/config";
 import { toast, Toaster } from "react-hot-toast";
 import { useUser } from "@/hooks/useUser";
@@ -16,13 +16,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const router = useRouter();
-  const [signInWithEmailAndPassword, user, loadingFirebase, error] =
-    useSignInWithEmailAndPassword(auth);
   const { createUser, fetchUser } = useUser();
-
-  if(error){
-    console.log("Error while logging in: ", error.message);
-  }
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -40,70 +34,55 @@ export default function Login() {
     }
 
     try {
-      const res = await signInWithEmailAndPassword(email, password);
-      console.log();
+      const res = await signInWithEmailAndPassword(auth, email, password);
 
-      console.log("res", res);
-      console.log("user", user);
-      console.log("error", error);
-
-      // Check for login errors within the try block
-      if (!res || !res.user) {
-        setErrorMessage("Invalid Credentials. Please try again.");
-        setLoading(false);
-        return;
-      }
-      
       // If User exists
       if (res && res.user) {
-        // If Email is not verified
-        if (res.user.emailVerified === false) {
+         // If Email is not verified
+        if (!res.user.emailVerified) {
           toast.error("Email not verified. Please verify your email.");
+          setLoading(false);
           return;
         }
 
         const userRegistrationData = localStorage.getItem("userRegistration");
-        console.log(
-          "userRegistrationData",
-          JSON.parse(userRegistrationData as string)
-        );
+        const { firstName = "", lastName = "", email = "" } =
+          userRegistrationData ? JSON.parse(userRegistrationData) : {};
 
-        const {
-          firstName = "",
-          lastName = "",
-          email = "",
-        } = userRegistrationData ? JSON.parse(userRegistrationData) : {};
-
-        // Check if User exists
+        // Check if the User exists 
         const user = await fetchUser(res.user.uid);
-        console.log("Does user exist", user);
 
-        // If user doesn't exist, create user (first time login)
+         // If user doesn't exist, create user (first time login)
         if (!user) {
-          console.log("User doesn't exist. Creating user...");
-
           await createUser({
             id: res.user.uid,
             firstName: firstName,
             lastName: lastName,
             email: email || res.user.email,
           });
-
           setEmail("");
           setPassword("");
         }
 
-        sessionStorage.setItem("user", JSON.stringify(res.user)); // Use JSON.stringify if you are storing an object
-
+        sessionStorage.setItem("user", JSON.stringify(res.user));
         toast.success("Logged in successfully!");
 
         setTimeout(() => {
           router.push("/dashboard");
         }, 2000); // Short delay for success message
       }
-    } catch (error: any) {
-      setErrorMessage(error.message || "An error occurred. Please try again.");
-    } finally {
+    }
+      catch (error: any) {
+        if (error.code === "auth/invalid-credential") {
+          setErrorMessage("Credentials are invalid.");
+        } else {
+          setErrorMessage(
+            "An unexpected error occurred. Please try again." || error.message
+          );
+        }
+      } 
+      
+    finally {
       setLoading(false);
     }
   };
