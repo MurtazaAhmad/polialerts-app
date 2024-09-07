@@ -78,8 +78,8 @@ export default function Dashboard() {
 
   return (
     <div>
-    
-    <Toaster position="top-center" reverseOrder={false} />
+
+      <Toaster position="top-center" reverseOrder={false} />
       {/* Header */}
       <div className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10   md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
         <div>
@@ -174,5 +174,5 @@ export default function Dashboard() {
         </div>
       )}
     </div>
-  ); 
+  );
 }

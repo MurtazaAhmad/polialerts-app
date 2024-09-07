@@ -36,7 +36,7 @@ const Signup = () => {
     console.log(email, password);
 
     try {
-      const res = await createUserWithEmailAndPassword(auth,email, password);
+      const res = await createUserWithEmailAndPassword(auth, email, password);
       console.log("response: ", res);
 
       // Using User ID from response, we can store user data in Firestore on Users Collection
@@ -182,9 +182,8 @@ const Signup = () => {
                   </div>
                 </div>
                 <button
-                  className={`flex my-2 justify-start rounded-full w-fit py-2 px-10 ${
-                    loading ? "bg-gray-400 cursor-not-allowed" : "bg-blueColor"
-                  } text-white hover:bg-blueHover`}
+                  className={`flex my-2 justify-start rounded-full w-fit py-2 px-10 ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blueColor"
+                    } text-white hover:bg-blueHover`}
                   disabled={loading}
                 >
                   {loading ? "Loading..." : "Sign Up"}
