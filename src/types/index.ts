@@ -22,6 +22,7 @@ export interface User {
     country?: string;
     postalCode?: string;
     subscription_type: string;
+    subscriptionDetails: SubscriptionDetails;
     channels: Channel[];
 }
 
@@ -38,6 +39,14 @@ export interface Category {
     parent: string;
     streaming_source: string;
     tags: string[];
+}
+
+// Subscription Details Interface
+export interface SubscriptionDetails {
+    name: string;
+    channels_limit: number;
+    report_alert_keywords_limit: number;
+    recipients_limit: number;
 }
 
 
