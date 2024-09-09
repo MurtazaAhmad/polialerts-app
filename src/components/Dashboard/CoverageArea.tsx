@@ -100,7 +100,7 @@ export default function CoverageArea({
     try {
       setReportAlertKeyword("");
       setReportAlertKeywords([...reportAlertKeywords, reportAlertKeyword]);
-      // addReportAlertKeyword(channelId, reportAlertKeyword);
+      //addReportAlertKeyword(channelId, reportAlertKeyword);
     } catch (err) {
       console.log("Error adding report alert keyword: ", err);
     }
@@ -162,6 +162,7 @@ export default function CoverageArea({
     fetchUser(userDetails.id);
   };
 
+  console.log("jjj", channel?.report_alert_keywords);
   return (
     <>
       <section className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
@@ -305,7 +306,7 @@ export default function CoverageArea({
                                 />
                                 <button
                                   type="submit"
-                                  className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:blueH"
+                                  className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                                 >
                                   Add
                                 </button>
@@ -527,12 +528,45 @@ export default function CoverageArea({
                                   }
                                   required
                                   type="text"
-                                  className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
-                                  placeholder="Add keywords here"
+                                  className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${
+                                    (subscriptionType === "PLUS" &&
+                                      reportAlertKeywords.length >= 10) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      reportAlertKeywords.length >= 3)
+                                      ? "border-red-500"
+                                      : "border-blueColor"
+                                  }`}
+                                  placeholder={
+                                    (subscriptionType === "PLUS" &&
+                                      reportAlertKeywords.length >= 10) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      reportAlertKeywords.length >= 3)
+                                      ? "Keyword limit reached"
+                                      : "Add keywords here"
+                                  }
+                                  disabled={
+                                    (subscriptionType === "PLUS" &&
+                                      reportAlertKeywords.length >= 10) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      reportAlertKeywords.length >= 3)
+                                  }
                                 />
                                 <button
                                   type="submit"
-                                  className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:blueH"
+                                  className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${
+                                    (subscriptionType === "PLUS" &&
+                                      reportAlertKeywords.length >= 10) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      reportAlertKeywords.length >= 3)
+                                      ? "bg-blueHover cursor-not-allowed"
+                                      : "bg-blueColor hover:bg-blueHover"
+                                  }`}
+                                  disabled={
+                                    (subscriptionType === "PLUS" &&
+                                      reportAlertKeywords.length >= 10) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      reportAlertKeywords.length >= 3)
+                                  }
                                 >
                                   Add
                                 </button>
@@ -545,22 +579,25 @@ export default function CoverageArea({
                           <div
                             className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
                           >
-                            {channel.report_alert_keywords.length > 0 ? (
-                              channel.report_alert_keywords.map(
-                                (keyword, index) => (
-                                  <div
-                                    key={index}
-                                    className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
-                                  >
-                                    {keyword}
-                                    {isEditMode && (
-                                      <button className="mx-2 text-iota text-3xl">
-                                        <IoCloseSharp />
-                                      </button>
-                                    )}
-                                  </div>
-                                )
-                              )
+                            {reportAlertKeywords.length > 0 ? (
+                              reportAlertKeywords.map((keyword, index) => (
+                                <div
+                                  key={index}
+                                  className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
+                                >
+                                  {keyword}
+                                  {isEditMode && (
+                                    <button
+                                      onClick={() =>
+                                        handleRemoveReportAlertKeyword(keyword)
+                                      }
+                                      className="mx-2 text-iota text-3xl"
+                                    >
+                                      <IoCloseSharp />
+                                    </button>
+                                  )}
+                                </div>
+                              ))
                             ) : (
                               <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
                                 No keywords found
@@ -639,19 +676,54 @@ export default function CoverageArea({
                                 onSubmit={handleAddRecipient}
                                 className="flex gap-5 md:gap-2"
                               >
-                              <input
-                                required
-                                name="first-name"
-                                type="text"
-                                className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
-                                placeholder="Enter new email address"
-                              />
-                              <button
-                                type="submit"
-                                className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white"
-                              >
-                                Add
-                              </button>
+                                <input
+                                  value={recipient}
+                                  onChange={(e) => setRecipient(e.target.value)}
+                                  required
+                                  name="first-name"
+                                  type="text"
+                                  className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${
+                                    (subscriptionType === "PLUS" &&
+                                      recipients.length >= 2) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      recipients.length >= 1)
+                                      ? "border-red-500"
+                                      : "border-blueColor"
+                                  }`}
+                                  placeholder={
+                                    (subscriptionType === "PLUS" &&
+                                      recipients.length >= 2) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      recipients.length >= 1)
+                                      ? "Keyword limit reached"
+                                      : "Enter new email address"
+                                  }
+                                  disabled={
+                                    (subscriptionType === "PLUS" &&
+                                      recipients.length >= 2) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      recipients.length > 1)
+                                  }
+                                />
+                                <button
+                                  type="submit"
+                                  className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${
+                                    (subscriptionType === "PLUS" &&
+                                      recipients.length >= 2) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      recipients.length >= 1)
+                                      ? "bg-blueHover cursor-not-allowed"
+                                      : "bg-blueColor hover:bg-blueHover"
+                                  }`}
+                                  disabled={
+                                    (subscriptionType === "PLUS" &&
+                                      recipients.length >= 2) ||
+                                    (subscriptionType === "BUDGET" &&
+                                      recipients.length >= 1)
+                                  }
+                                >
+                                  Add
+                                </button>
                               </form>
                             </div>
                           )}
@@ -661,15 +733,20 @@ export default function CoverageArea({
                           <div
                             className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[8vh] h-[5vh]" : "md:h-[20vh] h-[10vh]"}`}
                           >
-                            {channel.recipients.length > 0 ? (
-                              channel.recipients.map((recipient, index) => (
+                            {recipients?.length > 0 ? (
+                              recipients.map((recipient, index) => (
                                 <div
                                   className="bg-white flex items-center rounded-md py-1 px-2 text-sm leading-[1.375rem] md:text-base md:leading-7"
                                   key={index}
                                 >
                                   {recipient}
                                   {isEditMode && (
-                                    <button className="mx-2 text-iota text-3xl">
+                                    <button
+                                      onClick={() =>
+                                        handleRemoveRecipient(recipient)
+                                      }
+                                      className="mx-2 text-iota text-3xl"
+                                    >
                                       <IoCloseSharp />
                                     </button>
                                   )}
