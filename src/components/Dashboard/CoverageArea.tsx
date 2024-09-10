@@ -43,7 +43,7 @@ export default function CoverageArea({
   // State to manage report alert keyword input
   const [reportAlertKeyword, setReportAlertKeyword] = useState<string>("");
 
-  // State to manage report alert keywords
+  // State to manage report alert keywords (End of day Email Alerts)
   const [reportAlertKeywords, setReportAlertKeywords] = useState<string[]>([]);
 
   // State to manage quote context
@@ -55,6 +55,14 @@ export default function CoverageArea({
   // State to manage recipients
   const [recipients, setRecipients] = useState<string[]>([]);
 
+  // State to manage limit of report Alert Keywords (End of Day Alert keywords)
+  const [isReportAlertLimitReached, setIsReportAlertLimitReached] =
+    useState<boolean>(false);
+
+  // State to manage limit of recipients
+  const [isRecipientLimitReached, setIsRecipientLimitReached] =
+    useState<boolean>(false);
+
   const [showRightSide, setShowRightSide] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
@@ -63,6 +71,23 @@ export default function CoverageArea({
     setReportAlertKeywords(channel.report_alert_keywords);
     setRecipients(channel.recipients);
     setQuoteContext(channel.quote_context);
+
+    // if report alert keywords limit reached
+    if (
+      channel.report_alert_keywords.length >=
+      userDetails.subscriptionDetails.report_alert_keywords_limit
+    ) {
+      setIsReportAlertLimitReached(true);
+    }
+
+    // if recipients limit reached
+    if (
+      channel.recipients.length >=
+      userDetails.subscriptionDetails.recipients_limit
+    ) {
+
+      setIsRecipientLimitReached(true);
+    }
   }, [channel]);
 
   const toggleRightSide = () => {
@@ -85,7 +110,6 @@ export default function CoverageArea({
 
     console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
     setRealTimeAlertKeyword("");
-
   };
 
   // Function to handle removing real-time alert keyword
@@ -99,8 +123,19 @@ export default function CoverageArea({
     e.preventDefault();
 
     try {
+      const newReportAlertKeywordsArray = [...reportAlertKeywords, reportAlertKeyword]
+
+      // Limit Reached!
+      if (
+        newReportAlertKeywordsArray.length >=
+        userDetails.subscriptionDetails.report_alert_keywords_limit
+      ) {
+        setIsReportAlertLimitReached(true);
+      }
+
       setReportAlertKeyword("");
-      setReportAlertKeywords([...reportAlertKeywords, reportAlertKeyword]);
+      setReportAlertKeywords(newReportAlertKeywordsArray);
+
       // addReportAlertKeyword(channelId, reportAlertKeyword);
     } catch (err) {
       console.log("Error adding report alert keyword: ", err);
@@ -110,19 +145,39 @@ export default function CoverageArea({
   // Function to handle removing report alert keyword
   const handleRemoveReportAlertKeyword = (keyword: string) => {
     const updatedKeywords = reportAlertKeywords.filter((k) => k !== keyword);
+
+    // Reset the disable feature
+    if (updatedKeywords.length < userDetails.subscriptionDetails.report_alert_keywords_limit) {
+      setIsReportAlertLimitReached(false);
+    }
+
     setReportAlertKeywords(updatedKeywords);
   };
 
   // Function to handle adding recipient
   const handleAddRecipient = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setRecipients([...recipients, recipient]);
+
+    const newRecipients = [...recipients, recipient];
+
+    // Limit Reached!
+    if (
+      newRecipients.length >= userDetails.subscriptionDetails.recipients_limit
+    ) {
+      setIsRecipientLimitReached(true);
+    }
+
     setRecipient("");
+    setRecipients([...recipients, recipient]);
+
   };
 
   // Function to handle removing recipient
   const handleRemoveRecipient = (recipient: string) => {
     const updatedRecipients = recipients.filter((r) => r !== recipient);
+    if (updatedRecipients.length < userDetails.subscriptionDetails.recipients_limit) {
+      setIsRecipientLimitReached(false);
+    }
     setRecipients(updatedRecipients);
   };
 
@@ -161,8 +216,11 @@ export default function CoverageArea({
     console.log("Channel Removed Successfully!");
     if (!userDetails.id) throw new Error("User not found.");
     fetchUser(userDetails.id);
-  }
+  };
 
+  console.log("userDetails", userDetails);
+  console.log(isReportAlertLimitReached);
+  console.log(isRecipientLimitReached);
   return (
     <>
       <section className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
@@ -306,7 +364,7 @@ export default function CoverageArea({
                                 />
                                 <button
                                   type="submit"
-                                  className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:blueH"
+                                  className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
                                 >
                                   Add
                                 </button>
@@ -453,7 +511,12 @@ export default function CoverageArea({
                             >
                               {recipient}
                               {isEditMode && (
-                                <button onClick={() => handleRemoveRecipient(recipient)} className="mx-2 text-iota text-3xl">
+                                <button
+                                  onClick={() =>
+                                    handleRemoveRecipient(recipient)
+                                  }
+                                  className="mx-2 text-iota text-3xl"
+                                >
                                   <IoCloseSharp />
                                 </button>
                               )}
@@ -465,31 +528,6 @@ export default function CoverageArea({
                           </p>
                         )}
                       </div>
-
-                      {isEditMode && (
-                        <>
-                          <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                            Changes made above are not saved until you confirm
-                            with &quot;save changes&quot; button
-                          </p>
-
-                          <div className="flex flex-col md:flex-row gap-5 my-5">
-                            <button
-                              type="submit"
-                              onClick={() => handleUpdateChannel()}
-                              className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-                            >
-                              Save changes
-                            </button>
-                            <button
-                              onClick={() => handleRevertChannel()}
-                              className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
-                            >
-                              Revert
-                            </button>
-                          </div>
-                        </>
-                      )}
                     </div>
                   </>
                 )}
@@ -523,12 +561,24 @@ export default function CoverageArea({
                                     }
                                     required
                                     type="text"
-                                    className="rounded-full border h-fit border-blueColor outline-none w-full py-1 px-3"
-                                    placeholder="Add keywords here"
+                                    className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${isReportAlertLimitReached
+                                      ? "border-red-500"
+                                      : "border-blueColor"
+                                      }`}
+                                    placeholder={
+                                      isRecipientLimitReached
+                                        ? "Keyword limit reached"
+                                        : "Add keywords here"
+                                    }
+                                    disabled={isReportAlertLimitReached}
                                   />
                                   <button
                                     type="submit"
-                                    className="py-1 px-5 w-fit  h-fit  bg-blueColor  rounded-full text-base font-semibold border-transparent border-2 text-white hover:blueH"
+                                    className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${isReportAlertLimitReached
+                                      ? "bg-blueHover cursor-not-allowed"
+                                      : "bg-blueColor hover:bg-blueHover"
+                                      }`}
+                                    disabled={isReportAlertLimitReached}
                                   >
                                     Add
                                   </button>
@@ -541,22 +591,25 @@ export default function CoverageArea({
                             <div
                               className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
                             >
-                              {channel.report_alert_keywords.length > 0 ? (
-                                channel.report_alert_keywords.map(
-                                  (keyword, index) => (
-                                    <div
-                                      key={index}
-                                      className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
-                                    >
-                                      {keyword}
-                                      {isEditMode && (
-                                        <button className="mx-2 text-iota text-3xl">
-                                          <IoCloseSharp />
-                                        </button>
-                                      )}
-                                    </div>
-                                  )
-                                )
+                              {reportAlertKeywords.length > 0 ? (
+                                reportAlertKeywords.map((keyword, index) => (
+                                  <div
+                                    key={index}
+                                    className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
+                                  >
+                                    {keyword}
+                                    {isEditMode && (
+                                      <button
+                                        onClick={() =>
+                                          handleRemoveReportAlertKeyword(keyword)
+                                        }
+                                        className="mx-2 text-iota text-3xl"
+                                      >
+                                        <IoCloseSharp />
+                                      </button>
+                                    )}
+                                  </div>
+                                ))
                               ) : (
                                 <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
                                   No keywords found
@@ -577,7 +630,7 @@ export default function CoverageArea({
                                 </h3>
                               ) : (
                                 <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                  Quote Context : 20 words
+                                  Quote Context : {quoteContext} words
                                 </h3>
                               )}
                             </div>
@@ -630,20 +683,39 @@ export default function CoverageArea({
                         >
                           <div className="md:w-[50%] w-full">
                             {isEditMode && (
-                              <div className="flex gap-5 md:gap-2">
-                                <input
-                                  required
-                                  name="first-name"
-                                  type="text"
-                                  className="rounded-full border h-fit border-blueColor outline-none w-full  py-1 px-3"
-                                  placeholder="Enter new email address"
-                                />
-                                <button
-                                  type="submit"
-                                  className="py-1 px-5 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white"
+                              <div>
+                                <form
+                                  onSubmit={handleAddRecipient}
+                                  className="flex gap-5 md:gap-2"
                                 >
-                                  Add
-                                </button>
+                                  <input
+                                    value={recipient}
+                                    onChange={(e) => setRecipient(e.target.value)}
+                                    required
+                                    name="first-name"
+                                    type="text"
+                                    className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${isRecipientLimitReached
+                                      ? "border-red-500"
+                                      : "border-blueColor"
+                                      }`}
+                                    placeholder={
+                                      isRecipientLimitReached
+                                        ? "Keyword limit reached"
+                                        : "Enter new email address"
+                                    }
+                                    disabled={isRecipientLimitReached}
+                                  />
+                                  <button
+                                    type="submit"
+                                    className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${isRecipientLimitReached
+                                      ? "bg-blueHover cursor-not-allowed"
+                                      : "bg-blueColor hover:bg-blueHover"
+                                      }`}
+                                    disabled={isRecipientLimitReached}
+                                  >
+                                    Add
+                                  </button>
+                                </form>
                               </div>
                             )}
                           </div>
@@ -652,15 +724,20 @@ export default function CoverageArea({
                             <div
                               className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[8vh] h-[5vh]" : "md:h-[20vh] h-[10vh]"}`}
                             >
-                              {channel.recipients.length > 0 ? (
-                                channel.recipients.map((recipient, index) => (
+                              {recipients?.length > 0 ? (
+                                recipients.map((recipient, index) => (
                                   <div
                                     className="bg-white flex items-center rounded-md py-1 px-2 text-sm leading-[1.375rem] md:text-base md:leading-7"
                                     key={index}
                                   >
                                     {recipient}
                                     {isEditMode && (
-                                      <button className="mx-2 text-iota text-3xl">
+                                      <button
+                                        onClick={() =>
+                                          handleRemoveRecipient(recipient)
+                                        }
+                                        className="mx-2 text-iota text-3xl"
+                                      >
                                         <IoCloseSharp />
                                       </button>
                                     )}
@@ -674,34 +751,34 @@ export default function CoverageArea({
                             </div>
                           </div>
                         </div>
-
-                        {isEditMode && (
-                          <>
-                            <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                              Changes made above are not saved until you confirm
-                              with &quot;save changes&quot; button
-                            </p>
-
-                            <div className="flex flex-col md:flex-row gap-5 my-5">
-                              <button
-                                type="submit"
-                                onClick={() => handleUpdateChannel()}
-                                className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-                              >
-                                Save changes
-                              </button>
-                              <button
-                                onClick={() => handleRevertChannel()}
-                                className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
-                              >
-                                Revert
-                              </button>
-                            </div>
-                          </>
-                        )}
                       </div>
                     </>
                   )}
+
+                {isEditMode && (
+                  <>
+                    <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
+                      Changes made above are not saved until you confirm with
+                      &quot;save changes&quot; button
+                    </p>
+
+                    <div className="flex flex-col md:flex-row gap-5 my-5">
+                      <button
+                        type="submit"
+                        onClick={() => handleUpdateChannel()}
+                        className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
+                      >
+                        Save changes
+                      </button>
+                      <button
+                        onClick={() => handleRevertChannel()}
+                        className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
+                      >
+                        Revert
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>

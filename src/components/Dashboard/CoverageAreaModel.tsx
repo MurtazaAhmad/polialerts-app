@@ -34,13 +34,33 @@ export default function CoverageAreaModel({
   const [subCategory, setSubCategory] = useState<string>("");
 
   let subtitle;
-  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  function openModal() {
-    setIsOpen(true);
+  const [isAddChannelModalOpen, setIsAddChannelOpen] = useState<boolean>(false);
+  const [isChannelLimitReachedModalOpen, setIsChannelLimitReachedModalOpen] = useState<boolean>(false);
+  function handleOpenAddChannelModal() {
+    // Check if user can add another Channel
+    const channelsCount = Object.keys(userDetails.channels).length;
+    console.log("channelsCount", channelsCount);
+    console.log("userDetails.subscriptionDetails", userDetails.subscriptionDetails);
+
+    if (userDetails.subscriptionDetails?.channels_limit && channelsCount >= userDetails.subscriptionDetails.channels_limit) {
+      handleOpenChannelLimitReachedModal();
+      return;
+    }
+
+    setIsAddChannelOpen(true);
   }
+
+  function handleOpenChannelLimitReachedModal() {
+    setIsChannelLimitReachedModalOpen(true);
+  }
+
+  function handleCloseLimitReachedModal() {
+    setIsChannelLimitReachedModalOpen(false);
+  }
+
   function afterOpenModal() { }
-  function closeModal() {
-    setIsOpen(false);
+  function handleCloseAddChannelModal() {
+    setIsAddChannelOpen(false);
   }
 
   const handleMainCategoryChange = (
@@ -76,7 +96,6 @@ export default function CoverageAreaModel({
 
       if (userDetails.subscription_type === "PRO") {
         console.log("PRO.");
-
       }
 
       if (userDetails.subscription_type === "BUDGET" && channelsCount >= 1) {
@@ -90,7 +109,7 @@ export default function CoverageAreaModel({
 
       await addChannel(mainCategory, subCategory, channelId);
       console.log("Channel Added Successfully!");
-      closeModal();
+      handleCloseAddChannelModal();
 
       // Resetting the values
       setMainCategory("");
@@ -109,7 +128,7 @@ export default function CoverageAreaModel({
     <>
       <div className="font-Manrope">
         <div
-          onClick={openModal}
+          onClick={handleOpenAddChannelModal}
           className="cursor-pointer mt-5 px-7 py-1 w-fit h-fit bg-blueColor hover:bg-blueHover rounded-full  border-transparent border-2 text-white flex items-center text-base font-semibold"
         >
           <span className="font-semibold mr-3 text-3xl">+</span>
@@ -117,14 +136,14 @@ export default function CoverageAreaModel({
         </div>
         <Modal
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%]  md:w-[50%] py-16 px-10 bg-white shadow-sm outline-none border rounded-3xl"
-          isOpen={modalIsOpen}
+          isOpen={isAddChannelModalOpen}
           onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
+          onRequestClose={handleCloseAddChannelModal}
           style={customStyles}
           contentLabel="Delete Confirmation Modal"
         >
           <div
-            onClick={closeModal}
+            onClick={handleCloseAddChannelModal}
             className="absolute top-3  cursor-pointer right-5"
           >
             <button className=" text-iota text-4xl font-bold">
@@ -141,16 +160,32 @@ export default function CoverageAreaModel({
             </div>
           </div>
 
-          {userDetails?.subscription_type == "PRO" && (
-            <>
-              <div className="flex gap-5 flex-col lg:flex-row lg:items-center mt-5">
-                <div className="select-wrapper relative w-full lg:w-auto">
+          <>
+            <div className="flex gap-5 flex-col lg:flex-row lg:items-center mt-5">
+              <div className="select-wrapper relative w-full lg:w-auto">
+                <select
+                  onChange={handleMainCategoryChange}
+                  className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-16 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor"
+                >
+                  <option value="">Select level of government</option>
+                  {mainCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+                  <IoMdArrowDropdown className="text-2xl text-blueColor" />
+                </div>
+              </div>
+              {subCategories.length > 0 && (
+                <div className="select-wrapper relative  w-full lg:w-auto">
                   <select
-                    onChange={handleMainCategoryChange}
-                    className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-16 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor"
+                    onChange={handleSubCategoryChange}
+                    className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor"
                   >
-                    <option value="">Select level of government</option>
-                    {mainCategories.map((category) => (
+                    <option value="">Select jurisdiction</option>
+                    {subCategories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
@@ -160,35 +195,18 @@ export default function CoverageAreaModel({
                     <IoMdArrowDropdown className="text-2xl text-blueColor" />
                   </div>
                 </div>
-                {subCategories.length > 0 && (
-                  <div className="select-wrapper relative  w-full lg:w-auto">
-                    <select
-                      onChange={handleSubCategoryChange}
-                      className="block appearance-none w-full bg-white border border-blueColor text-bodyColor py-2 md:px-6 md:pr-24 px-4 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-blueColor"
-                    >
-                      <option value="">Select jurisdiction</option>
-                      {subCategories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-                      <IoMdArrowDropdown className="text-2xl text-blueColor" />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <button
-                onClick={handleAddArea}
-                className="mt-5 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-              >
-                Add area
-              </button>
-            </>
-          )}
+              )}
+            </div>
+            <button
+              onClick={handleAddArea}
+              className="mt-5 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover"
+            >
+              Add area
+            </button>
+          </>
+        </Modal>
 
-          {/* {userDetails?.subscription_type == "BUDGET" && (
+        {/* {userDetails?.subscription_type == "BUDGET" && (
             <>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
                 Your plan includes 1 coverage area which is already in use. If
@@ -204,8 +222,37 @@ export default function CoverageAreaModel({
               </button>
             </>
           )} */}
+        <Modal
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%]  md:w-[50%] py-16 px-10 bg-white shadow-sm outline-none border rounded-3xl"
+          isOpen={isChannelLimitReachedModalOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={handleCloseLimitReachedModal}
+          style={customStyles}
+          contentLabel="Delete Confirmation Modal"
+        >
+          <div
+            onClick={handleCloseLimitReachedModal}
+            className="absolute top-3  cursor-pointer right-5"
+          >
+            <button className=" text-iota text-4xl font-bold">
+              <IoCloseSharp />
+            </button>
+          </div>
 
-          {/* {userDetails?.subscription_type == "PLUS" && (
+          <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
+            Your plan includes {userDetails.subscriptionDetails.channels_limit} coverage {userDetails.subscriptionDetails.channels_limit > 1 ? "areas" : "area"} which is already in use. If
+            you would like to set up a new coverage area, please remove the
+            other one or{" "}
+            <a className="text-blueColor font-semibold underline hover:no-underline">
+              upgrade your plan{" "}
+            </a>{" "}
+            to increase the number of coverage areas you can track.
+          </p>
+          <button onClick={handleCloseLimitReachedModal} className="mt-5 py-1 px-4 w-fit h-fit bg-blueColor rounded-full font-semibold border-transparent border-2 text-white hover:bg-blueHover">
+            Go back
+          </button>
+        </Modal>
+        {/* {userDetails?.subscription_type == "PLUS" && (
             <>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
                 Your plan includes 2 coverage areas which are already in use. If
@@ -221,7 +268,6 @@ export default function CoverageAreaModel({
               </button>
             </>
           )} */}
-        </Modal>
       </div>
     </>
   );

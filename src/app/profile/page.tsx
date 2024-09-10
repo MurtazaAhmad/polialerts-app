@@ -6,21 +6,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
 import React, { useEffect } from "react";
+import { useUserContext } from "@/context/UserContext";
 
 export default function Profile() {
-  const [user] = useAuthState(auth);
-  const { userDetails, fetchUser, loading, error, updateProfile} = useUser();
+  const { userDetails, loading, error } = useUserContext();
+  const { updateProfile } = useUser();
 
-  useEffect(() => {
-    console.log("useEffect Called");
-
-    if (user) {
-      console.log("We have a User", user);
-      fetchUser(user.uid);
-    }
-  }, [user]);
-
-  if (loading || !userDetails) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
@@ -43,7 +35,7 @@ export default function Profile() {
         <hr className="w-[100%] border-iota" />
       </div>
 
-      <PersonalInfo userDetails={userDetails} updateProfile={updateProfile}/>
+      <PersonalInfo userDetails={userDetails} updateProfile={updateProfile} />
       <BillingInfo />
       <PlanDetails />
     </>
