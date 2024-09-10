@@ -43,7 +43,7 @@ export default function CoverageArea({
   // State to manage report alert keyword input
   const [reportAlertKeyword, setReportAlertKeyword] = useState<string>("");
 
-  // State to manage report alert keywords
+  // State to manage report alert keywords (End of day Email Alerts)
   const [reportAlertKeywords, setReportAlertKeywords] = useState<string[]>([]);
 
   // State to manage quote context
@@ -55,6 +55,12 @@ export default function CoverageArea({
   // State to manage recipients
   const [recipients, setRecipients] = useState<string[]>([]);
 
+  // State to manage limit of report Alert Keywords (End of Day Alert keywords)
+  const [isReportAlertLimitReached, setIsReportAlertLimitReached] = useState<boolean>(false);
+
+  // State to manage limit of recipients
+  const [isRecipientLimitReached, setIsRecipientLimitReached] = useState<boolean>(false);
+
   const [showRightSide, setShowRightSide] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
@@ -63,6 +69,17 @@ export default function CoverageArea({
     setReportAlertKeywords(channel.report_alert_keywords);
     setRecipients(channel.recipients);
     setQuoteContext(channel.quote_context);
+
+    // if report alert keywords limit reached
+    if (channel.report_alert_keywords.length >= userDetails.subscriptionDetails.report_alert_keywords_limit) {
+      setIsReportAlertLimitReached(true);
+    }
+
+    // if recipients limit reached
+    if (channel.recipients.length >= userDetails.subscriptionDetails.recipients_limit) {
+      setIsRecipientLimitReached(true);
+    }
+
   }, [channel]);
 
   const toggleRightSide = () => {
@@ -98,9 +115,19 @@ export default function CoverageArea({
     e.preventDefault();
 
     try {
+
       setReportAlertKeyword("");
-      setReportAlertKeywords([...reportAlertKeywords, reportAlertKeyword]);
-      //addReportAlertKeyword(channelId, reportAlertKeyword);
+      const newArray = [...reportAlertKeywords, reportAlertKeyword];
+
+      // Limit Reached!
+      if (newArray.length >= userDetails.subscriptionDetails.report_alert_keywords_limit) {
+        setIsReportAlertLimitReached(true);
+        return;
+      }
+
+      setReportAlertKeywords(newArray);
+
+      // addReportAlertKeyword(channelId, reportAlertKeyword);
     } catch (err) {
       console.log("Error adding report alert keyword: ", err);
     }
@@ -115,6 +142,14 @@ export default function CoverageArea({
   // Function to handle adding recipient
   const handleAddRecipient = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newRecipients = [...recipients, recipient];
+
+    // Limit Reached!
+    if (newRecipients.length >= userDetails.subscriptionDetails.recipients_limit) {
+      setIsRecipientLimitReached(true);
+      return;
+    }
+
     setRecipients([...recipients, recipient]);
     setRecipient("");
   };
@@ -575,53 +610,55 @@ export default function CoverageArea({
                           )}
                         </div>
 
-                        <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
-                          <div
-                            className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
-                          >
-                            {reportAlertKeywords.length > 0 ? (
-                              reportAlertKeywords.map((keyword, index) => (
-                                <div
-                                  key={index}
-                                  className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
-                                >
-                                  {keyword}
-                                  {isEditMode && (
-                                    <button
-                                      onClick={() =>
-                                        handleRemoveReportAlertKeyword(keyword)
-                                      }
-                                      className="mx-2 text-iota text-3xl"
+                          <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
+                            <div
+                              className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
+                            >
+                              {reportAlertKeywords.length > 0 ? (
+                                reportAlertKeywords.map(
+                                  (keyword, index) => (
+                                    <div
+                                      key={index}
+                                      className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
                                     >
-                                      <IoCloseSharp />
-                                    </button>
-                                  )}
-                                </div>
-                              ))
-                            ) : (
-                              <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
-                                No keywords found
-                              </p>
-                            )}
+                                      {keyword}
+                                      {isEditMode && (
+                                        <button
+                                          onClick={() =>
+                                            handleRemoveReportAlertKeyword(
+                                              keyword
+                                            )
+                                          } className="mx-2 text-iota text-3xl">
+                                          <IoCloseSharp />
+                                        </button>
+                                      )}
+                                    </div>
+                                  )
+                                )
+                              ) : (
+                                <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
+                                  No keywords found
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Quotes */}
-                      <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
-                        <div className="md-w-[50%] w-full">
-                          <div className="flex items-center gap-2 my-5">
-                            <Quote />
-                            {isEditMode ? (
-                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                Quote Context
-                              </h3>
-                            ) : (
-                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                Quote Context : 20 words
-                              </h3>
-                            )}
-                          </div>
+                        {/* Quotes */}
+                        <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
+                          <div className="md-w-[50%] w-full">
+                            <div className="flex items-center gap-2 my-5">
+                              <Quote />
+                              {isEditMode ? (
+                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                  Quote Context
+                                </h3>
+                              ) : (
+                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                  Quote Context : {quoteContext} words
+                                </h3>
+                              )}
+                            </div>
 
                           {isEditMode && (
                             <>
