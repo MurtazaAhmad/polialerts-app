@@ -56,10 +56,12 @@ export default function CoverageArea({
   const [recipients, setRecipients] = useState<string[]>([]);
 
   // State to manage limit of report Alert Keywords (End of Day Alert keywords)
-  const [isReportAlertLimitReached, setIsReportAlertLimitReached] = useState<boolean>(false);
+  const [isReportAlertLimitReached, setIsReportAlertLimitReached] =
+    useState<boolean>(false);
 
   // State to manage limit of recipients
-  const [isRecipientLimitReached, setIsRecipientLimitReached] = useState<boolean>(false);
+  const [isRecipientLimitReached, setIsRecipientLimitReached] =
+    useState<boolean>(false);
 
   const [showRightSide, setShowRightSide] = useState<boolean>(false);
   const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
@@ -71,15 +73,21 @@ export default function CoverageArea({
     setQuoteContext(channel.quote_context);
 
     // if report alert keywords limit reached
-    if (channel.report_alert_keywords.length >= userDetails.subscriptionDetails.report_alert_keywords_limit) {
+    if (
+      channel.report_alert_keywords.length >=
+      userDetails.subscriptionDetails.report_alert_keywords_limit
+    ) {
       setIsReportAlertLimitReached(true);
     }
 
     // if recipients limit reached
-    if (channel.recipients.length >= userDetails.subscriptionDetails.recipients_limit) {
+    if (
+      channel.recipients.length >=
+      userDetails.subscriptionDetails.recipients_limit
+    ) {
+      
       setIsRecipientLimitReached(true);
     }
-
   }, [channel]);
 
   const toggleRightSide = () => {
@@ -115,12 +123,14 @@ export default function CoverageArea({
     e.preventDefault();
 
     try {
-
       setReportAlertKeyword("");
       const newArray = [...reportAlertKeywords, reportAlertKeyword];
 
       // Limit Reached!
-      if (newArray.length >= userDetails.subscriptionDetails.report_alert_keywords_limit) {
+      if (
+        newArray.length >=
+        userDetails.subscriptionDetails.report_alert_keywords_limit
+      ) {
         setIsReportAlertLimitReached(true);
         return;
       }
@@ -145,7 +155,9 @@ export default function CoverageArea({
     const newRecipients = [...recipients, recipient];
 
     // Limit Reached!
-    if (newRecipients.length >= userDetails.subscriptionDetails.recipients_limit) {
+    if (
+      newRecipients.length >= userDetails.subscriptionDetails.recipients_limit
+    ) {
       setIsRecipientLimitReached(true);
       return;
     }
@@ -197,7 +209,9 @@ export default function CoverageArea({
     fetchUser(userDetails.id);
   };
 
-  console.log("jjj", channel?.report_alert_keywords);
+  console.log("userDetails", userDetails);
+  console.log(isReportAlertLimitReached);
+  console.log(isRecipientLimitReached);
   return (
     <>
       <section className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
@@ -505,31 +519,6 @@ export default function CoverageArea({
                           </p>
                         )}
                       </div>
-
-                      {isEditMode && (
-                        <>
-                          <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                            Changes made above are not saved until you confirm
-                            with &quot;save changes&quot; button
-                          </p>
-
-                          <div className="flex flex-col md:flex-row gap-5 my-5">
-                            <button
-                              type="submit"
-                              onClick={() => handleUpdateChannel()}
-                              className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-                            >
-                              Save changes
-                            </button>
-                            <button
-                              onClick={() => handleRevertChannel()}
-                              className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
-                            >
-                              Revert
-                            </button>
-                          </div>
-                        </>
-                      )}
                     </div>
                   </>
                 )}
@@ -564,44 +553,25 @@ export default function CoverageArea({
                                   required
                                   type="text"
                                   className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${
-                                    (subscriptionType === "PLUS" &&
-                                      reportAlertKeywords.length >= 10) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      reportAlertKeywords.length >= 3)
+                                    isReportAlertLimitReached
                                       ? "border-red-500"
                                       : "border-blueColor"
                                   }`}
                                   placeholder={
-                                    (subscriptionType === "PLUS" &&
-                                      reportAlertKeywords.length >= 10) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      reportAlertKeywords.length >= 3)
+                                    isRecipientLimitReached
                                       ? "Keyword limit reached"
                                       : "Add keywords here"
                                   }
-                                  disabled={
-                                    (subscriptionType === "PLUS" &&
-                                      reportAlertKeywords.length >= 10) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      reportAlertKeywords.length >= 3)
-                                  }
+                                  disabled={isReportAlertLimitReached}
                                 />
                                 <button
                                   type="submit"
                                   className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${
-                                    (subscriptionType === "PLUS" &&
-                                      reportAlertKeywords.length >= 10) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      reportAlertKeywords.length >= 3)
+                                    isReportAlertLimitReached
                                       ? "bg-blueHover cursor-not-allowed"
                                       : "bg-blueColor hover:bg-blueHover"
                                   }`}
-                                  disabled={
-                                    (subscriptionType === "PLUS" &&
-                                      reportAlertKeywords.length >= 10) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      reportAlertKeywords.length >= 3)
-                                  }
+                                  disabled={isReportAlertLimitReached}
                                 >
                                   Add
                                 </button>
@@ -610,55 +580,53 @@ export default function CoverageArea({
                           )}
                         </div>
 
-                          <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
-                            <div
-                              className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
-                            >
-                              {reportAlertKeywords.length > 0 ? (
-                                reportAlertKeywords.map(
-                                  (keyword, index) => (
-                                    <div
-                                      key={index}
-                                      className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
+                        <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
+                          <div
+                            className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
+                          >
+                            {reportAlertKeywords.length > 0 ? (
+                              reportAlertKeywords.map((keyword, index) => (
+                                <div
+                                  key={index}
+                                  className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
+                                >
+                                  {keyword}
+                                  {isEditMode && (
+                                    <button
+                                      onClick={() =>
+                                        handleRemoveReportAlertKeyword(keyword)
+                                      }
+                                      className="mx-2 text-iota text-3xl"
                                     >
-                                      {keyword}
-                                      {isEditMode && (
-                                        <button
-                                          onClick={() =>
-                                            handleRemoveReportAlertKeyword(
-                                              keyword
-                                            )
-                                          } className="mx-2 text-iota text-3xl">
-                                          <IoCloseSharp />
-                                        </button>
-                                      )}
-                                    </div>
-                                  )
-                                )
-                              ) : (
-                                <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
-                                  No keywords found
-                                </p>
-                              )}
-                            </div>
+                                      <IoCloseSharp />
+                                    </button>
+                                  )}
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
+                                No keywords found
+                              </p>
+                            )}
                           </div>
                         </div>
+                      </div>
 
-                        {/* Quotes */}
-                        <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
-                          <div className="md-w-[50%] w-full">
-                            <div className="flex items-center gap-2 my-5">
-                              <Quote />
-                              {isEditMode ? (
-                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                  Quote Context
-                                </h3>
-                              ) : (
-                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                  Quote Context : {quoteContext} words
-                                </h3>
-                              )}
-                            </div>
+                      {/* Quotes */}
+                      <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
+                        <div className="md-w-[50%] w-full">
+                          <div className="flex items-center gap-2 my-5">
+                            <Quote />
+                            {isEditMode ? (
+                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                Quote Context
+                              </h3>
+                            ) : (
+                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                Quote Context : {quoteContext} words
+                              </h3>
+                            )}
+                          </div>
 
                           {isEditMode && (
                             <>
@@ -720,44 +688,25 @@ export default function CoverageArea({
                                   name="first-name"
                                   type="text"
                                   className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${
-                                    (subscriptionType === "PLUS" &&
-                                      recipients.length >= 2) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      recipients.length >= 1)
+                                    isRecipientLimitReached
                                       ? "border-red-500"
                                       : "border-blueColor"
                                   }`}
                                   placeholder={
-                                    (subscriptionType === "PLUS" &&
-                                      recipients.length >= 2) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      recipients.length >= 1)
+                                    isRecipientLimitReached
                                       ? "Keyword limit reached"
                                       : "Enter new email address"
                                   }
-                                  disabled={
-                                    (subscriptionType === "PLUS" &&
-                                      recipients.length >= 2) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      recipients.length > 1)
-                                  }
+                                  disabled={isRecipientLimitReached}
                                 />
                                 <button
                                   type="submit"
                                   className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${
-                                    (subscriptionType === "PLUS" &&
-                                      recipients.length >= 2) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      recipients.length >= 1)
+                                    isRecipientLimitReached
                                       ? "bg-blueHover cursor-not-allowed"
                                       : "bg-blueColor hover:bg-blueHover"
                                   }`}
-                                  disabled={
-                                    (subscriptionType === "PLUS" &&
-                                      recipients.length >= 2) ||
-                                    (subscriptionType === "BUDGET" &&
-                                      recipients.length >= 1)
-                                  }
+                                  disabled={isRecipientLimitReached}
                                 >
                                   Add
                                 </button>
@@ -797,31 +746,31 @@ export default function CoverageArea({
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </>
+                )}
 
-                      {isEditMode && (
-                        <>
-                          <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                            Changes made above are not saved until you confirm
-                            with &quot;save changes&quot; button
-                          </p>
+                {isEditMode && (
+                  <>
+                    <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
+                      Changes made above are not saved until you confirm with
+                      &quot;save changes&quot; button
+                    </p>
 
-                          <div className="flex flex-col md:flex-row gap-5 my-5">
-                            <button
-                              type="submit"
-                              onClick={() => handleUpdateChannel()}
-                              className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
-                            >
-                              Save changes
-                            </button>
-                            <button
-                              onClick={() => handleRevertChannel()}
-                              className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
-                            >
-                              Revert
-                            </button>
-                          </div>
-                        </>
-                      )}
+                    <div className="flex flex-col md:flex-row gap-5 my-5">
+                      <button
+                        type="submit"
+                        onClick={() => handleUpdateChannel()}
+                        className="py-2 px-8 w-fit h-fit bg-blueColor rounded-full text-base font-semibold border-transparent border-2 text-white hover:bg-blueHover"
+                      >
+                        Save changes
+                      </button>
+                      <button
+                        onClick={() => handleRevertChannel()}
+                        className="py-2 px-5 w-fit h-fit border-blueColor text-base font-semibold border-2 rounded-full text-blueColor"
+                      >
+                        Revert
+                      </button>
                     </div>
                   </>
                 )}
