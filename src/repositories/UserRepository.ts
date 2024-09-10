@@ -1,7 +1,7 @@
 import { Channel, User } from "@/types"
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
-import { PRO_SUBSCRIPTION, USERS_COLLECTION } from "@/app/utils/constants";
+import { PRO_SUBSCRIPTION, USERS_COLLECTION, SUBSCRIPTION_TYPES_COLLECTION } from "@/app/utils/constants";
 import { ICreateUserRequestData, IAddChannelRequestData, IUserRepository } from "@/types";
 
 
@@ -50,6 +50,13 @@ export class UserRepository implements IUserRepository {
       return undefined;
     }
 
+    // get subscription info
+    const subscription_type = doc?.data().subscription_type;
+    const subscriptionDetailsCollection = collection(db, SUBSCRIPTION_TYPES_COLLECTION);
+    const subscriptionDetailsSnapshot = await getDocs(subscriptionDetailsCollection);
+    const subscriptionDetailsDoc = subscriptionDetailsSnapshot.docs.find(doc => doc.id === subscription_type);
+    const subscriptionDetails = subscriptionDetailsDoc?.data();
+
     const user = {
       id: doc?.id,
       firstName: doc?.data().firstName,
@@ -62,6 +69,7 @@ export class UserRepository implements IUserRepository {
       country: doc?.data().country,
       postalCode: doc?.data().postalCode,
       subscription_type: doc?.data().subscription_type,
+      subscriptionDetails: subscriptionDetails,
     }
     return user;
   }

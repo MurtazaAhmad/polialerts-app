@@ -46,8 +46,6 @@ export default function Dashboard() {
     fetchUser,
     loading,
     error,
-    addRealTimeAlertKeyword,
-    addReportAlertKeyword,
     getChannels,
     updateChannel,
     deleteChannel,
