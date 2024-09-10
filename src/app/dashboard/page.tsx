@@ -76,7 +76,6 @@ export default function Dashboard() {
 
   return (
     <div>
-
       <Toaster position="top-center" reverseOrder={false} />
       {/* Header */}
       <div className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10   md:gap-5 gap-5 flex-col md:flex-row flex md:justify-between md:items-center">
@@ -152,19 +151,27 @@ export default function Dashboard() {
       </div>
 
       {userDetails?.channels &&
-        Object.entries(userDetails.channels).length > 0 ? (
-        Object.entries(userDetails.channels).map(([channelId, channel]) => (
-          <CoverageArea
-            subscriptionType={userDetails?.subscription_type}
-            channel={channel}
-            key={channelId}
-            channelId={channelId}
-            updateChannel={updateChannel}
-            deleteChannel={deleteChannel}
-            userDetails={userDetails}
-            fetchUser={fetchUser}
-          />
-        ))
+      Object.entries(userDetails.channels).length > 0 ? (
+        Object.entries(userDetails.channels).map(
+          ([channelId, channel], index) => (
+            <React.Fragment key={channelId}>
+              {index > 0 && (
+                <div className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
+                  <hr className="w-[100%] border-iota" />
+                </div>
+              )}
+              <CoverageArea
+                subscriptionType={userDetails?.subscription_type}
+                channel={channel}
+                channelId={channelId}
+                updateChannel={updateChannel}
+                deleteChannel={deleteChannel}
+                userDetails={userDetails}
+                fetchUser={fetchUser}
+              />
+            </React.Fragment>
+          )
+        )
       ) : (
         <div className="mb-64 text-sm md:text-base md:leading-7 text-bodyColor my-5 leading-[1.625rem] lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
           You do not have any alerts set up. Get started by adding a new
