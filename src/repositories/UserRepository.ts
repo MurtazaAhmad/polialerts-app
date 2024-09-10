@@ -34,6 +34,7 @@ export class UserRepository implements IUserRepository {
       email: doc.data().email,
       channels: doc.data().channels,
       subscription_type: doc.data().subscription_type,
+      subscriptionDetails: doc.data().subscriptionDetails,
     }))
     return userList;
   }
