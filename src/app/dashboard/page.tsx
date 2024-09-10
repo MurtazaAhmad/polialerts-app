@@ -114,11 +114,7 @@ export default function Dashboard() {
             <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
               Your plan includes end-of-day email alerts for up to 3 keywords in
               1 coverage area. For more keywords, coverage areas, and real-time
-              email alerts,
-              <a
-                href=""
-                className="text-blueColor font-semibold underline hover:no-underline"
-              >
+              email alerts, <a href="" className="text-blueColor font-semibold underline hover:no-underline">
                 upgrade your plan
               </a>
               .
@@ -133,11 +129,7 @@ export default function Dashboard() {
             <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
               Your plan includes end-of-day email alerts for up to 10 keywords
               in 2 coverage areas. For more keywords, coverage areas, and
-              real-time email alerts,
-              <a
-                href=""
-                className="text-blueColor font-semibold underline hover:no-underline"
-              >
+              real-time email alerts, <a href="" className="text-blueColor font-semibold underline hover:no-underline">
                 upgrade your plan
               </a>
               .
@@ -151,7 +143,7 @@ export default function Dashboard() {
       </div>
 
       {userDetails?.channels &&
-      Object.entries(userDetails.channels).length > 0 ? (
+        Object.entries(userDetails.channels).length > 0 ? (
         Object.entries(userDetails.channels).map(
           ([channelId, channel], index) => (
             <React.Fragment key={channelId}>
