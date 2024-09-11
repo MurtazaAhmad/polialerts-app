@@ -85,7 +85,6 @@ export default function CoverageArea({
       channel.recipients.length >=
       userDetails.subscriptionDetails.recipients_limit
     ) {
-
       setIsRecipientLimitReached(true);
     }
   }, [channel]);
@@ -123,7 +122,10 @@ export default function CoverageArea({
     e.preventDefault();
 
     try {
-      const newReportAlertKeywordsArray = [...reportAlertKeywords, reportAlertKeyword]
+      const newReportAlertKeywordsArray = [
+        ...reportAlertKeywords,
+        reportAlertKeyword,
+      ];
 
       // Limit Reached!
       if (
@@ -147,7 +149,10 @@ export default function CoverageArea({
     const updatedKeywords = reportAlertKeywords.filter((k) => k !== keyword);
 
     // Reset the disable feature
-    if (updatedKeywords.length < userDetails.subscriptionDetails.report_alert_keywords_limit) {
+    if (
+      updatedKeywords.length <
+      userDetails.subscriptionDetails.report_alert_keywords_limit
+    ) {
       setIsReportAlertLimitReached(false);
     }
 
@@ -169,13 +174,15 @@ export default function CoverageArea({
 
     setRecipient("");
     setRecipients([...recipients, recipient]);
-
   };
 
   // Function to handle removing recipient
   const handleRemoveRecipient = (recipient: string) => {
     const updatedRecipients = recipients.filter((r) => r !== recipient);
-    if (updatedRecipients.length < userDetails.subscriptionDetails.recipients_limit) {
+    if (
+      updatedRecipients.length <
+      userDetails.subscriptionDetails.recipients_limit
+    ) {
       setIsRecipientLimitReached(false);
     }
     setRecipients(updatedRecipients);
@@ -535,225 +542,225 @@ export default function CoverageArea({
                 {/* Budget and plus plan */}
                 {(subscriptionType === "BUDGET" ||
                   subscriptionType === "PLUS") && (
-                    <>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <Calendar />
-                          <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                            End-of-day email alerts
-                          </h3>
-                        </div>
+                  <>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Calendar />
+                        <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                          End-of-day email alerts
+                        </h3>
+                      </div>
 
-                        <div
-                          className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"}  md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
-                        >
-                          <div className="md:w-[50%] w-full">
-                            {isEditMode && (
-                              <div>
-                                <form
-                                  onSubmit={handleAddReportAlertKeyword}
-                                  className="flex gap-5 md:gap-2"
-                                >
-                                  <input
-                                    value={reportAlertKeyword}
-                                    onChange={(e) =>
-                                      setReportAlertKeyword(e.target.value)
-                                    }
-                                    required
-                                    type="text"
-                                    className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${isReportAlertLimitReached
+                      <div
+                        className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"}  md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
+                      >
+                        <div className="md:w-[50%] w-full">
+                          {isEditMode && (
+                            <div>
+                              <form
+                                onSubmit={handleAddReportAlertKeyword}
+                                className="flex gap-5 md:gap-2"
+                              >
+                                <input
+                                  value={reportAlertKeyword}
+                                  onChange={(e) =>
+                                    setReportAlertKeyword(e.target.value)
+                                  }
+                                  required
+                                  type="text"
+                                  className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${
+                                    isReportAlertLimitReached
                                       ? "border-red-500"
                                       : "border-blueColor"
-                                      }`}
-                                    placeholder={
-                                      isRecipientLimitReached
-                                        ? "Keyword limit reached"
-                                        : "Add keywords here"
-                                    }
-                                    disabled={isReportAlertLimitReached}
-                                  />
-                                  <button
-                                    type="submit"
-                                    className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${isReportAlertLimitReached
+                                  }`}
+                                  placeholder={
+                                    isRecipientLimitReached
+                                      ? "Keyword limit reached"
+                                      : "Add keywords here"
+                                  }
+                                  disabled={isReportAlertLimitReached}
+                                />
+                                <button
+                                  type="submit"
+                                  className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${
+                                    isReportAlertLimitReached
                                       ? "bg-blueHover cursor-not-allowed"
                                       : "bg-blueColor hover:bg-blueHover"
-                                      }`}
-                                    disabled={isReportAlertLimitReached}
-                                  >
-                                    Add
-                                  </button>
-                                </form>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
-                            <div
-                              className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
-                            >
-                              {reportAlertKeywords.length > 0 ? (
-                                reportAlertKeywords.map((keyword, index) => (
-                                  <div
-                                    key={index}
-                                    className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
-                                  >
-                                    {keyword}
-                                    {isEditMode && (
-                                      <button
-                                        onClick={() =>
-                                          handleRemoveReportAlertKeyword(keyword)
-                                        }
-                                        className="mx-2 text-iota text-3xl"
-                                      >
-                                        <IoCloseSharp />
-                                      </button>
-                                    )}
-                                  </div>
-                                ))
-                              ) : (
-                                <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
-                                  No keywords found
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Quotes */}
-                        <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
-                          <div className="md-w-[50%] w-full">
-                            <div className="flex items-center gap-2 my-5">
-                              <Quote />
-                              {isEditMode ? (
-                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                  Quote Context
-                                </h3>
-                              ) : (
-                                <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                                  Quote Context : {quoteContext} words
-                                </h3>
-                              )}
-                            </div>
-
-                            {isEditMode && (
-                              <>
-                                <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-                                  Use the slider to control how many words are
-                                  quoted before and after each keyword in your
-                                  alert emails
-                                </p>
-                              </>
-                            )}
-                          </div>
-                          {/* left */}
-                          {isEditMode && (
-                            <div className="md-w-[50%] w-full">
-                              <div className="flex items-center bg-lightGray rounded-full space-x-4 px-4 py-2">
-                                <span className="text-lg font-semibold">
-                                  {quoteContext}{" "}
-                                </span>
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="100"
-                                  value={quoteContext}
-                                  onChange={(e) =>
-                                    setQuoteContext(parseInt(e.target.value))
-                                  }
-                                  className="appearance-none w-full h-2 rounded-full bg-gray-200"
-                                  style={{
-                                    background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${quoteContext}%, #e5e7eb ${quoteContext}%, #e5e7eb 100%)`,
-                                  }}
-                                />
-                              </div>
+                                  }`}
+                                  disabled={isReportAlertLimitReached}
+                                >
+                                  Add
+                                </button>
+                              </form>
                             </div>
                           )}
                         </div>
 
-                        {/* recipients */}
-                        <div className="flex items-center gap-2 mt-10">
-                          <Email />
-                          <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
-                            Recipients
-                          </h3>
-                        </div>
-
-                        <div
-                          className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"} md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
-                        >
-                          <div className="md:w-[50%] w-full">
-                            {isEditMode && (
-                              <div>
-                                <form
-                                  onSubmit={handleAddRecipient}
-                                  className="flex gap-5 md:gap-2"
+                        <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
+                          <div
+                            className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[30vh] h-[15vh]" : "md:h-[60vh] h-[40vh]"}`}
+                          >
+                            {reportAlertKeywords.length > 0 ? (
+                              reportAlertKeywords.map((keyword, index) => (
+                                <div
+                                  key={index}
+                                  className="bg-white flex items-center my-5 text-bodyColor py-1 px-2 w-fit rounded-lg text-sm leading-[1.375rem] md:text-base md:leading-7"
                                 >
-                                  <input
-                                    value={recipient}
-                                    onChange={(e) => setRecipient(e.target.value)}
-                                    required
-                                    name="first-name"
-                                    type="text"
-                                    className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${isRecipientLimitReached
-                                      ? "border-red-500"
-                                      : "border-blueColor"
-                                      }`}
-                                    placeholder={
-                                      isRecipientLimitReached
-                                        ? "Keyword limit reached"
-                                        : "Enter new email address"
-                                    }
-                                    disabled={isRecipientLimitReached}
-                                  />
-                                  <button
-                                    type="submit"
-                                    className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${isRecipientLimitReached
-                                      ? "bg-blueHover cursor-not-allowed"
-                                      : "bg-blueColor hover:bg-blueHover"
-                                      }`}
-                                    disabled={isRecipientLimitReached}
-                                  >
-                                    Add
-                                  </button>
-                                </form>
-                              </div>
+                                  {keyword}
+                                  {isEditMode && (
+                                    <button
+                                      onClick={() =>
+                                        handleRemoveReportAlertKeyword(keyword)
+                                      }
+                                      className="mx-2 text-iota text-3xl"
+                                    >
+                                      <IoCloseSharp />
+                                    </button>
+                                  )}
+                                </div>
+                              ))
+                            ) : (
+                              <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
+                                No keywords found
+                              </p>
                             )}
-                          </div>
-
-                          <div className="bg-lightGray pr-6 rounded-3xl h-fit py-5 pl-5 md:pr-7 md:w-[50%] w-full">
-                            <div
-                              className={`bg-lightGray w-full rounded-xl customScrollbar overflow-auto ${subscriptionType == "BUDGET" ? "md:h-[8vh] h-[5vh]" : "md:h-[20vh] h-[10vh]"}`}
-                            >
-                              {recipients?.length > 0 ? (
-                                recipients.map((recipient, index) => (
-                                  <div
-                                    className="bg-white flex items-center rounded-md py-1 px-2 text-sm leading-[1.375rem] md:text-base md:leading-7"
-                                    key={index}
-                                  >
-                                    {recipient}
-                                    {isEditMode && (
-                                      <button
-                                        onClick={() =>
-                                          handleRemoveRecipient(recipient)
-                                        }
-                                        className="mx-2 text-iota text-3xl"
-                                      >
-                                        <IoCloseSharp />
-                                      </button>
-                                    )}
-                                  </div>
-                                ))
-                              ) : (
-                                <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
-                                  No recipient found
-                                </p>
-                              )}
-                            </div>
                           </div>
                         </div>
                       </div>
-                    </>
-                  )}
+
+                      {/* Quotes */}
+                      <div className="flex md:flex-row flex-col md:items-center gap-5 my-5 mt-10">
+                        <div className="md-w-[50%] w-full">
+                          <div className="flex items-center gap-2 my-5">
+                            <Quote />
+                            {isEditMode ? (
+                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                Quote Context
+                              </h3>
+                            ) : (
+                              <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                                Quote Context : {quoteContext} words
+                              </h3>
+                            )}
+                          </div>
+
+                          {isEditMode && (
+                            <>
+                              <p className="block mb-2 text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
+                                Use the slider to control how many words are
+                                quoted before and after each keyword in your
+                                alert emails
+                              </p>
+                            </>
+                          )}
+                        </div>
+                        {/* left */}
+                        {isEditMode && (
+                          <div className="md-w-[50%] w-full">
+                            <div className="flex items-center bg-lightGray rounded-full space-x-4 px-4 py-2">
+                              <span className="text-lg font-semibold">
+                                {quoteContext}{" "}
+                              </span>
+                              <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={quoteContext}
+                                onChange={(e) =>
+                                  setQuoteContext(parseInt(e.target.value))
+                                }
+                                className="appearance-none w-full h-2 rounded-full bg-gray-200"
+                                style={{
+                                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${quoteContext}%, #e5e7eb ${quoteContext}%, #e5e7eb 100%)`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* recipients */}
+                      <div className="flex items-center gap-2 mt-10">
+                        <Email />
+                        <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
+                          Recipients
+                        </h3>
+                      </div>
+
+                      <div
+                        className={`flex ${isEditMode ? "md:flex-row flex-col" : "flex-col"} md:gap-10 gap-5 ${isEditMode ? "my-5" : "my-0"}`}
+                      >
+                        <div className="md:w-[50%] w-full">
+                          {isEditMode && (
+                            <div>
+                              <form
+                                onSubmit={handleAddRecipient}
+                                className="flex gap-5 md:gap-2"
+                              >
+                                <input
+                                  value={recipient}
+                                  onChange={(e) => setRecipient(e.target.value)}
+                                  required
+                                  name="first-name"
+                                  type="text"
+                                  className={`rounded-full border h-fit outline-none w-full py-1 px-3 ${
+                                    isRecipientLimitReached
+                                      ? "border-red-500"
+                                      : "border-blueColor"
+                                  }`}
+                                  placeholder={
+                                    isRecipientLimitReached
+                                      ? "Keyword limit reached"
+                                      : "Enter new email address"
+                                  }
+                                  disabled={isRecipientLimitReached}
+                                />
+                                <button
+                                  type="submit"
+                                  className={`py-1 px-5 w-fit h-fit rounded-full text-base font-semibold border-transparent border-2 text-white ${
+                                    isRecipientLimitReached
+                                      ? "bg-blueHover cursor-not-allowed"
+                                      : "bg-blueColor hover:bg-blueHover"
+                                  }`}
+                                  disabled={isRecipientLimitReached}
+                                >
+                                  Add
+                                </button>
+                              </form>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className={`flex flex-wrap gap-2 bg-lightGray rounded-2xl md:w-[50%] w-full ${subscriptionType == "BUDGET" ? "p-5" : "p-10"}`}>
+                          {recipients?.length > 0 ? (
+                            recipients.map((recipient, index) => (
+                              <div
+                                className="bg-white flex items-center rounded-md py-1 px-2 text-sm leading-[1.375rem] md:text-base md:leading-7"
+                                key={index}
+                              >
+                                {recipient}
+                                {isEditMode && (
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveRecipient(recipient)
+                                    }
+                                    className="mx-2 text-iota text-3xl"
+                                  >
+                                    <IoCloseSharp />
+                                  </button>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-bodyColor text-sm leading-[1.375rem] md:text-base md:leading-7">
+                              No recipient found
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {isEditMode && (
                   <>

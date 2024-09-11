@@ -2,14 +2,23 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Icons/Logo";
-import { useSignOut } from "react-firebase-hooks/auth";
+import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [signOut] = useSignOut(auth);
-  const router = useRouter();
+  const [user] = useAuthState(auth); //user variable
 
+  //Auth User Session
+  let userSession = null;
+  if (typeof window !== "undefined") {
+    userSession = sessionStorage.getItem("user");
+  }
+
+  //Router
+  const router = useRouter();
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -96,12 +105,20 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={handleLogout}
-                  className="md:p-4 py-2 block hover:underline active:underline text-left"
-                >
-                  Log out
-                </button>
+              {user || userSession ? (
+                  <button
+                    onClick={handleLogout}
+                    className="md:p-4 py-2 block hover:underline active:underline text-left"
+                  >
+                    Log out
+                  </button>
+                ) : (
+                  <Link href="/login">
+                    <p className="md:p-4 py-2 block hover:underline active:underline text-left">
+                      Login
+                    </p>
+                  </Link>
+                )}
               </li>
             </ul>
           </div>

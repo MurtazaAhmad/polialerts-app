@@ -5,10 +5,28 @@ import PlanDetails from "@/components/Profile/PlanDetails";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
-import React, { useEffect } from "react";
+import React from "react";
 import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 export default function Profile() {
+  // Auth User
+  const [user] = useAuthState(auth); //user variable
+
+  //Auth User Session
+  let userSession = null;
+  if (typeof window !== "undefined") {
+    userSession = sessionStorage.getItem("user");
+  }
+
+  //Router
+  const router = useRouter();
+
+  // If user not logged In (User session not found) - Logout
+  if (!user && !userSession) {
+    router.push("/login");
+  }
+
   const { userDetails, loading, error } = useUserContext();
   const { updateProfile } = useUser();
 
