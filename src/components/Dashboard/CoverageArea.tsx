@@ -28,7 +28,6 @@ export default function CoverageArea({
   fetchUser,
   subscriptionType,
 }: ICoverageAreaProps) {
-  console.log("Coverage Area Rendered: ", channel);
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
@@ -117,7 +116,6 @@ export default function CoverageArea({
       setRealTimeAlertKeywords([...realTimeAlertKeywords, realTimeAlertKeyword]);
       // addRealTimeAlertKeyword(channelId, realTimeAlertKeyword);
 
-      console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
       setRealTimeAlertKeyword("");
     }
     catch (err) {
@@ -215,7 +213,6 @@ export default function CoverageArea({
 
   // Method to Update Channel
   const handleUpdateChannel = async () => {
-    console.log("Updating channel...");
     setIsEditMode(false);
 
     await updateChannel(channelId, {
@@ -243,16 +240,11 @@ export default function CoverageArea({
 
   // Method to handle removing coverage area
   const handleRemoveChannel = async () => {
-    console.log("Remove Coverage Area");
     await deleteChannel(channelId);
-    console.log("Channel Removed Successfully!");
     if (!userDetails.id) throw new Error("User not found.");
     fetchUser(userDetails.id);
   };
 
-  console.log("userDetails", userDetails);
-  console.log(isReportAlertLimitReached);
-  console.log(isRecipientLimitReached);
   return (
     <>
       <section className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10 md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">

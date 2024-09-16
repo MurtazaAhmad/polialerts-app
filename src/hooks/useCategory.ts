@@ -28,11 +28,9 @@ export const useCategory = () => {
 
     const fetchSubCategories = async (parent: string) => {
         setLoading(true);
-        console.log("fetchCategories Called");
 
         try {
             const data = await categoryRepository.getCategories(parent);
-            console.log("data", data);
             setSubCategories(data);
         } catch (error) {
             setError("Failed to fetch categories.");

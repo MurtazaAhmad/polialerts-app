@@ -37,18 +37,13 @@ const Signup = () => {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("response: ", res);
 
       // Using User ID from response, we can store user data in Firestore on Users Collection
       const user = res?.user;
-      console.log("user", user);
       const userId: string | undefined = user?.uid;
-      console.log("userId", userId);
 
       // Send Email Verification
       const status = await sendEmailVerification();
-
-      console.log("Email Verification Status: ", status);
 
       // Something went wrong
       if (!userId) return;
@@ -71,8 +66,6 @@ const Signup = () => {
         email: email,
       })
       */
-
-      console.log("Account Created Successfully!");
 
       toast.success("A verification link has been sent to your Email!");
 

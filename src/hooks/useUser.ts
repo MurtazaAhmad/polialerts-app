@@ -97,7 +97,6 @@ export const useUser = () => {
     try {
       if (!userDetails?.id) throw new Error("User not found.");
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
-      console.log("Channel Updated Successfully! - 1");
 
       setLoading(false);
 
@@ -153,7 +152,7 @@ export const useUser = () => {
     }
   }
 
-  //Update Profile
+  // Update Profile
   const updateProfile = async (updatedData: Partial<User>) => {
     setLoading(true);
     const userRepository = new UserRepository();

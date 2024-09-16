@@ -19,7 +19,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (user) {
-      console.log("We have a User", user);
       fetchUser(user.uid);
     }
   }, [user]);
