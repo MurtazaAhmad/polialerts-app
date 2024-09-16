@@ -103,12 +103,25 @@ export default function CoverageArea({
   ) => {
     e.preventDefault();
 
-    setRealTimeAlertKeyword("");
-    setRealTimeAlertKeywords([...realTimeAlertKeywords, realTimeAlertKeyword]);
-    // addRealTimeAlertKeyword(channelId, realTimeAlertKeyword);
+    try {
 
-    console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
-    setRealTimeAlertKeyword("");
+      if (!realTimeAlertKeyword) return;
+
+      // Check if already exists
+      if (realTimeAlertKeywords.includes(realTimeAlertKeyword)) {
+        return;
+      }
+
+      setRealTimeAlertKeyword("");
+      setRealTimeAlertKeywords([...realTimeAlertKeywords, realTimeAlertKeyword]);
+      // addRealTimeAlertKeyword(channelId, realTimeAlertKeyword);
+
+      console.log("Real Time Alert Keyword: ", realTimeAlertKeyword);
+      setRealTimeAlertKeyword("");
+    }
+    catch (err) {
+      console.log("Error adding real-time alert keyword: ", err);
+    }
   };
 
   // Function to handle removing real-time alert keyword
@@ -122,10 +135,15 @@ export default function CoverageArea({
     e.preventDefault();
 
     try {
-      const newReportAlertKeywordsArray = [
-        ...reportAlertKeywords,
-        reportAlertKeyword,
-      ];
+
+      if (!reportAlertKeyword) return;
+
+      // Check if already exists
+      if (reportAlertKeywords.includes(reportAlertKeyword)) {
+        return;
+      }
+
+      const newReportAlertKeywordsArray = [...reportAlertKeywords, reportAlertKeyword]
 
       // Limit Reached!
       if (
@@ -138,7 +156,6 @@ export default function CoverageArea({
       setReportAlertKeyword("");
       setReportAlertKeywords(newReportAlertKeywordsArray);
 
-      // addReportAlertKeyword(channelId, reportAlertKeyword);
     } catch (err) {
       console.log("Error adding report alert keyword: ", err);
     }
@@ -163,17 +180,30 @@ export default function CoverageArea({
   const handleAddRecipient = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newRecipients = [...recipients, recipient];
+    try {
+      if (!recipient) return;
 
-    // Limit Reached!
-    if (
-      newRecipients.length >= userDetails.subscriptionDetails.recipients_limit
-    ) {
-      setIsRecipientLimitReached(true);
+      // Check if already exists
+      if (recipients.includes(recipient)) {
+        return;
+      }
+
+      const newRecipients = [...recipients, recipient];
+
+      // Limit Reached!
+      if (
+        newRecipients.length >= userDetails.subscriptionDetails.recipients_limit
+      ) {
+        setIsRecipientLimitReached(true);
+      }
+
+      setRecipient("");
+      setRecipients([...recipients, recipient]);
+    }
+    catch (err) {
+      console.log("Error adding recipient: ", err);
     }
 
-    setRecipient("");
-    setRecipients([...recipients, recipient]);
   };
 
   // Function to handle removing recipient
