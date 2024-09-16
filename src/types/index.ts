@@ -1,6 +1,7 @@
 
 // Channel Interface
 export interface Channel {
+    id: string;
     main_category: string;
     sub_category: string;
     real_time_alert_keywords: string[];
@@ -50,7 +51,7 @@ export interface SubscriptionDetails {
 }
 
 
-//Repositories
+// --------------------- Repositories ----------------------
 export interface IUserRepository {
     createUser(user: ICreateUserRequestData): Promise<void>;
     getUsers(): Promise<User[]>;
@@ -60,6 +61,18 @@ export interface IUserRepository {
     addRealTimeAlertKeyword(userId: string, channelId: string, keyword: string): void;
     addReportAlertKeyword(userId: string, channelId: string, keyword: string): void
 }
+
+export interface ICategoryRepository {
+    getCategories(parent: string): Promise<Category[]>;
+}
+
+export interface IKeywordRepository {
+    // getKeywords(): Promise<Keyword[]>;
+    addKeyword(keyword: Keyword): Promise<void>;
+    updateKeyword(keyword: Keyword): Promise<void>;
+    deleteKeyword(keyword: Keyword): Promise<void>;
+}
+
 
 // Request Data
 export interface ICreateUserRequestData {

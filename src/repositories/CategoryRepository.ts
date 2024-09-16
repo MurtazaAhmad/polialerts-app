@@ -1,13 +1,9 @@
 import { query, where, getDocs, collection } from "firebase/firestore";
 import { CATEGORY_COLLECTION } from "@/app/utils/constants";
 import { db } from "@/app/firebase/config";
-
-interface ICategoryRepository {
-    getCategories(parent: string): Promise<any>;
-}
+import { ICategoryRepository } from "@/types/index";
 
 export class CategoryRepository implements ICategoryRepository {
-
     async getCategories(parent: string) {
         const categoriesCollection = collection(db, CATEGORY_COLLECTION);
         const q = query(categoriesCollection, where('parent', '==', parent));
