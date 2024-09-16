@@ -32,6 +32,7 @@ export default function CoverageAreaModel({
 
   const [mainCategory, setMainCategory] = useState<string>("");
   const [subCategory, setSubCategory] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   let subtitle;
   const [isAddChannelModalOpen, setIsAddChannelOpen] = useState<boolean>(false);
@@ -91,16 +92,28 @@ export default function CoverageAreaModel({
       console.log("Adding Area...", subCategories);
 
       // Count how many channels do we have.
-      const channelsCount = Object.keys(userDetails.channels).length;
-      console.log("channelsCount", channelsCount);
+      const channelsCount = userDetails.channels.length;
 
-      if (userDetails.subscription_type === "PRO") {
-        console.log("PRO.");
+      // Limit Reached
+      if (userDetails.subscriptionDetails?.channels_limit && channelsCount >= userDetails.subscriptionDetails.channels_limit) {
+        console.log("Channel Limit Reached");
+        return;
       }
 
-      if (userDetails.subscription_type === "BUDGET" && channelsCount >= 1) {
-        console.log("You have reached the limit of channels for your subscription type.");
+      // Jurisdiction Already in Use
+      const isJurisdictionInUse = userDetails.channels.find(
+        (channel) => channel.sub_category === subCategory
+      );
+      if (isJurisdictionInUse) {
+        console.log("Jurisdiction Already in Use");
+        setError("Jurisdiction Already in Use");
 
+        setTimeout(() => {
+          setError(null);
+        }
+          , 3000);
+
+        return;
       }
 
       // Getting the channelId
@@ -108,7 +121,6 @@ export default function CoverageAreaModel({
       if (!channelId) throw new Error("Channel ID not found.");
 
       await addChannel(mainCategory, subCategory, channelId);
-      console.log("Channel Added Successfully!");
       handleCloseAddChannelModal();
 
       // Resetting the values
@@ -150,7 +162,14 @@ export default function CoverageAreaModel({
               <IoCloseSharp />
             </button>
           </div>
-
+          {
+            error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-3" role="alert">
+                <strong className="font-bold">Error! </strong>
+                <span className="block sm:inline">{error}</span>
+              </div>
+            )
+          }
           <div className="font-semibold text-xl">
             <div className="flex gap-3 items-center">
               <Institution />
