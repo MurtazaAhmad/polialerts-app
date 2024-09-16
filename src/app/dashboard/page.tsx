@@ -28,9 +28,6 @@ export default function Dashboard() {
     router.push("/login");
   }
 
-  //  const { data, loading: isLoading, addItem, updateItem, deleteItem } = useDatabase(mockDatabaseService, 'Users');
-  //  console.log("data using 571st approach", data);
-
   const {
     mainCategories,
     subCategories,
@@ -50,15 +47,11 @@ export default function Dashboard() {
     updateChannel,
     deleteChannel,
   } = useUser();
-  console.log("userDetails: ", userDetails);
-  if (userDetails)
-    console.log("channels: ", Object.entries(userDetails.channels));
 
   useEffect(() => {
     console.log("useEffect Called");
 
     if (user) {
-      console.log("We have a User", user);
       fetchUser(user.uid);
     }
 
@@ -143,10 +136,10 @@ export default function Dashboard() {
       </div>
 
       {userDetails?.channels &&
-        Object.entries(userDetails.channels).length > 0 ? (
-        Object.entries(userDetails.channels).map(
-          ([channelId, channel], index) => (
-            <React.Fragment key={channelId}>
+        userDetails.channels.length > 0 ? (
+        userDetails.channels.map(
+          (channel, index) => (
+            <React.Fragment key={channel.id}>
               {index > 0 && (
                 <div className="lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5">
                   <hr className="w-[100%] border-iota" />
@@ -155,7 +148,7 @@ export default function Dashboard() {
               <CoverageArea
                 subscriptionType={userDetails?.subscription_type}
                 channel={channel}
-                channelId={channelId}
+                channelId={channel.id}
                 updateChannel={updateChannel}
                 deleteChannel={deleteChannel}
                 userDetails={userDetails}

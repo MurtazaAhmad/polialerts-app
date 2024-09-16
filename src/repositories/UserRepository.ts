@@ -1,10 +1,8 @@
 import { Channel, User } from "@/types"
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion, query, where, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { PRO_SUBSCRIPTION, USERS_COLLECTION, SUBSCRIPTION_TYPES_COLLECTION } from "@/app/utils/constants";
 import { ICreateUserRequestData, IAddChannelRequestData, IUserRepository } from "@/types";
-
-
 
 export class UserRepository implements IUserRepository {
 
@@ -58,20 +56,31 @@ export class UserRepository implements IUserRepository {
     const subscriptionDetailsDoc = subscriptionDetailsSnapshot.docs.find(doc => doc.id === subscription_type);
     const subscriptionDetails = subscriptionDetailsDoc?.data();
 
+    const channelsCollectionRef = collection(doc.ref, "channels");
+    const channelsSnapshot = await getDocs(channelsCollectionRef);
+    const channels = channelsSnapshot.docs.map(doc => {
+      return {
+        id: doc.id,
+        ...doc.data()
+      }
+    }
+    );
+
     const user = {
       id: doc?.id,
       firstName: doc?.data().firstName,
       lastName: doc?.data().lastName,
-      channels: doc?.data().channels,
       email: doc?.data().email,
       phoneNo: doc?.data().phoneNo,
       street: doc?.data().street,
       city: doc?.data().city,
       country: doc?.data().country,
+      channels: channels,
       postalCode: doc?.data().postalCode,
       subscription_type: doc?.data().subscription_type,
       subscriptionDetails: subscriptionDetails,
     }
+
     return user;
   }
 
@@ -86,6 +95,22 @@ export class UserRepository implements IUserRepository {
         throw new Error("User document does not exist");
       }
 
+      const channelsCollectionRef = collection(userDocRef, 'channels');
+
+      // Check if a channel with the given channelId already exists
+      const channelQuery = query(channelsCollectionRef, where('channelId', '==', channelId));
+      const querySnapshot = await getDocs(channelQuery);
+
+      if (!querySnapshot.empty) {
+        console.log("Channel already exists");
+        throw new Error("Channel already exists");
+      }
+
+      // Add the new channel document to the channels collection
+      const newChannelDocRef = doc(channelsCollectionRef, channelId);
+      await setDoc(newChannelDocRef, channelData);
+
+      /*
       const userData = userDoc.data();
       const channels = userData?.channels;
 
@@ -97,6 +122,7 @@ export class UserRepository implements IUserRepository {
       await updateDoc(userDocRef, {
         [`channels.${channelId}`]: channelData
       });
+      */
 
     } catch (error) {
       console.error("Error adding channel: ", error);
@@ -105,7 +131,7 @@ export class UserRepository implements IUserRepository {
   }
 
   // Get Channels
-  async getChannels(userId: string) {
+  async getChannels(userId: string): Promise<Channel[]> {
     try {
       // Get a reference to the user's document
       const userDocRef = doc(db, USERS_COLLECTION, userId);
@@ -116,19 +142,53 @@ export class UserRepository implements IUserRepository {
         throw new Error("User document does not exist");
       }
 
-      // Get the user's data
-      const userData = userDoc.data();
-      const channels = userData?.channels;
+      const channelsCollectionRef = collection(userDocRef, "channels");
 
-      return channels;
+      // Fetch all channels
+      const channelsSnapshot = await getDocs(channelsCollectionRef);
+      const channels = channelsSnapshot.docs.map(doc => {
+        return {
+          id: doc.id,
+          main_category: doc.data().main_category,
+          sub_category: doc.data().sub_category,
+          real_time_alert_keywords: doc.data().real_time_alert_keywords,
+          report_alert_keywords: doc.data().report_alert_keywords,
+          recipients: doc.data().recipients,
+          quote_context: doc.data().quote_context,
+          tags: doc.data().tags,
+        }
+      }
+      );
+
+      const channelsData: Channel[] = channels.map(channel => {
+        return {
+          id: channel.id,
+          main_category: channel.main_category,
+          sub_category: channel.sub_category,
+          real_time_alert_keywords: channel.real_time_alert_keywords,
+          report_alert_keywords: channel.report_alert_keywords,
+          recipients: channel.recipients,
+          quote_context: channel.quote_context,
+          tags: channel.tags,
+        }
+      });
+
+      return channelsData;
+
+
     } catch (error) {
       console.error("Error getting channels: ", error);
+      throw error;
     }
   }
 
   // Update Channel
   async updateChannel(userId: string, channelId: string, updatedChannel: Channel) {
     try {
+
+      console.log("updateChannel() Repo. : ", userId, channelId, updatedChannel);
+
+
       // Get a reference to the user's document
       const userDocRef = doc(db, USERS_COLLECTION, userId);
 
@@ -138,23 +198,30 @@ export class UserRepository implements IUserRepository {
         throw new Error("User document does not exist");
       }
 
-      // Get the current channels array
-      const userData = userDoc.data();
-      const channels = userData?.channels;
+      // Get a reference to the user's channels collection
+      const channelsCollectionRef = collection(userDocRef, 'channels');
 
-      if (!channels || !channels[channelId]) {
+      // Get a reference to the specific channel document
+      const channelDocRef = doc(channelsCollectionRef, channelId);
+
+      // Fetch the channel document
+      const channelDoc = await getDoc(channelDocRef);
+      if (!channelDoc.exists()) {
         throw new Error("Channel not found");
       }
 
-      const existingChannel = channels[channelId];
+      // Get the current channel data
+      const existingChannel = channelDoc.data();
+
+      // Update the channel data with the new values
       existingChannel.real_time_alert_keywords = updatedChannel.real_time_alert_keywords;
       existingChannel.report_alert_keywords = updatedChannel.report_alert_keywords;
       existingChannel.recipients = updatedChannel.recipients;
       existingChannel.quote_context = updatedChannel.quote_context;
       existingChannel.tags = updatedChannel.tags;
 
-      // Save the updated channel object back to the user's document
-      await updateDoc(userDocRef, { [`channels.${channelId}`]: updatedChannel });
+      // Save the updated channel object back to the channels collection
+      await updateDoc(channelDocRef, existingChannel);
 
     } catch (error) {
       console.error("Error updating channel: ", error);
@@ -173,21 +240,20 @@ export class UserRepository implements IUserRepository {
         throw new Error("User document does not exist");
       }
 
-      // Get the current channels array
-      const userData = userDoc.data();
-      const channels = userData?.channels;
+      // Get a reference to the user's channels collection
+      const channelsCollectionRef = collection(userDocRef, 'channels');
 
-      if (!channels || !channels[channelId]) {
+      // Get a reference to the specific channel document
+      const channelDocRef = doc(channelsCollectionRef, channelId);
+
+      // Fetch the channel document
+      const channelDoc = await getDoc(channelDocRef);
+      if (!channelDoc.exists()) {
         throw new Error("Channel not found");
       }
 
-      // Remove both key and value from the channels object
-      delete channels[channelId];
-
-      // Save the updated channels object back to the user's document
-      await updateDoc(userDocRef, {
-        channels: channels
-      });
+      // Delete the channel document from the channels collection
+      await deleteDoc(channelDocRef);
 
     } catch (error) {
       console.error("Error deleting channel: ", error);
