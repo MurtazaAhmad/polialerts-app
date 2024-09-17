@@ -130,6 +130,48 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  // Get Channel
+  async getChannel(userId: string, channelId: string): Promise<Channel> {
+    try {
+      // Get a reference to the user's document
+      const userDocRef = doc(db, USERS_COLLECTION, userId);
+
+      // Fetch the user's document
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist");
+      }
+
+      const channelsCollectionRef = collection(userDocRef, 'channels');
+
+      // Get a reference to the specific channel document
+      const channelDocRef = doc(channelsCollectionRef, channelId);
+
+      // Fetch the channel document
+      const channelDoc = await getDoc(channelDocRef);
+      if (!channelDoc.exists()) {
+        throw new Error("Channel not found");
+      }
+
+      const channelData = channelDoc.data();
+
+      return {
+        id: channelDoc.id,
+        main_category: channelData.main_category,
+        sub_category: channelData.sub_category,
+        real_time_alert_keywords: channelData.real_time_alert_keywords,
+        report_alert_keywords: channelData.report_alert_keywords,
+        recipients: channelData.recipients,
+        quote_context: channelData.quote_context,
+        tags: channelData.tags,
+      };
+
+    } catch (error) {
+      console.error("Error getting channel: ", error);
+      throw error;
+    }
+  }
+
   // Get Channels
   async getChannels(userId: string): Promise<Channel[]> {
     try {
