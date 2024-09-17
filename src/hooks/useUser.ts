@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Channel, User } from "@/types";
 import { UserRepository } from "@/repositories/UserRepository";
+import { KeywordRepository } from "@/repositories/KeywordRepository";
 import { ICreateUserRequestData } from "@/types";
 
 // Hook to deal with user Collection Methods
@@ -49,6 +50,7 @@ export const useUser = () => {
     setLoading(true);
 
     const userRepository = new UserRepository();
+
     try {
       let channelData = {
         main_category: mainCategory,
@@ -62,6 +64,7 @@ export const useUser = () => {
 
       if (!userDetails?.id) throw new Error("User not found.");
 
+      // Adding Channel
       await userRepository.addChannel(userDetails?.id, channelId, channelData);
       setLoading(false);
 
@@ -94,9 +97,26 @@ export const useUser = () => {
 
     setLoading(true);
     const userRepository = new UserRepository();
+    const keywordRepository = new KeywordRepository();
+
     try {
       if (!userDetails?.id) throw new Error("User not found.");
+
+      // Get Channel
+      let channel = await userRepository.getChannel(userDetails?.id, channelId);
+
+      let initialRealTimeAlertKeywords = channel.real_time_alert_keywords;
+
+      let newRealTimeAlertKeywords = updatedChannel.real_time_alert_keywords;
+
+      // Find the difference between the two arrays
+      let differenceInKeywords = newRealTimeAlertKeywords.filter(x => !initialRealTimeAlertKeywords.includes(x));
+      console.log("Difference:", differenceInKeywords);
+
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
+      for (let keyword of differenceInKeywords) {
+        await keywordRepository.addKeyword(keyword, channelId);
+      }
 
       setLoading(false);
 
