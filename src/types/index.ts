@@ -69,7 +69,7 @@ export interface ICategoryRepository {
 export interface IKeywordRepository {
     // getKeywords(): Promise<Keyword[]>;
     addChannelToKeyword(channelId: string): Promise<void>;
-    addKeyword(keyword: string, channelId: string): Promise<void>;
+    addKeyword(userId: string, channelId: string, keyword: string): Promise<void>;
     updateKeyword(keyword: Keyword): Promise<void>;
     deleteKeyword(keyword: Keyword): Promise<void>;
 }
