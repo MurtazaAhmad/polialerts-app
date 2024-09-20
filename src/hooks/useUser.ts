@@ -113,10 +113,24 @@ export const useUser = () => {
       let differenceInKeywords = newRealTimeAlertKeywords.filter(x => !initialRealTimeAlertKeywords.includes(x));
       console.log("Difference:", differenceInKeywords);
 
+      // Which keywords are removed
+      let removedKeywords = initialRealTimeAlertKeywords.filter(x => !newRealTimeAlertKeywords.includes(x));
+      console.log("Removed Keywords:", removedKeywords);
+
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
+
+      // Remove Keywords
+      // for (let keyword of removedKeywords) {
+      console.log("User ID:", userDetails?.id, "Channel ID:", channelId, "Keyword:", removedKeywords);
+
+      //   await keywordRepository.deleteKeyword(userDetails?.id, channelId, keyword);
+      // }
+
+      // Add New keywords
       for (let keyword of differenceInKeywords) {
-        await keywordRepository.addKeyword(keyword, channelId);
+        await keywordRepository.addKeyword(userDetails?.id, channelId, keyword);
       }
+
 
       setLoading(false);
 
