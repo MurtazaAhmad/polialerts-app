@@ -16,7 +16,7 @@ export default function PlanDetails() {
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">Pro</p>
             </section>
 
-            <section>
+            {/* <section>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor mb-2">Plan term</p>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
                 06-22-2024 until 06-22-2025
@@ -31,14 +31,14 @@ export default function PlanDetails() {
             <section>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor mb-2">Billing cycle</p>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">
-               Every month of the 22nd day
+                Every month of the 22nd day
               </p>
-            </section>
+            </section> */}
           </section>
-          
+
 
           <section className="mt-5 grid md:grid-cols-2 grid-cols-1  md:gap-y-10 gap-5 mb-5">
-            <CancelPlanModal/>
+            <CancelPlanModal />
           </section>
         </div>
       </section>

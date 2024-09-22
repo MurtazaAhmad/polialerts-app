@@ -7,7 +7,7 @@ export default function BillingInfo() {
       </h2>
 
       <div className="md:w-[70%]">
-        <section className="grid md:grid-cols-2 grid-cols-1  gap-x-5 md:gap-y-10 gap-5">
+        {/* <section className="grid md:grid-cols-2 grid-cols-1  gap-x-5 md:gap-y-10 gap-5">
           <section>
             <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor mb-2">
               Amount of last payment
@@ -21,7 +21,7 @@ export default function BillingInfo() {
             </p>
             <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">07-22-2024</p>
           </section>
-        </section>
+        </section> */}
 
         <section className="grid md:grid-cols-2 grid-cols-1  md:gap-y-10 gap-5 mb-10">
           <button
