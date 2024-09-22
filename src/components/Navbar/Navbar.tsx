@@ -18,7 +18,7 @@ export default function Navbar() {
 
   //Router
   const router = useRouter();
-  
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -105,20 +105,20 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-              {user || userSession ? (
-                  <button
-                    onClick={handleLogout}
-                    className="md:p-4 py-2 block hover:underline active:underline text-left"
-                  >
-                    Log out
-                  </button>
-                ) : (
-                  <Link href="/login">
-                    <p className="md:p-4 py-2 block hover:underline active:underline text-left">
-                      Login
-                    </p>
-                  </Link>
-                )}
+                {/* {user || userSession ? ( */}
+                <button
+                  onClick={handleLogout}
+                  className="md:p-4 py-2 block hover:underline active:underline text-left"
+                >
+                  Log out
+                </button>
+                {/*  ) : (
+                   <Link href="/login">
+                     <p className="md:p-4 py-2 block hover:underline active:underline text-left">
+                       Login
+                     </p>
+                   </Link>
+                 )} */}
               </li>
             </ul>
           </div>
