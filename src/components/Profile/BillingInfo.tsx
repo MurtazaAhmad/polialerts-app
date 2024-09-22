@@ -26,7 +26,7 @@ export default function BillingInfo() {
         <section className="grid md:grid-cols-2 grid-cols-1  md:gap-y-10 gap-5 mb-10">
           <button
             type="submit"
-            className="mt-5 py-2 px-5 w-fit  h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+            className="mt-2 py-2 px-5 w-fit  h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
           >
             Manage payment method
           </button>

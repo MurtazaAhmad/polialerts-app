@@ -1,7 +1,10 @@
 import React from "react";
 import CancelPlanModal from "@/components/Profile/CancelPlanModal";
-
-export default function PlanDetails() {
+import { User } from "@/types";
+interface UserDetailsProp {
+  userDetails: User | null;
+}
+export default function PlanDetails({ userDetails}: UserDetailsProp) {
   return (
     <div>
       <section className="font-Manrope lg:pl-24 lg:pr-[4.70rem] md:px-10 px-5 py-5 md:py-10  md:gap-5 gap-5 md:flex-row flex-col flex md:justify-between md:items-start">
@@ -13,7 +16,7 @@ export default function PlanDetails() {
           <section className="grid md:grid-cols-2 grid-cols-1 gap-x-5 gap-5 md:gap-y-10">
             <section>
               <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor mb-2">Plan type</p>
-              <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">Pro</p>
+              <p className="text-sm leading-[1.375rem] md:text-base md:leading-7 text-bodyColor">{userDetails?.subscription_type}</p>
             </section>
 
             {/* <section>

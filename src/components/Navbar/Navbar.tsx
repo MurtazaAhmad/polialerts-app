@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Logo from "@/components/Icons/Logo";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
@@ -9,6 +9,11 @@ import { useRouter } from "next/navigation";
 export default function Navbar() {
   const [signOut] = useSignOut(auth);
   const [user] = useAuthState(auth); //user variable
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   //Auth User Session
   let userSession = null;
@@ -105,20 +110,22 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                {/* {user || userSession ? ( */}
-                <button
-                  onClick={handleLogout}
-                  className="md:p-4 py-2 block hover:underline active:underline text-left"
-                >
-                  Log out
-                </button>
-                {/*  ) : (
-                   <Link href="/login">
-                     <p className="md:p-4 py-2 block hover:underline active:underline text-left">
-                       Login
-                     </p>
-                   </Link>
-                 )} */}
+                {isMounted ? (
+                  user || userSession ? (
+                    <button
+                      onClick={handleLogout}
+                      className="md:p-4 py-2 block hover:underline active:underline text-left"
+                    >
+                      Log out
+                    </button>
+                  ) : (
+                    <Link href="/login">
+                      <p className="md:p-4 py-2 block hover:underline active:underline text-left">
+                        Login
+                      </p>
+                    </Link>
+                  )
+                ) : null}
               </li>
             </ul>
           </div>

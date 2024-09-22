@@ -77,7 +77,7 @@ export default function Profile() {
 
       <PersonalInfo userDetails={userDetails} updateProfile={updateProfile} />
       <BillingInfo />
-      <PlanDetails />
+      <PlanDetails userDetails={userDetails}/>
     </>
   );
 }
