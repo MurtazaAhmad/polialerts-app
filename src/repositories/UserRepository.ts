@@ -437,11 +437,17 @@ export class UserRepository implements IUserRepository {
   async addTags(userId: string, channelId: string, tags: string[]) { }
 
   // update Profile
-  async updateProfile(userId: string, updatedData: Partial<User>) {
+  async updateProfile(updatedData: Partial<User>, userId: string) {
     try {
+      console.log("updateProfile in UserRepository");
+
+      console.log("level 3 - Updated User: ", userId, updatedData);
+
       // Get a reference to the user's document
       const userDocRef = doc(db, USERS_COLLECTION, userId);
       await updateDoc(userDocRef, updatedData);
+      console.log("Level 4 - Updated Successfully!");
+
     } catch (error) {
       console.error("Error updating profile: ", error);
       throw error;

@@ -28,7 +28,6 @@ export default function Profile() {
   }
 
   const { userDetails, loading, error } = useUserContext();
-  const { updateProfile } = useUser();
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -75,9 +74,9 @@ export default function Profile() {
         <hr className="w-[100%] border-iota" />
       </div>
 
-      <PersonalInfo userDetails={userDetails} updateProfile={updateProfile} />
+      <PersonalInfo userDetails={userDetails} />
       <BillingInfo />
-      <PlanDetails userDetails={userDetails}/>
+      <PlanDetails userDetails={userDetails} />
     </>
   );
 }

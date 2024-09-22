@@ -2,11 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { User } from "@/types";
 import toast, { Toaster } from "react-hot-toast";
+import { useUser } from "@/hooks/useUser";
 interface UserDetailsProp {
   userDetails: User | null;
-  updateProfile: (updatedUser: Partial<User>) => void;
 }
-export default function PersonalInfo({ userDetails, updateProfile }: UserDetailsProp) {
+export default function PersonalInfo({ userDetails }: UserDetailsProp) {
+
+  const { updateProfile } = useUser();
+
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -15,8 +18,6 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
   const [city, setCity] = useState<string>("");
   const [country, setCountry] = useState<string>("");
   const [postalCode, setPostalCode] = useState<string>("");
-
-  console.log("userDetails", userDetails);
 
   useEffect(() => {
     if (userDetails) {
@@ -49,7 +50,14 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
     };
 
     try {
-      updateProfile(updatedUser);
+
+      console.log("Level 0");
+
+      if (!userDetails?.id) throw new Error("User not found.");
+
+      await updateProfile(updatedUser, userDetails.id);
+      console.log("After updateProfile");
+
       toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");
