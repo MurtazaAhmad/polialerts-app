@@ -120,11 +120,10 @@ export const useUser = () => {
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
 
       // Remove Keywords
-      // for (let keyword of removedKeywords) {
-      console.log("User ID:", userDetails?.id, "Channel ID:", channelId, "Keyword:", removedKeywords);
-
-      //   await keywordRepository.deleteKeyword(userDetails?.id, channelId, keyword);
-      // }
+      for (let keyword of removedKeywords) {
+        console.log("To be removed: ", keyword);
+        await keywordRepository.deleteKeyword(userDetails?.id, channelId, keyword);
+      }
 
       // Add New keywords
       for (let keyword of differenceInKeywords) {

@@ -71,9 +71,8 @@ export interface IKeywordRepository {
     addChannelToKeyword(channelId: string): Promise<void>;
     addKeyword(userId: string, channelId: string, keyword: string): Promise<void>;
     updateKeyword(keyword: Keyword): Promise<void>;
-    deleteKeyword(keyword: Keyword): Promise<void>;
+    deleteKeyword(userId: string, channelId: string, keyword: string): Promise<void>;
 }
-
 
 // Request Data
 export interface ICreateUserRequestData {

@@ -1,5 +1,5 @@
 import { Keyword, IKeywordRepository } from "@/types/index";
-import { arrayUnion, collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { KEYWORDS_COLLECTION } from "@/app/utils/constants";
 
@@ -13,19 +13,16 @@ export class KeywordRepository implements IKeywordRepository {
         return;
     }
 
-    async addKeyword(userId: string, channelId: string, keyword: string,): Promise<void> {
+    async addKeyword(userId: string, channelId: string, keyword: string): Promise<void> {
         try {
             console.log(`AddKeyword: ${keyword} to channel ${channelId}`);
 
-            // Give me this behavior in firebase
-            // /keywords/ChannelID_789/words/word/document (words collection can be empty for now)
             const keywordRef = doc(db, KEYWORDS_COLLECTION, channelId);
             const keywordDoc = await getDoc(keywordRef);
             // If the keyword channel doesn't exist, create it
             if (!keywordDoc.exists()) {
                 await setDoc(keywordRef, {});
                 // const wordsCollectionRef = collection(keywordRef, "words");
-                // Optionally, you can add a dummy document to ensure the collection is created
                 // await setDoc(doc(wordsCollectionRef, keyword), {});
             }
 
@@ -67,7 +64,59 @@ export class KeywordRepository implements IKeywordRepository {
     async updateKeyword(keyword: Keyword): Promise<void> {
         return;
     }
-    async deleteKeyword(keyword: Keyword): Promise<void> {
+    async deleteKeyword(userId: string, channelId: string, keyword: string): Promise<void> {
+        try {
+            const keywordRef = doc(db, KEYWORDS_COLLECTION, channelId);
+            const keywordDoc = await getDoc(keywordRef);
 
+            // If the keyword channel doesn't exist, throw an error
+            if (!keywordDoc.exists()) {
+                throw new Error(`Channel ${channelId} does not exist`);
+            }
+
+            const wordsCollectionRef = collection(keywordRef, "words");
+            const keywordDocRef = doc(wordsCollectionRef, keyword);
+            const keywordDocSnapshot = await getDoc(keywordDocRef);
+
+            // If the keyword doesn't exist, throw an error
+            if (!keywordDocSnapshot.exists()) {
+                throw new Error(`Keyword ${keyword} does not exist`);
+            }
+
+            const keywordData = keywordDocSnapshot.data();
+            const userIds = keywordData?.user_ids || [];
+
+            // Check if the userId exists in the user_ids array
+            if (!userIds.includes(userId)) {
+                throw new Error(`User ID ${userId} does not exist in keyword ${keyword}`);
+            }
+
+            // Remove the userId from the user_ids array
+            await updateDoc(keywordDocRef, {
+                user_ids: arrayRemove(userId)
+            });
+
+            // Fetch the updated keyword document
+            const updatedKeywordDocSnapshot = await getDoc(keywordDocRef);
+            const updatedKeywordData = updatedKeywordDocSnapshot.data();
+
+            // List of all the userIds in that keyword
+            const updatedUserIds = updatedKeywordData?.user_ids || [];
+
+            // If the user_ids array is empty, delete the keyword document
+            if (updatedUserIds.length === 0) {
+                await deleteDoc(keywordDocRef);
+                console.log(`Keyword ${keyword} deleted from channel ${channelId} as no user IDs are left.`);
+            } else {
+                console.log(`User ID ${userId} removed from keyword ${keyword} in channel ${channelId}.`);
+            }
+
+            console.log("Keyword Deleted Successfully!");
+
+        }
+        catch (error) {
+            console.log("Error", error);
+            throw new Error("Failed to delete keyword." + error);
+        }
     }
 }
