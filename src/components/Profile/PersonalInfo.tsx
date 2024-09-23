@@ -2,11 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { User } from "@/types";
 import toast, { Toaster } from "react-hot-toast";
+
 interface UserDetailsProp {
   userDetails: User | null;
   updateProfile: (updatedUser: Partial<User>) => void;
 }
-export default function PersonalInfo({ userDetails, updateProfile }: UserDetailsProp) {
+export default function PersonalInfo({
+  userDetails,
+  updateProfile,
+}: UserDetailsProp) {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -15,6 +19,8 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
   const [city, setCity] = useState<string>("");
   const [country, setCountry] = useState<string>("");
   const [postalCode, setPostalCode] = useState<string>("");
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   console.log("userDetails", userDetails);
 
@@ -28,7 +34,6 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
       setCity(userDetails.city || "");
       setCountry(userDetails.country || "");
       setPostalCode(userDetails.postalCode || "");
-
     }
   }, [userDetails]);
 
@@ -47,15 +52,16 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
       country,
       postalCode,
     };
-
+    setLoading(true);
     try {
       updateProfile(updatedUser);
       toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");
       console.error("Error updating profile:", error);
+    } finally {
+      setLoading(false);
     }
-
   };
 
   const handleRevert = async () => {
@@ -67,7 +73,7 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
     setCity(userDetails?.city || "");
     setCountry(userDetails?.country || "");
     setPostalCode(userDetails?.postalCode || "");
-  }
+  };
 
   return (
     <>
@@ -232,11 +238,17 @@ export default function PersonalInfo({ userDetails, updateProfile }: UserDetails
             <section className="buttons flex gap-5  md:flex-row flex-col ">
               <button
                 type="submit"
-                className="py-2 px-5 w-fit  h-fit text-base  bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+                className="py-2 px-5 w-fit h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+                disabled={loading}
               >
-                Save changes
+                {loading ? "Saving..." : "Save changes"}{" "}
+                {/* Show loading text */}
               </button>
-              <button onClick={() => handleRevert()} type="button" className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor">
+              <button
+                onClick={() => handleRevert()}
+                type="button"
+                className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor"
+              >
                 Revert
               </button>
             </section>
