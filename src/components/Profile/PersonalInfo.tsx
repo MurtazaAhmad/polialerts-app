@@ -2,15 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { User } from "@/types";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useUser } from "@/hooks/useUser";
 interface UserDetailsProp {
   userDetails: User | null;
-  updateProfile: (updatedUser: Partial<User>) => void;
 }
-export default function PersonalInfo({
-  userDetails,
-  updateProfile,
-}: UserDetailsProp) {
+export default function PersonalInfo({ userDetails }: UserDetailsProp) {
+
+  const { updateProfile } = useUser();
+
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -54,7 +53,14 @@ export default function PersonalInfo({
     };
     setLoading(true);
     try {
-      updateProfile(updatedUser);
+
+      console.log("Level 0");
+
+      if (!userDetails?.id) throw new Error("User not found.");
+
+      await updateProfile(updatedUser, userDetails.id);
+      console.log("After updateProfile");
+
       toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");

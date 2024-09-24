@@ -186,24 +186,40 @@ export const useUser = () => {
   }
 
   // Update Profile
-  const updateProfile = async (updatedData: Partial<User>) => {
+  const updateProfile = async (updatedData: Partial<User>, userId: string) => {
+    console.log("Level 1 - updateProfile() in useUser start:");
+
     setLoading(true);
     const userRepository = new UserRepository();
-    try {
-      if (!userDetails?.id) throw new Error("User not found.");
-      await userRepository.updateProfile(userDetails.id, updatedData);
-      setUserDetails((prevState) => {
-        if (!prevState) return null; // Handle case when prevState is null
+    console.log("updatedData:", updatedData);
 
-        return {
-          ...prevState,
-          ...updatedData,
-        };
-      });
-      console.log("Profile updated successfully!");
+    try {
+
+      console.log("userDetails in updateProfile:", userDetails);
+
+
+      if (!userId) throw new Error("User not found.");
+      console.log("Level 2 - ", updatedData);
+      await userRepository.updateProfile(updatedData, userId);
+      console.log("Level 5 - Updated");
+      setLoading(false);
+
+      console.log("updateProfile() in useUser end");
+
+      // setUserDetails((prevState) => {
+      //   if (!prevState) return null; // Handle case when prevState is null
+
+      //   return {
+      //     ...prevState,
+      //     ...updatedData,
+      //   };
+      // });
+
+
     } catch (error) {
+      console.log("Error - updateProfile() in useUser:", error);
+
       setError("Failed to update profile.");
-    } finally {
       setLoading(false);
     }
   };
