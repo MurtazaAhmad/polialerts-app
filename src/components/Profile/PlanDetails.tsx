@@ -46,7 +46,7 @@ export default function PlanDetails({ userDetails }: UserDetailsProp) {
 
           <section className="mt-5 grid md:grid-cols-2 grid-cols-1  md:gap-y-10 gap-5 mb-5">
             <Link
-              href="mailto:mairaanjum86@gmail.com?subject=Cancel%20Plan%20Request"
+              href="mailto:info@polialerts.com?subject=Cancel%20Plan%20Request"
               className="py-2 px-5 w-fit h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
             >
               Cancel Plan
@@ -54,7 +54,7 @@ export default function PlanDetails({ userDetails }: UserDetailsProp) {
           </section>
         </div>
       </section>
-      
+
     </div>
   );
 }
