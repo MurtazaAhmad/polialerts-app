@@ -19,6 +19,10 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
   const [country, setCountry] = useState<string>("");
   const [postalCode, setPostalCode] = useState<string>("");
 
+  const [loading, setLoading] = useState<boolean>(false);
+
+  console.log("userDetails", userDetails);
+
   useEffect(() => {
     if (userDetails) {
       setFirstName(userDetails.firstName || "");
@@ -29,7 +33,6 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
       setCity(userDetails.city || "");
       setCountry(userDetails.country || "");
       setPostalCode(userDetails.postalCode || "");
-
     }
   }, [userDetails]);
 
@@ -48,7 +51,7 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
       country,
       postalCode,
     };
-
+    setLoading(true);
     try {
 
       console.log("Level 0");
@@ -62,8 +65,9 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
     } catch (error) {
       toast.error("Failed to update profile. Please try again.");
       console.error("Error updating profile:", error);
+    } finally {
+      setLoading(false);
     }
-
   };
 
   const handleRevert = async () => {
@@ -75,7 +79,7 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
     setCity(userDetails?.city || "");
     setCountry(userDetails?.country || "");
     setPostalCode(userDetails?.postalCode || "");
-  }
+  };
 
   return (
     <>
@@ -240,11 +244,17 @@ export default function PersonalInfo({ userDetails }: UserDetailsProp) {
             <section className="buttons flex gap-5  md:flex-row flex-col ">
               <button
                 type="submit"
-                className="py-2 px-5 w-fit  h-fit text-base  bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+                className="py-2 px-5 w-fit h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+                disabled={loading}
               >
-                Save changes
+                {loading ? "Saving..." : "Save changes"}{" "}
+                {/* Show loading text */}
               </button>
-              <button onClick={() => handleRevert()} type="button" className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor">
+              <button
+                onClick={() => handleRevert()}
+                type="button"
+                className="py-2 px-5 w-fit  h-fit text-base border-blueColor  font-semibold  border-2  rounded-full text-blueColor"
+              >
                 Revert
               </button>
             </section>

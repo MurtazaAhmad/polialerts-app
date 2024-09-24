@@ -35,7 +35,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="text-center mb-32 mt-32">
+      <div className="text-center mt-72 mb-72">
         <div role="status">
           <svg
             aria-hidden="true"
