@@ -26,8 +26,10 @@ export default function BillingInfo() {
 
         <section className="grid md:grid-cols-2 grid-cols-1  md:gap-y-10 gap-5 mb-10">
           <Link
-            href=""
-            className="mt-2 py-2 px-5 w-fit  h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
+            href="https://billing.stripe.com/p/login/bIY4jw5SV1Et97GcMM"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 py-2 px-5 w-fit h-fit text-base bg-blueColor hover:bg-blueHover rounded-full font-semibold border-transparent border-2 text-white"
           >
             Manage payment method
           </Link>

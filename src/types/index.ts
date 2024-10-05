@@ -55,11 +55,14 @@ export interface SubscriptionDetails {
 export interface IUserRepository {
     createUser(user: ICreateUserRequestData): Promise<void>;
     getUsers(): Promise<User[]>;
-    getUserById(userId: string): Promise<any | undefined>;
-    addChannel(userId: string, channelId: string, channel: IAddChannelRequestData): void;
+    getUserById(userId: string): Promise<User | undefined>;
+    addChannel(userId: string, channelId: string, channel: IAddChannelRequestData): Promise<void>;
+    getChannel(userId: string, channelId: string): Promise<Channel>;
     getChannels(userId: string): Promise<Channel[]>;
-    addRealTimeAlertKeyword(userId: string, channelId: string, keyword: string): void;
-    addReportAlertKeyword(userId: string, channelId: string, keyword: string): void
+    updateChannel(userId: string, channelId: string, updatedChannel: IAddChannelRequestData): Promise<void>;
+    deleteChannel(userId: string, channelId: string): Promise<void>;
+    // addRealTimeAlertKeyword(userId: string, channelId: string, keyword: string): void;
+    // addReportAlertKeyword(userId: string, channelId: string, keyword: string): void
 }
 
 export interface ICategoryRepository {

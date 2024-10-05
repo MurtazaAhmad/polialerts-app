@@ -1,8 +1,8 @@
 import { Channel, User } from "@/types"
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc, arrayUnion, query, where, deleteDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, DocumentSnapshot } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { PRO_SUBSCRIPTION, USERS_COLLECTION, SUBSCRIPTION_TYPES_COLLECTION } from "@/app/utils/constants";
-import { ICreateUserRequestData, IAddChannelRequestData, IUserRepository } from "@/types";
+import { ICreateUserRequestData, IAddChannelRequestData, IUserRepository, SubscriptionDetails } from "@/types";
 
 export class UserRepository implements IUserRepository {
 
@@ -22,7 +22,7 @@ export class UserRepository implements IUserRepository {
   }
 
   //Fetch All Users
-  async getUsers() {
+  async getUsers(): Promise<User[]> {
     const usersCollection = collection(db, USERS_COLLECTION);
     const userSnapshot = await getDocs(usersCollection);
     const userList = userSnapshot.docs.map(doc => ({
@@ -38,7 +38,7 @@ export class UserRepository implements IUserRepository {
   }
 
   //Fetch User By Id
-  async getUserById(userId: string) {
+  async getUserById(userId: string): Promise<User | undefined> {
     console.log("userId", userId);
 
     const userCollection = collection(db, USERS_COLLECTION);
@@ -54,19 +54,32 @@ export class UserRepository implements IUserRepository {
     const subscriptionDetailsCollection = collection(db, SUBSCRIPTION_TYPES_COLLECTION);
     const subscriptionDetailsSnapshot = await getDocs(subscriptionDetailsCollection);
     const subscriptionDetailsDoc = subscriptionDetailsSnapshot.docs.find(doc => doc.id === subscription_type);
-    const subscriptionDetails = subscriptionDetailsDoc?.data();
+    const subscriptionDetailsData = subscriptionDetailsDoc?.data();
+
+    const subscriptionDetails: SubscriptionDetails = {
+      channels_limit: subscriptionDetailsData?.channels_limit,
+      name: subscriptionDetailsData?.name,
+      recipients_limit: subscriptionDetailsData?.recipients_limit,
+      report_alert_keywords_limit: subscriptionDetailsData?.report_alert_keywords_limit,
+    }
 
     const channelsCollectionRef = collection(doc.ref, "channels");
     const channelsSnapshot = await getDocs(channelsCollectionRef);
     const channels = channelsSnapshot.docs.map(doc => {
       return {
         id: doc.id,
-        ...doc.data()
+        main_category: doc.data().main_category,
+        sub_category: doc.data().sub_category,
+        real_time_alert_keywords: doc.data().real_time_alert_keywords,
+        report_alert_keywords: doc.data().report_alert_keywords,
+        recipients: doc.data().recipients,
+        quote_context: doc.data().quote_context,
+        tags: doc.data().tags,
       }
     }
     );
 
-    const user = {
+    const user: User = {
       id: doc?.id,
       firstName: doc?.data().firstName,
       lastName: doc?.data().lastName,
@@ -85,7 +98,7 @@ export class UserRepository implements IUserRepository {
   }
 
   //Add Channel
-  async addChannel(userId: string, channelId: string, channelData: IAddChannelRequestData) {
+  async addChannel(userId: string, channelId: string, channelData: IAddChannelRequestData): Promise<void> {
     try {
 
       // First check if channel with the same ID already exists
@@ -98,13 +111,22 @@ export class UserRepository implements IUserRepository {
       const channelsCollectionRef = collection(userDocRef, 'channels');
 
       // Check if a channel with the given channelId already exists
-      const channelQuery = query(channelsCollectionRef, where('channelId', '==', channelId));
-      const querySnapshot = await getDocs(channelQuery);
+      // const channelQuery = query(channelsCollectionRef, where('channelId', '==', channelId));
+      // const querySnapshot = await getDocs(channelQuery);
 
-      if (!querySnapshot.empty) {
-        console.log("Channel already exists");
+      // Check if a channel with the given channelId already exists
+      const channelDocRef = doc(channelsCollectionRef, channelId);
+      const channelDoc = await getDoc(channelDocRef);
+
+      if (channelDoc.exists()) {
+        // Channel with the given channelId exists
         throw new Error("Channel already exists");
       }
+
+      // if (!querySnapshot.empty) {
+      //   console.log("Channel already exists");
+      //   throw new Error("Channel already exists");
+      // }
 
       // Add the new channel document to the channels collection
       const newChannelDocRef = doc(channelsCollectionRef, channelId);
@@ -113,11 +135,11 @@ export class UserRepository implements IUserRepository {
       /*
       const userData = userDoc.data();
       const channels = userData?.channels;
-
+ 
       if (!channels || channels[channelId]) {
         throw new Error("Channel already exists");
       }
-
+ 
       // Update the user's document with the modified channelData
       await updateDoc(userDocRef, {
         [`channels.${channelId}`]: channelData
@@ -225,7 +247,7 @@ export class UserRepository implements IUserRepository {
   }
 
   // Update Channel
-  async updateChannel(userId: string, channelId: string, updatedChannel: Channel) {
+  async updateChannel(userId: string, channelId: string, updatedChannel: Channel): Promise<void> {
     try {
 
       console.log("updateChannel() Repo. : ", userId, channelId, updatedChannel);
@@ -244,10 +266,10 @@ export class UserRepository implements IUserRepository {
       const channelsCollectionRef = collection(userDocRef, 'channels');
 
       // Get a reference to the specific channel document
-      const channelDocRef = doc(channelsCollectionRef, channelId);
+      const userChannelDocRef = doc(channelsCollectionRef, channelId);
 
       // Fetch the channel document
-      const channelDoc = await getDoc(channelDocRef);
+      const channelDoc = await getDoc(userChannelDocRef);
       if (!channelDoc.exists()) {
         throw new Error("Channel not found");
       }
@@ -263,7 +285,7 @@ export class UserRepository implements IUserRepository {
       existingChannel.tags = updatedChannel.tags;
 
       // Save the updated channel object back to the channels collection
-      await updateDoc(channelDocRef, existingChannel);
+      await updateDoc(userChannelDocRef, existingChannel);
 
     } catch (error) {
       console.error("Error updating channel: ", error);
@@ -271,8 +293,9 @@ export class UserRepository implements IUserRepository {
   }
 
   // Delete Channel
-  async deleteChannel(userId: string, channelId: string) {
+  async deleteChannel(userId: string, channelId: string): Promise<void> {
     try {
+      /*
       // Get a reference to the user's document
       const userDocRef = doc(db, USERS_COLLECTION, userId);
 
@@ -293,9 +316,13 @@ export class UserRepository implements IUserRepository {
       if (!channelDoc.exists()) {
         throw new Error("Channel not found");
       }
+        
+      */
+
+      const channelDoc = await this.getChannelSnapshot(userId, channelId);
 
       // Delete the channel document from the channels collection
-      await deleteDoc(channelDocRef);
+      await deleteDoc(channelDoc.ref);
 
     } catch (error) {
       console.error("Error deleting channel: ", error);
@@ -303,6 +330,9 @@ export class UserRepository implements IUserRepository {
   }
 
   //Add Real-time Alert Keyword
+
+  /*
+  
   async addRealTimeAlertKeyword(userId: string, channelId: string, realTimeAlertKeyword: string) {
     try {
 
@@ -349,7 +379,9 @@ export class UserRepository implements IUserRepository {
     }
 
   }
+  */
 
+  /*
   async addReportAlertKeyword(userId: string, channelId: string, reportAlertKeyword: string) {
     try {
 
@@ -390,7 +422,9 @@ export class UserRepository implements IUserRepository {
       console.error("Error adding report alert keyword: ", error);
     }
   }
+  */
 
+  /*
   // Add Recipient
   async addRecipient(userId: string, channelId: string, recipient: string) {
     try {
@@ -432,9 +466,13 @@ export class UserRepository implements IUserRepository {
       console.error("Error adding recipient: ", error);
     }
   }
+  */
 
+  /*
   // Add Tags
   async addTags(userId: string, channelId: string, tags: string[]) { }
+
+  */
 
   // update Profile
   async updateProfile(updatedData: Partial<User>, userId: string) {
@@ -454,5 +492,29 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  // Private method to get the channel snapshot
+  private async getChannelSnapshot(userId: string, channelId: string): Promise<DocumentSnapshot<Channel>> {
+    // Get a reference to the user's document
+    const userDocRef = doc(db, USERS_COLLECTION, userId);
+
+    // Fetch the user's document
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error("User document does not exist");
+    }
+
+    const channelsCollectionRef = collection(userDocRef, 'channels');
+
+    // Get a reference to the specific channel document
+    const channelDocRef = doc(channelsCollectionRef, channelId);
+
+    // Fetch the channel document
+    const channelDoc = await getDoc(channelDocRef);
+    if (!channelDoc.exists()) {
+      throw new Error("Channel not found");
+    }
+
+    return channelDoc as DocumentSnapshot<Channel>;
+  }
 
 }
