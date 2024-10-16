@@ -1,4 +1,4 @@
-import { Keyword, IKeywordRepository } from "@/types/index";
+import { IKeywordRepository } from "@/types/index";
 import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { KEYWORDS_COLLECTION } from "@/app/utils/constants";
@@ -43,7 +43,7 @@ export class KeywordRepository implements IKeywordRepository {
 
         }
         catch (error) {
-            console.log("Error", error);
+            throw new Error("Failed to add keyword." + error);
         }
     }
 
@@ -95,7 +95,6 @@ export class KeywordRepository implements IKeywordRepository {
 
         }
         catch (error) {
-            console.log("Error", error);
             throw new Error("Failed to delete keyword." + error);
         }
     }

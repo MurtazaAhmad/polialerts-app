@@ -46,7 +46,6 @@ export class UserRepository implements IUserRepository {
   //Fetch User By Id
   // Please specify the return type of this function
   async getUserById(userId: string): Promise<User | undefined> {
-    console.log("userId", userId);
 
     const userCollection = collection(db, USERS_COLLECTION);
     const userSnapshot = await getDocs(userCollection);
@@ -125,7 +124,6 @@ export class UserRepository implements IUserRepository {
       return true;
 
     } catch (error) {
-      console.error("Error adding channel: ", error);
       throw error;
     }
   }
@@ -150,7 +148,6 @@ export class UserRepository implements IUserRepository {
       };
 
     } catch (error) {
-      console.error("Error getting channel: ", error);
       throw error;
     }
   }
@@ -193,7 +190,6 @@ export class UserRepository implements IUserRepository {
       return channelsData;
 
     } catch (error) {
-      console.error("Error getting channels: ", error);
       throw error;
     }
   }
@@ -234,7 +230,7 @@ export class UserRepository implements IUserRepository {
       return true;
 
     } catch (error) {
-      console.error("Error updating channel: ", error);
+      throw error;
     }
   }
 
@@ -249,23 +245,19 @@ export class UserRepository implements IUserRepository {
       await deleteDoc(channelDoc.ref);
       return true;
     } catch (error) {
-      console.error("Error deleting channel: ", error);
+      throw error;
     }
   }
 
   // update Profile
   async updateProfile(updatedData: Partial<User>, userId: string): Promise<boolean> {
     try {
-      console.log("updateProfile in UserRepository");
-
-      console.log("level 3 - Updated User: ", userId, updatedData);
 
       // Get a reference to the user's document
       const userDocRef = doc(db, USERS_COLLECTION, userId);
       await updateDoc(userDocRef, updatedData);
       return true;
     } catch (error) {
-      console.error("Error updating profile: ", error);
       throw error;
     }
   }
