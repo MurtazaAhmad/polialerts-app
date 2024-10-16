@@ -1,4 +1,4 @@
-
+// why this file is called index.ts?
 // Channel Interface
 export interface Channel {
     id: string;
@@ -53,14 +53,15 @@ export interface SubscriptionDetails {
 
 // --------------------- Repositories ----------------------
 export interface IUserRepository {
-    createUser(user: ICreateUserRequestData): Promise<void>;
+    createUser(userData: ICreateUserRequestData): Promise<boolean>;
     getUsers(): Promise<User[]>;
     getUserById(userId: string): Promise<User | undefined>;
-    addChannel(userId: string, channelId: string, channel: IAddChannelRequestData): Promise<void>;
+    addChannel(userId: string, channelId: string, channel: IAddChannelRequestData): Promise<boolean>;
     getChannel(userId: string, channelId: string): Promise<Channel>;
     getChannels(userId: string): Promise<Channel[]>;
-    updateChannel(userId: string, channelId: string, updatedChannel: IAddChannelRequestData): Promise<void>;
-    deleteChannel(userId: string, channelId: string): Promise<void>;
+    updateChannel(userId: string, channelId: string, updatedChannel: IAddChannelRequestData): Promise<boolean>;
+    deleteChannel(userId: string, channelId: string): Promise<boolean>;
+    updateProfile(updatedData: Partial<User>, userId: string): Promise<boolean>;
     // addRealTimeAlertKeyword(userId: string, channelId: string, keyword: string): void;
     // addReportAlertKeyword(userId: string, channelId: string, keyword: string): void
 }
@@ -70,11 +71,8 @@ export interface ICategoryRepository {
 }
 
 export interface IKeywordRepository {
-    // getKeywords(): Promise<Keyword[]>;
-    addChannelToKeyword(channelId: string): Promise<void>;
-    addKeyword(userId: string, channelId: string, keyword: string): Promise<void>;
-    updateKeyword(keyword: Keyword): Promise<void>;
-    deleteKeyword(userId: string, channelId: string, keyword: string): Promise<void>;
+    addKeyword(userId: string, channelId: string, keyword: string): Promise<boolean>;
+    deleteKeyword(userId: string, channelId: string, keyword: string): Promise<boolean>;
 }
 
 // Request Data
