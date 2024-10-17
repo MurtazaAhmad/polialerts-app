@@ -167,7 +167,7 @@ export default function Login() {
           <span className="text-blueColor ml-1">
             <Link
               className="underline hover:no-underline hover:text-blueHover"
-              href="https://polialerts.com/DemoBooking.html" rel="noopener noreferrer"
+              href="https://polialerts.com/DemoBooking.html" target="_blank" rel="noopener noreferrer"
             >
              Contact us
             </Link>
