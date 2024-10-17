@@ -367,7 +367,9 @@ export default function CoverageArea({
                             </div>
                           </div>
                         </div>
-                        <div className="md:w-[50%] w-full">
+                        
+                        
+                     {/*  <div className="md:w-[50%] w-full">
                           <div className="flex items-center gap-2 my-5">
                             <Calendar />
                             <h3 className="ml-3 font-bold text-headingColor text-[1.375rem] leading-[1.875rem] md:text-[1.625rem] md:leading-[2.375rem]">
@@ -416,6 +418,7 @@ export default function CoverageArea({
                             )}
                           </div>
                         ))}*/}
+                        {/*}
                               {reportAlertKeywords.length > 0 ? (
                                 reportAlertKeywords.map((keyword, index) => (
                                   <div
@@ -445,6 +448,8 @@ export default function CoverageArea({
                             </div>
                           </div>
                         </div>
+                        */}
+                        
                       </div>
 
                       {/* Quotes */}
