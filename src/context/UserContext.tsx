@@ -9,6 +9,7 @@ interface UserContextType {
   userDetails: User | null;
   loading: boolean;
   error: string | null;
+  fetchUser: (userId: string) => Promise<User | undefined>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -25,7 +26,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
 
   return (
-    <UserContext.Provider value={{ userDetails, loading, error }}>
+    <UserContext.Provider value={{ userDetails, loading, error, fetchUser }}>
       {children}
     </UserContext.Provider>
   );
