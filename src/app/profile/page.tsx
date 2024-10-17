@@ -5,7 +5,7 @@ import PlanDetails from "@/components/Profile/PlanDetails";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useUser } from "@/hooks/useUser";
-import React from "react";
+import React, { useEffect } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 
@@ -27,7 +27,14 @@ export default function Profile() {
     router.push("/login");
   }
 
-  const { userDetails, loading, error } = useUserContext();
+  const { userDetails, loading, error, fetchUser } = useUserContext();
+  console.log("userDetails", userDetails);
+
+  useEffect(() => {
+    if (user) {
+      fetchUser(user.uid);
+    }
+  }, [user]);
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -80,3 +87,5 @@ export default function Profile() {
     </>
   );
 }
+
+

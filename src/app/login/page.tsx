@@ -38,7 +38,7 @@ export default function Login() {
 
       // If User exists
       if (res && res.user) {
-         // If Email is not verified
+        // If Email is not verified
         if (!res.user.emailVerified) {
           toast.error("Email not verified. Please verify your email.");
           setLoading(false);
@@ -52,7 +52,7 @@ export default function Login() {
         // Check if the User exists 
         const user = await fetchUser(res.user.uid);
 
-         // If user doesn't exist, create user (first time login)
+        // If user doesn't exist, create user (first time login)
         if (!user) {
           await createUser({
             id: res.user.uid,
@@ -72,16 +72,17 @@ export default function Login() {
         }, 2000); // Short delay for success message
       }
     }
-      catch (error: any) {
-        if (error.code === "auth/invalid-credential") {
-          setErrorMessage("Credentials are invalid.");
-        } else {
-          setErrorMessage(
-            "An unexpected error occurred. Please try again." || error.message
-          );
-        }
-      } 
-      
+    catch (error: any) {
+      if (error.code === "auth/invalid-credential") {
+        setErrorMessage("Credentials are invalid.");
+      } else {
+        setErrorMessage(
+          error.message ||
+          "An unexpected error occurred. Please try again."
+        );
+      }
+    }
+
     finally {
       setLoading(false);
     }
@@ -166,10 +167,11 @@ export default function Login() {
           <span className="text-bodyColor">Don&apos;t have an account?</span>
           <span className="text-blueColor ml-1">
             <Link
+              target="_blank"
               className="underline hover:no-underline hover:text-blueHover"
               href="https://polialerts.com/DemoBooking.html" target="_blank" rel="noopener noreferrer"
             >
-             Contact us
+              Contact us
             </Link>
           </span>
         </div>

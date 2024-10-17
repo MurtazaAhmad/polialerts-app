@@ -1,19 +1,11 @@
-import { Keyword, IKeywordRepository } from "@/types/index";
+import { IKeywordRepository } from "@/types/index";
 import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { KEYWORDS_COLLECTION } from "@/app/utils/constants";
 
 export class KeywordRepository implements IKeywordRepository {
-    // async getKeywords(): Promise<Keyword[]> {
-    //     return [];
-    // }
 
-
-    async addChannelToKeyword(channelId: string): Promise<void> {
-        return;
-    }
-
-    async addKeyword(userId: string, channelId: string, keyword: string): Promise<void> {
+    async addKeyword(userId: string, channelId: string, keyword: string): Promise<boolean> {
         try {
             console.log(`AddKeyword: ${keyword} to channel ${channelId}`);
 
@@ -25,7 +17,7 @@ export class KeywordRepository implements IKeywordRepository {
                 // const wordsCollectionRef = collection(keywordRef, "words");
                 // await setDoc(doc(wordsCollectionRef, keyword), {});
             }
-
+            //  same as the other file, we can create a function to get the snapshot and call it in multiple places.
             const wordsCollectionRef = collection(keywordRef, "words");
             // The data inserted into wordsCollectionRef will also be a collection, with keyword as id
             // Get a reference to the specific keyword document
@@ -47,24 +39,15 @@ export class KeywordRepository implements IKeywordRepository {
                 user_ids: arrayUnion(userId)
             });
 
-
-            // await setDoc(doc(wordsCollectionRef, keyword), {
-            //     user_ids: [],
-            //     tags: []
-            // });
-
-            console.log(`Channel ${channelId} added to keyword ${channelId} with a words collection.`);
-
+            return true;
 
         }
         catch (error) {
-            console.log("Error", error);
+            throw new Error("Failed to add keyword." + error);
         }
     }
-    async updateKeyword(keyword: Keyword): Promise<void> {
-        return;
-    }
-    async deleteKeyword(userId: string, channelId: string, keyword: string): Promise<void> {
+
+    async deleteKeyword(userId: string, channelId: string, keyword: string): Promise<boolean> {
         try {
             const keywordRef = doc(db, KEYWORDS_COLLECTION, channelId);
             const keywordDoc = await getDoc(keywordRef);
@@ -106,16 +89,12 @@ export class KeywordRepository implements IKeywordRepository {
             // If the user_ids array is empty, delete the keyword document
             if (updatedUserIds.length === 0) {
                 await deleteDoc(keywordDocRef);
-                console.log(`Keyword ${keyword} deleted from channel ${channelId} as no user IDs are left.`);
-            } else {
-                console.log(`User ID ${userId} removed from keyword ${keyword} in channel ${channelId}.`);
+                // console.log(`Keyword ${keyword} deleted from channel ${channelId} as no user IDs are left.`);
             }
-
-            console.log("Keyword Deleted Successfully!");
+            return true;
 
         }
         catch (error) {
-            console.log("Error", error);
             throw new Error("Failed to delete keyword." + error);
         }
     }
