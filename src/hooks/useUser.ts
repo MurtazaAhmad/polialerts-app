@@ -5,13 +5,6 @@ import { UserRepository } from "@/repositories/UserRepository";
 import { KeywordRepository } from "@/repositories/KeywordRepository";
 import { ICreateUserRequestData } from "@/types";
 
-// 1. Consider using a singleton pattern for the UserRepository and KeywordRepository idk if they expensive, but let's try to keep the same instance
-// 2. Error handling could be improved by logging the error or using a more descriptive error message.
-// 3. Consider abstracting repetitive logic, such as setting loading states and error handling, into reusable functions.
-// 4. The use of `console.log` for debugging is fine during development but should be removed or replaced with a more robust logging solution for production. What about a custom logger? 
-// 7. In `updateChannel`, consider checking if there are any keywords to add or remove before performing those operations to avoid unnecessary calls.
-// 8. The commented-out `setUserDetails` in `updateProfile` might be necessary to update the local state with the new user details after an update. I am not sure but please double check. 
-
 // Hook to deal with user Collection Methods
 export const useUser = () => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
@@ -119,19 +112,25 @@ export const useUser = () => {
       // Which keywords are removed
       let removedKeywords = initialRealTimeAlertKeywords.filter(x => !newRealTimeAlertKeywords.includes(x));
 
-      // FIXME: This is important, please, if there is no difference return as there is no changes to apply to the channel.
+
+
       await userRepository.updateChannel(userDetails?.id, channelId, updatedChannel);
 
-      // Remove Keywords
-      for (let keyword of removedKeywords) {
-        await keywordRepository.deleteKeyword(userDetails?.id, channelId, keyword);
+      // If there are removed keywords
+      if (removedKeywords.length > 0) {
+        // Remove Keywords
+        for (let keyword of removedKeywords) {
+          await keywordRepository.deleteKeyword(userDetails?.id, channelId, keyword);
+        }
       }
 
-      // Add New keywords
-      for (let keyword of differenceInKeywords) {
-        await keywordRepository.addKeyword(userDetails?.id, channelId, keyword);
+      // If there are new keywords
+      if (differenceInKeywords.length > 0) {
+        // Add New keywords
+        for (let keyword of differenceInKeywords) {
+          await keywordRepository.addKeyword(userDetails?.id, channelId, keyword);
+        }
       }
-
       setLoading(false);
 
     } catch (error) {
